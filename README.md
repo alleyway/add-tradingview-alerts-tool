@@ -25,7 +25,7 @@ MacOS/Windows/Linux
 
 [Install NodeJS](https://nodejs.org/en/)
 
-## Required Installations
+## Installation
 
 Open Terminal/PowerShell and run the following:
 

@@ -5,7 +5,7 @@
 ## Why This Project Exists
 Trading platforms (such as [3Commas](https://3commas.io/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 
 
-When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), then you can send signals to your trading bot using **TradingView alerts** 
+When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), you can send signals to your trading bot using **TradingView alerts** 
 
 So what if you want to use an indicator to trade across dozens or hundreds of pairs? Because there is no TradingView API to add alerts in bulk, you'd need to maintain those alerts by hand. 
 

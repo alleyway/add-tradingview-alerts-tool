@@ -1,7 +1,7 @@
 {
   "name": "@alleyway/add-tradingview-alerts-tool",
   "repository": "git@github.com:alleyway/add-tradingview-alerts-tool.git",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Add TradingView Alerts in bulk",
   "scripts": {
     "build": "tsc",

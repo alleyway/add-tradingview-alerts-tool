@@ -1,0 +1,40 @@
+{
+  "name": "add-tradingview-alerts-tool",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "fetch:binance:usdt": "tsc && env QUOTE_ASSET=USDT node lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
+    "fetch:binance:btc": "tsc && env QUOTE_ASSET=BTC node lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
+    "add-alerts": "tsc && node -r dotenv/config lib/add-tradingview-alerts.js"
+  },
+  "keywords": [
+    "tradingview",
+    "alerts",
+    "3commas",
+    "indicator"
+  ],
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "yaml": "^1.10.0",
+    "@types/table": "^5.0.0",
+    "binance-api-node": "^0.10.4",
+    "commander": "^6.1.0",
+    "csv-parser": "^2.3.3",
+    "date-fns": "^2.15.0",
+    "dotenv": "^8.2.0",
+    "kleur": "^4.0.3",
+    "lodash": ">=4.17.19",
+    "puppeteer": "^5.2.1",
+    "reconnecting-websocket": "^4.4.0",
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "source-map-support": "^0.5.19",
+    "table": "^5.4.6",
+    "ws": "^7.3.1"
+  },
+  "private": false
+}

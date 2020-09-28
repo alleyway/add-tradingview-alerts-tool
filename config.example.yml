@@ -1,0 +1,19 @@
+files:
+  input: binance_usdt_pairs.csv
+  exclude: blacklist.csv
+tradingview:
+  # The chart which has the indicator you'd like to use
+  chartUrl: https://www.tradingview.com/chart/WS5uK1l5/
+alert:
+  indicator: MTF Deviation
+  signal: Tier1 long
+  option: Once Per Bar Close
+  # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
+  message: >
+    {
+        "message_type": "bot",
+        "bot_id": 999999,
+        "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+        "delay_seconds": 0,
+        "pair": "{{quote}}_{{base}}"
+    }

@@ -4,3 +4,4 @@ node_modules/
 user_data/
 .env
 config.yml
+*_pairs.csv

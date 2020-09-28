@@ -111,7 +111,15 @@ const addAlert = async (symbol: string, quote: string, base: string, alertConfig
 
 const main = async () => {
 
-    const configString = await fs.readFileSync("./config.yml", {encoding: "utf-8"})
+    const configFileName = process.argv[2] || "config.yml"
+
+    if (!fs.exists) {
+        console.error("Unable to find config file: ", configFileName)
+    }
+
+    console.log("Using config file: ", configFileName)
+
+    const configString = await fs.readFileSync(configFileName, {encoding: "utf-8"})
 
     const config = YAML.parse(configString)
 

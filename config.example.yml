@@ -11,9 +11,9 @@ alert:
   # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
   message: >
     {
-        "message_type": "bot",
-        "bot_id": 999999,
-        "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
-        "delay_seconds": 0,
-        "pair": "{{quote}}_{{base}}"
+         "message_type": "bot",
+         "bot_id": 999999,
+         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+         "delay_seconds": 0,
+         "pair": "{{quote}}_{{base}}"
     }

@@ -7,15 +7,15 @@ Trading platforms (such as [3Commas](https://3commas.io/)) allow automated trade
 
 When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), then you can send signals to your trading bot using **TradingView alerts** 
 
-So what if you want to use an indicator to trade across dozens or hundreds of pairs? Because there is no TradingView API to add alerts in bulk, you'd need to maintain those alerts by hand.
-
-Not anymore!
+So what if you want to use an indicator to trade across dozens or hundreds of pairs? Because there is no TradingView API to add alerts in bulk, you'd need to maintain those alerts by hand. 
 
 ## How does this tool work?
 
 Using open source software designed for automated website testing, we can enter as many custom alerts as your TradingView account allows. It installs its very own Chrome browser (called Chromium) which is controlled by this script.
 
-You'll be able to watch your browser automatically entering alerts (as if by a ghost), while you save your precious time.  
+You'll be able to watch your browser automatically entering alerts (as if by a ghost), while saving you precious time.  
+
+
 
 ## Requirements
 
@@ -95,12 +95,19 @@ You can stop the script in Terminal by pressing Ctrl-C
 If the tool gets interrupted for some reason, you can remove the rows of already-added alert symbols (from the .csv) and re-run
 
 
-## Advanced Strategies
+## Advanced Usage
 
-### Multiple config files
+### Multiple Configurations
 
-Often you'll want 
+A configured TradingView Indicator that works for assets quoted in BTC may not be appropriate for USD pairs, therefore, you'll want to segment your setup as follows:
 
+| Abstract                                                                                                        | Concretely                                                                                                                                                              |
+|-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| List of pairs quoted only in BTC                                                                                | Run "npm run fetch:binance:btc" input: binance_usdt_pairs.csv                                                                                                           |
+| TradingView chart layout with an indicator tailored specific to BTC (eg. set 3% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                   |
+| 3commas trading bot to handle only BTC                                                                          | {     "message_type": "bot",     "bot_id": 999999,     "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",     "delay_seconds": 0,     "pair": "{{quote}}_{{base}}" } |
+| A dedicated configuration file for the above                                                                    | npm run add-alerts config.btc.yml                                                                                                                                       |
+NOTE: by default running "npm run add-alerts" will default to config.yml unless you specify an alternate
 
 ### Send a single alert to multiple bots(or use multiple commands)
 

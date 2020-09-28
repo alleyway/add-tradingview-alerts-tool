@@ -1,0 +1,6 @@
+node_modules/
+/lib/
+.idea/
+user_data/
+.env
+config.yml

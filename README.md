@@ -27,7 +27,7 @@ MacOS/Windows/Linux
 
 ## Required Installations
 
-Open Terminal and run the following:
+Open Terminal/PowerShell and run the following:
 
     git clone https://github.com/alleyway/add-tradingview-alerts-tool.git
     cd add-tradingview-alerts-tool

@@ -20,7 +20,9 @@ const readFilePromise = (filename: string) => {
             .on('data', (data) => results.push(data))
             .on('end', () => {
                 resolve(results)
-            })
+            }).on('error', () => {
+            reject("Unable to read csv")
+        })
     })
 }
 
@@ -89,7 +91,7 @@ const addAlert = async (symbol: string, quote: string, base: string, alertConfig
     await messageTextarea.press('Backspace');
     await delay(500);
 
-    const messageText = message.toString().replace(/\{\{quote}}/g, quote).replace().replace(/\{\{base}}/g, base).replace()
+    const messageText = message.toString().replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
 
     await messageTextarea.type(messageText)
 
@@ -120,7 +122,7 @@ const main = async () => {
     const browser = await puppeteer.launch({
         headless: false, userDataDir: "./user_data",
         args: [
-            `--app=${"about:blank"}`
+            `--app=about:blank}`
         ]
     })
     const page = await browser.newPage()
@@ -139,9 +141,9 @@ const main = async () => {
 
         const blackListRows = await readFilePromise(config.files.exclude)
 
-        const isBlacklisted = (symbol:string) => {
+        const isBlacklisted = (symbol: string) => {
             for (const row of blackListRows) {
-                if (symbol.toLowerCase().includes(row.symbol.toLowerCase())){
+                if (symbol.toLowerCase().includes(row.symbol.toLowerCase())) {
                     return true
                 }
             }

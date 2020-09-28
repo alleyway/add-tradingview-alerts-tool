@@ -133,7 +133,7 @@ const main = async () => {
 
     if (response.status() == 403) {
 
-        console.log("You'll need to sign into TradingView in this browser (one time only)")
+        console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
         await delay(1000000)
 
     } else {

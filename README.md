@@ -108,7 +108,7 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 | 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
 | A dedicated configuration file for the above                                                                    | npm run add-alerts config.btc.yml                                                                                                                                                         |
 
-NOTE: by default running "npm run add-alerts" will default to config.yml unless you specify an alternate
+NOTE: by default running "npm run add-alerts" will default to config.yml unless you specify one (eg. "npm run add-alerts config.btc.yml")
 
 ### Send a single alert to multiple bots(or use multiple commands)
 

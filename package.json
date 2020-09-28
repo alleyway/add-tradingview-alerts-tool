@@ -15,8 +15,8 @@
     "3commas",
     "indicator"
   ],
-  "author": "",
-  "license": "",
+  "author": "Michael Lake",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^4.0.3"
   },

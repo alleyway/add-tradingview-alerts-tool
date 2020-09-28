@@ -90,7 +90,7 @@ NOTE: You'll need to log into TradingView the first time you run the script, the
 
     npm run add-alerts
 
-You can stop the script in Terminal by pressing Ctrl-C
+You can stop the script in Terminal/PowerShell by pressing Ctrl-C
     
 If the tool gets interrupted for some reason, you can remove the rows of already-added alert symbols (from the .csv) and re-run
 

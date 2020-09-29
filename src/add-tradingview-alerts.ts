@@ -129,17 +129,25 @@ const main = async () => {
 
     const browser = await puppeteer.launch({
         headless: false, userDataDir: "./user_data",
+        defaultViewport: null,
         args: [
-            `--app=about:blank}`
+            `--app=${config.tradingview.chartUrl}#signin`,
+            // '--window-size=1440,670'
         ]
     })
-    const page = await browser.newPage()
 
-    await page.setViewport({width: 1440, height: 671})
+    await delay(4000)
 
-    const response = await page.goto(config.tradingview.chartUrl + "#signin")
+    const page = (await browser.pages())[0];
 
-    if (response.status() == 403) {
+    const isAccessDenied = await page.evaluate(() => {
+        return document.title.includes("Denied");
+    });
+
+    // const page = await browser.newPage()
+    // const response = await page.goto(config.tradingview.chartUrl + "#signin")
+
+    if (isAccessDenied) {
 
         console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
         await delay(1000000)

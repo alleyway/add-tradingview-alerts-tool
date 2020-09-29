@@ -25,7 +25,6 @@
     "binance-api-node": "^0.10.4",
     "csv-parser": "^2.3.3",
     "puppeteer": "^5.2.1",
-    "selenium-webdriver": "^4.0.0-alpha.7",
     "source-map-support": "^0.5.19",
     "yaml": "^1.10.0"
   },

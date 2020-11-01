@@ -150,5 +150,8 @@ Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-genera
  
 Publish to NPM
 
-    npm login mlake
+edit version in package.json
+
+    npm login
+
     npm publish

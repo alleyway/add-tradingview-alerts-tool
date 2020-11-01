@@ -144,3 +144,11 @@ Send ETH to
 0x37f79c0bAC4068a56E36694c5F5d8853F54022cb
 
 
+## Developer Notes
+
+Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-generator/dphfifdfpfabhbkghlmnkkdghbmocfeb) 
+ 
+Publish to NPM
+
+    npm login mlake
+    npm publish

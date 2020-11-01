@@ -43,7 +43,7 @@ const addAlert = async (symbol: string, quote: string, base: string, alertConfig
     //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
 
 
-    const symbolHeaderInput = await fetchFirstXPath('//*[@id="header-toolbar-symbol-search"]/div/input', page)
+    const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
 
     await symbolHeaderInput.click()
     await delay(1000);
@@ -181,7 +181,7 @@ const main = async () => {
         }
     }
 
-
+    await delay(4000)
     await browser.close()
 
 }

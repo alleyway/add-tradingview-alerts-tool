@@ -47,6 +47,8 @@ alert:
   indicator: MTF Deviation
   signal: Tier1 long
   option: Once Per Bar Close
+  # alert name is optional - can override in csv if desired and use {{symbol|base|quote}}
+  # name: MI dev3 for {{base}} {{quote}}
   # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
   message: >
     {

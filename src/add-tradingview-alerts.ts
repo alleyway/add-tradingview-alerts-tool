@@ -35,10 +35,10 @@ const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
 
 // made using XPath Generator 1.1.0
 
-const addAlert = async (symbol: string, quote: string, base: string, alertConfig: any, page) => {
+const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
 
 
-    const {indicator, signal, option, message} = alertConfig
+    const {indicator, signal, option, message } = alertConfig
 
     //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
 
@@ -80,6 +80,17 @@ const addAlert = async (symbol: string, quote: string, base: string, alertConfig
     freqButton.click()
 
     await delay(1000);
+
+    const alertName = (rowName || alertConfig.name || "").toString().replace(/{{symbol}}/g, symbol).replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
+
+    if (!!alertName) {
+        const nameInput = await fetchFirstXPath("//input[@name='alert-name']", page)
+        nameInput.click()
+        await nameInput.press('Backspace');
+        await nameInput.type(alertName)
+        await delay(1000);
+
+    }
 
     //await page.evaluate("textarea[name=description]", el => el.value = "")
 
@@ -181,7 +192,7 @@ const main = async () => {
 
             console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
             await delay(5000)
-            await addAlert(row.symbol, row.quote, row.base, alertConfig, page)
+            await addAlert(row.symbol, row.quote, row.base, row.name, alertConfig, page)
         }
     }
 

@@ -26,9 +26,9 @@ const readFilePromise = (filename: string) => {
     })
 }
 
-const fetchFirstXPath = async (selector: string, page) => {
+const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
     //console.warn(`selector: ${selector}`)
-    await page.waitForXPath(selector)
+    await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
 }
@@ -101,10 +101,14 @@ const addAlert = async (symbol: string, quote: string, base: string, alertConfig
 
     await delay(1500);
 
-    const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page)
-    continueAnywayButton.click()
+    try {
+        const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page,3000)
+        continueAnywayButton.click()
+        await delay(5000);
+    } catch (error) {
+        //must not be alert on an indicator
+    }
 
-    await delay(5000);
 
 }
 

@@ -157,3 +157,5 @@ edit version in package.json
     npm login
 
     npm publish
+
+[edit releases](https://github.com/alleyway/add-tradingview-alerts-tool/releases)

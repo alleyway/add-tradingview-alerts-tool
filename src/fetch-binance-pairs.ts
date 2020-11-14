@@ -8,11 +8,11 @@ const main = async () => {
 //  const time = await client.time()
 
   const exchangeInfo = await client.exchangeInfo()
-  console.log("symbol,quote,base")
+  console.log("symbol,quote,base,name")
   // @ts-ignore
   exchangeInfo.symbols.map((symbol) => {
     if (symbol.status === "TRADING" && symbol.quoteAsset === QUOTE_ASSET) {
-      console.log(`BINANCE:${symbol.baseAsset}${symbol.quoteAsset},${symbol.quoteAsset},${symbol.baseAsset}`)
+      console.log(`BINANCE:${symbol.baseAsset}${symbol.quoteAsset},${symbol.quoteAsset},${symbol.baseAsset},`)
     }
   })
 }

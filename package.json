@@ -1,12 +1,12 @@
 {
   "name": "@alleyway/add-tradingview-alerts-tool",
   "repository": "git@github.com:alleyway/add-tradingview-alerts-tool.git",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Add TradingView Alerts in bulk",
   "scripts": {
     "build": "tsc",
     "fetch:binance:usdt": "tsc && cross-env QUOTE_ASSET=USDT node lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
-    "fetch:binance:btc": "tsc && env QUOTE_ASSET=BTC node lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
+    "fetch:binance:btc": "tsc && cross-env QUOTE_ASSET=BTC node lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
     "add-alerts": "tsc && node lib/add-tradingview-alerts.js"
   },
   "keywords": [

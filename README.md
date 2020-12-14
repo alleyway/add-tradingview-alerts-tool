@@ -3,7 +3,7 @@
 **Automatically adds custom alerts to TradingView in bulk**
 
 ## Why This Project Exists
-Trading platforms (such as [3Commas](https://3commas.io/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 
+Trading platforms (such as [3Commas](https://3commas.io/) and [Alertatron](https://alertatron.com/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 
 
 When using a **TradingView indicator** (such as [Material Indicators](https://materialindicators.com/)), you can send signals to your trading bot using **TradingView alerts** 
 
@@ -136,6 +136,18 @@ So you can use a JSON array for the message:
     }]
 ```
 
+### Send an alert to Alertatron
+
+This works in the same way as for 3Commas, but Alertatron using a different format for it's messages. For example...
+
+```yaml
+  message: >
+    binanceKeys({{quote}}_{{base}}) {
+        market(side=buy, amount=50%);
+        stopOrder(side=sell, amount=100%p, offset=2%);
+        limit(side=sell, amount=100%p, offset=3%);
+    }
+```
 
 ## Donations
 

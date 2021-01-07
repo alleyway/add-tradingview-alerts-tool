@@ -4,6 +4,7 @@ import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 
+
 function delay(time) {
     return new Promise(function (resolve) {
         setTimeout(resolve, time)
@@ -21,14 +22,14 @@ const readFilePromise = (filename: string) => {
             .on('end', () => {
                 resolve(results)
             }).on('error', () => {
-            reject("Unable to read csv")
-        })
+                reject("Unable to read csv")
+            })
     })
 }
 
 const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
     //console.warn(`selector: ${selector}`)
-    await page.waitForXPath(selector, {timeout})
+    await page.waitForXPath(selector, { timeout })
     const elements = await page.$x(selector)
     return elements[0]
 }
@@ -38,19 +39,27 @@ const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
 const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
 
 
-    const {indicator, signal, option, message } = alertConfig
+    const { indicator, signal, option, message, interval } = alertConfig
 
     //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
 
 
     const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
-
     await symbolHeaderInput.click()
     await delay(1000);
     const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
-
     await delay(9000);
+
+
+    const intervalHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-intervals"]', page)
+    await intervalHeaderInput.click()
+    await delay(1000);
+    const menuInnerDropDownDiv = await fetchFirstXPath(`//*[@data-value='${interval}']`, page);
+    const parentElement = (await menuInnerDropDownDiv.$x('..'))[0];
+    parentElement.click();
+    await delay(5000);
+
 
     const alertButton = await fetchFirstXPath('//*[@id="header-toolbar-alerts"]', page)
 
@@ -96,7 +105,7 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
 
     const messageTextarea = await fetchFirstXPath("//textarea[@class='tv-control-textarea']", page)
 
-    messageTextarea.click({clickCount: 3})
+    messageTextarea.click({ clickCount: 3 })
 
     await delay(500);
     await messageTextarea.press('Backspace');
@@ -113,7 +122,7 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
     await delay(1500);
 
     try {
-        const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page,3000)
+        const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page, 3000)
         continueAnywayButton.click()
         await delay(5000);
     } catch (error) {
@@ -134,11 +143,11 @@ const main = async () => {
 
     console.log("Using config file: ", configFileName)
 
-    const configString = await fs.readFileSync(configFileName, {encoding: "utf-8"})
+    const configString = await fs.readFileSync(configFileName, { encoding: "utf-8" })
 
     const config = YAML.parse(configString)
 
-    const {alert: alertConfig} = config
+    const { alert: alertConfig } = config
 
     //console.log("alertConfig", alertConfig.message)
 

@@ -36,10 +36,10 @@ const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
 
 // made using XPath Generator 1.1.0
 
-const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
+const addAlert = async (symbol: string, interval: String, quote: string, base: string, rowName: string, alertConfig: any, page) => {
 
 
-    const { indicator, signal, option, message, interval } = alertConfig
+    const { indicator, signal, option, message } = alertConfig
 
     //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
 
@@ -201,7 +201,7 @@ const main = async () => {
 
             console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
             await delay(5000)
-            await addAlert(row.symbol, row.quote, row.base, row.name, alertConfig, page)
+            await addAlert(row.symbol, config.interval, row.quote, row.base, row.name, alertConfig, page)
         }
     }
 

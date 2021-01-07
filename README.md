@@ -43,6 +43,7 @@ files:
 tradingview:
   # The chart which has the indicator you'd like to use
   chartUrl: https://www.tradingview.com/chart/WS5uK1l5/
+interval: 15 #(seconds = xS, minutes = X, hours = x in minutes, days = xD , week = xW, month = xM)
 alert:
   indicator: MTF Deviation
   signal: Tier1 long

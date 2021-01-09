@@ -22,24 +22,37 @@ const readFilePromise = (filename: string) => {
             .on('end', () => {
                 resolve(results)
             }).on('error', () => {
-                reject("Unable to read csv")
-            })
+            reject("Unable to read csv")
+        })
     })
 }
 
 const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
     //console.warn(`selector: ${selector}`)
-    await page.waitForXPath(selector, { timeout })
+    await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
 }
 
 // made using XPath Generator 1.1.0
 
-const addAlert = async (symbol: string, interval: String, quote: string, base: string, rowName: string, alertConfig: any, page) => {
+
+const configureInterval = async (interval: string, page) => {
+    await delay(1000);
+    page.keyboard.press(",")
+    await delay(1000);
+    interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
+    await delay(1000);
+    page.keyboard.press('Enter')
+    //const intervalElement = await fetchFirstXPath(`//input[@class='change-interval-input']`, page)
+    //await intervalElement.type(`${interval}${String.fromCharCode(13)}`)
+    await delay(5000);
+}
+
+const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
 
 
-    const { indicator, signal, option, message } = alertConfig
+    const {indicator, signal, option, message} = alertConfig
 
     //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
 
@@ -50,15 +63,6 @@ const addAlert = async (symbol: string, interval: String, quote: string, base: s
     const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
     await delay(9000);
-
-
-    const intervalHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-intervals"]', page)
-    await intervalHeaderInput.click()
-    await delay(1000);
-    const menuInnerDropDownDiv = await fetchFirstXPath(`//*[@data-value='${interval}']`, page);
-    const parentElement = (await menuInnerDropDownDiv.$x('..'))[0];
-    parentElement.click();
-    await delay(5000);
 
 
     const alertButton = await fetchFirstXPath('//*[@id="header-toolbar-alerts"]', page)
@@ -105,7 +109,7 @@ const addAlert = async (symbol: string, interval: String, quote: string, base: s
 
     const messageTextarea = await fetchFirstXPath("//textarea[@class='tv-control-textarea']", page)
 
-    messageTextarea.click({ clickCount: 3 })
+    messageTextarea.click({clickCount: 3})
 
     await delay(500);
     await messageTextarea.press('Backspace');
@@ -143,11 +147,11 @@ const main = async () => {
 
     console.log("Using config file: ", configFileName)
 
-    const configString = await fs.readFileSync(configFileName, { encoding: "utf-8" })
+    const configString = await fs.readFileSync(configFileName, {encoding: "utf-8"})
 
     const config = YAML.parse(configString)
 
-    const { alert: alertConfig } = config
+    const {alert: alertConfig} = config
 
     //console.log("alertConfig", alertConfig.message)
 
@@ -190,6 +194,11 @@ const main = async () => {
             return false
         }
 
+        if (config.tradingview.interval) {
+            await configureInterval(config.tradingview.interval, page)
+        }
+
+
         const symbolRows = await readFilePromise(config.files.input)
 
         for (const row of symbolRows) {
@@ -201,7 +210,7 @@ const main = async () => {
 
             console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
             await delay(5000)
-            await addAlert(row.symbol, config.interval, row.quote, row.base, row.name, alertConfig, page)
+            await addAlert(row.symbol, row.quote, row.base, row.name, alertConfig, page)
         }
     }
 

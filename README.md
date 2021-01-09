@@ -165,7 +165,7 @@ Send ETH to
 
 Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-generator/dphfifdfpfabhbkghlmnkkdghbmocfeb) 
  
-Publish to NPM
+### Publish to NPM
 
 edit version in package.json
 

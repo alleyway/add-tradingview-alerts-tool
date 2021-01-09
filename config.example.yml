@@ -4,6 +4,7 @@ files:
 tradingview:
   # The chart which has the indicator you'd like to use
   chartUrl: https://www.tradingview.com/chart/WS5uK1l5/
+interval: 15
 alert:
   indicator: MTF Deviation
   signal: Tier1 long

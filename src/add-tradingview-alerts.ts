@@ -3,6 +3,7 @@ import csv from 'csv-parser'
 import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
+import {TimeoutError} from "puppeteer/lib/esm/puppeteer/common/Errors";
 
 
 function delay(time) {
@@ -41,7 +42,11 @@ const configureInterval = async (interval: string, page) => {
     await delay(1000);
     await page.keyboard.press(",")
     await delay(1000);
-    interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
+    try {
+        interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
+    } catch (e) {
+        throw Error("configuration: interval specified incorrectly, should be something like '5m' or '1h' - see documentation")
+    }
     await delay(1000);
     await page.keyboard.press('Enter')
     //const intervalElement = await fetchFirstXPath(`//input[@class='change-interval-input']`, page)
@@ -49,21 +54,34 @@ const configureInterval = async (interval: string, page) => {
     await delay(5000);
 }
 
+// queries used on the alert conditions
+const xpathQueries = {
+    primaryLeft: "//*[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--left js-main-series-select-wrap']/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/*[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
+    primaryRight: "//div[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--right js-main-series-plot-index-select-wrap']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
+    secondary: "//*[@class='tv-control-fieldset__value tv-alert-dialog__fieldset-value js-condition-operator-input-wrap']/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
+    tertiaryLeft: "//div[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--left js-second-operand-select-wrap__band-main']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
+    tertiaryRight: "//div[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--right js-second-operand-value-wrap__band-main']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]"
+}
+
+const inputXpathQueries = {
+    tertiaryLeft: "//div[@class='tv-control-number-input tv-control-number-input--size_small js-number-input__wrap js-move-value-input-wrap']/input[@class='tv-alert-dialog__number-input tv-control-input tv-control-input--size_small js-number-input' and 1]",
+    tertiaryRight: "//div[@class='tv-control-number-input tv-control-number-input--size_small js-number-input__wrap js-period-input-wrap']/input[@class='tv-alert-dialog__number-input tv-control-input tv-control-input--size_small js-number-input' and 1]"
+}
+
 const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
 
 
-    const {indicator, signal, option, message} = alertConfig
+    const {condition, option, message} = alertConfig
 
-    //await page.waitForXPath('//*[@id="header-toolbar-symbol-search"]/div/input')
+    const {primaryLeft, primaryRight, secondary, tertiaryLeft, tertiaryRight} = condition
 
 
     const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
     await symbolHeaderInput.click()
-    await delay(1000);
+    await delay(800);
     const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
-    await delay(9000);
-
+    await delay(8000);
 
     await page.keyboard.down('AltLeft')
 
@@ -72,30 +90,61 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
     await page.keyboard.up('AltLeft')
 
 
+    const selectFromDropDown = async (conditionToMatch) => {
 
-    await delay(5000);
-    const conditionDropDown = await fetchFirstXPath("//*[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--left js-main-series-select-wrap']/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/*[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]", page)
+        const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
+        const elements = await page.$x(selector)
+        for (const el of elements) {
+            const optionText = await page.evaluate(element => element.innerText, el);
+            if (optionText.indexOf(conditionToMatch) > -1) {
+                console.debug(" - selecting: ", optionText)
+                el.click()
+                break;
+            }
+        }
 
-    conditionDropDown.click()
-    await delay(1000);
+    }
 
-    const optionMTF = await fetchFirstXPath(`//*[@class='tv-control-select__option-wrap' and contains(text(), '${indicator}')]`, page)
-    optionMTF.click()
+    for (const [key, xpathQuery] of Object.entries(xpathQueries)) {
 
-    await delay(1000);
+        const conditionToMatch = condition[key];
+        // console.log("selecting: ", conditionToMatch)
+        await delay(1000);
+        if (!!conditionToMatch) {
+            let isDropdown = true
+            try {
+                const targetElement = await fetchFirstXPath(xpathQuery, page, 1000)
+                console.debug("Clicking: ", key)
+                targetElement.click()
 
-    const signalDropDown = await fetchFirstXPath("//*[@class='tv-control-fieldset__value tv-alert-dialog__fieldset-value js-condition-operator-input-wrap']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]", page)
-    signalDropDown.click()
+            } catch (TimeoutError) {
+                //console.error(e)
+                isDropdown = false
+            }
+            if (isDropdown) {
+                await delay(1500);
+                await selectFromDropDown(conditionToMatch)
+            } else {
 
-    await delay(1000);
-    const optionSignal = await fetchFirstXPath(`//*[@class='tv-control-select__option-wrap' and contains(text(), '${signal}')]`, page)
-    optionSignal.click()
+                console.log("clicking on input")
+                const valueInput = await fetchFirstXPath(inputXpathQueries[key], page, 1000)
+                await valueInput.click({ clickCount: 3 })
+                console.log("planning to type: ", conditionToMatch)
+                await valueInput.press('Backspace');
+                await valueInput.type(String(conditionToMatch))
 
-    await delay(1000);
-    const freqButton = await fetchFirstXPath(`//*[text()='${option}']`, page)
-    freqButton.click()
+            }
 
-    await delay(1000);
+        }
+    }
+
+    await delay(400);
+
+    if (!!option) {
+        const optionButton = await fetchFirstXPath(`//*[text()='${option}']`, page)
+        optionButton.click()
+        await delay(400);
+    }
 
     const alertName = (rowName || alertConfig.name || "").toString().replace(/{{symbol}}/g, symbol).replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
 
@@ -104,29 +153,30 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
         nameInput.click()
         await nameInput.press('Backspace');
         await nameInput.type(alertName)
-        await delay(1000);
-
+        await delay(800);
     }
 
-    //await page.evaluate("textarea[name=description]", el => el.value = "")
 
-    const messageTextarea = await fetchFirstXPath("//textarea[@class='tv-control-textarea']", page)
+    if (!!message) {
+        const messageTextarea = await fetchFirstXPath("//textarea[@class='tv-control-textarea']", page)
 
-    messageTextarea.click({clickCount: 3})
+        messageTextarea.click({clickCount: 3})
 
-    await delay(500);
-    await messageTextarea.press('Backspace');
-    await delay(500);
+        await delay(500);
+        await messageTextarea.press('Backspace');
+        await delay(500);
 
-    const messageText = message.toString().replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
+        const messageText = message.toString().replace(/{{quote}}/g, quote).replace(/{{base}}/g, base)
 
-    await messageTextarea.type(messageText)
+        await messageTextarea.type(messageText)
+    }
+
 
     await delay(1000);
     const continueButton = await fetchFirstXPath("//span[@class='tv-button__loader']", page)
     continueButton.click()
 
-    await delay(1500);
+    await delay(2000);
 
     try {
         const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page, 3000)

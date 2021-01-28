@@ -34,7 +34,7 @@ Open Terminal/PowerShell and run the following:
     npm install
     cp config.example.yml config.yml
     
-Edit your config.yml file to include your 3commas information as specified in your bot's tradingview hook as well as a URL to the TradingView chart which has the indicator
+Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here) 
 
 ```yaml
 files:
@@ -47,8 +47,12 @@ tradingview:
   # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M
   interval: 4h
 alert:
-  indicator: MTF Deviation
-  signal: Tier1 long
+  condition:
+    primaryLeft: MTF Deviation
+    primaryRight:
+    secondary: Tier1 long
+    tertiaryLeft:
+    tertiaryRight:
   option: Once Per Bar Close
   # alert name is optional - can override in csv if desired and use {{symbol|base|quote}}
   # name: MI dev3 for {{base}} {{quote}}
@@ -62,6 +66,9 @@ alert:
         "pair": "{{quote}}_{{base}}"
     }
 ```
+
+<img src="howto_conditions.png" alt="Your image title" width="250"/>
+
 
 ## Fetching Trading Pairs
 
@@ -141,7 +148,7 @@ So you can use a JSON array for the message:
 
 ### Send an alert to Alertatron
 
-This works in the same way as for 3Commas, but Alertatron using a different format for it's messages. For example...
+This works in the same way as for 3Commas, but Alertatron using a different format for its messages. For example...
 
 ```yaml
   message: >

@@ -8,8 +8,12 @@ tradingview:
   # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M
   interval: 4h
 alert:
-  indicator: MTF Deviation
-  signal: Tier1 long
+  condition:
+    primaryLeft: RSI
+    primaryRight:
+    secondary: Moving Up
+    tertiaryLeft: 3.4
+    tertiaryRight: 14
   option: Once Per Bar Close
   # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|base|quote}}
   # name: "MI dev3 for {{base}} {{quote}}"

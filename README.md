@@ -13,7 +13,7 @@ So what if you want to use an indicator to trade across dozens or hundreds of pa
 
 Using open source software designed for automated website testing, we can enter as many custom alerts as your TradingView account allows. It installs its very own Chrome browser (called Chromium) which is controlled by this script.
 
-You'll be able to watch your browser automatically entering alerts (as if by a ghost), while saving you precious time.  
+Watch as this tool enters your TradingView alerts automatically.
 
 
 <img src="alert_tool_demo.gif" alt="demo video of tool" width="600"/>

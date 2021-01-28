@@ -39,11 +39,11 @@ const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
 
 const configureInterval = async (interval: string, page) => {
     await delay(1000);
-    page.keyboard.press(",")
+    await page.keyboard.press(",")
     await delay(1000);
     interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
     await delay(1000);
-    page.keyboard.press('Enter')
+    await page.keyboard.press('Enter')
     //const intervalElement = await fetchFirstXPath(`//input[@class='change-interval-input']`, page)
     //await intervalElement.type(`${interval}${String.fromCharCode(13)}`)
     await delay(5000);
@@ -65,9 +65,12 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
     await delay(9000);
 
 
-    const alertButton = await fetchFirstXPath('//*[@id="header-toolbar-alerts"]', page)
+    await page.keyboard.down('AltLeft')
 
-    await alertButton.click()
+    await page.keyboard.press("a")
+
+    await page.keyboard.up('AltLeft')
+
 
 
     await delay(5000);

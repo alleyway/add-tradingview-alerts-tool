@@ -97,7 +97,7 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
         for (const el of elements) {
             const optionText = await page.evaluate(element => element.innerText, el);
             if (optionText.indexOf(conditionToMatch) > -1) {
-                console.debug(" - selecting: ", optionText)
+                //console.debug(" - selecting: ", optionText)
                 el.click()
                 break;
             }
@@ -114,7 +114,7 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
             let isDropdown = true
             try {
                 const targetElement = await fetchFirstXPath(xpathQuery, page, 1000)
-                console.debug("Clicking: ", key)
+                //console.debug("Clicking: ", key)
                 targetElement.click()
 
             } catch (TimeoutError) {
@@ -126,10 +126,10 @@ const addAlert = async (symbol: string, quote: string, base: string, rowName: st
                 await selectFromDropDown(conditionToMatch)
             } else {
 
-                console.log("clicking on input")
+                //console.log("clicking on input")
                 const valueInput = await fetchFirstXPath(inputXpathQueries[key], page, 1000)
                 await valueInput.click({ clickCount: 3 })
-                console.log("planning to type: ", conditionToMatch)
+                //console.log("planning to type: ", conditionToMatch)
                 await valueInput.press('Backspace');
                 await valueInput.type(String(conditionToMatch))
 
@@ -199,6 +199,8 @@ const main = async () => {
     }
 
     console.log("Using config file: ", configFileName)
+
+    console.log("Press Ctrl-C to stop this script")
 
     const configString = await fs.readFileSync(configFileName, {encoding: "utf-8"})
 

@@ -16,6 +16,7 @@ Using open source software designed for automated website testing, we can enter 
 You'll be able to watch your browser automatically entering alerts (as if by a ghost), while saving you precious time.  
 
 
+<img src="alert_tool_demo.gif" alt="demo video of tool" width="600"/>
 
 ## Requirements
 
@@ -67,7 +68,7 @@ alert:
     }
 ```
 
-<img src="howto_conditions.png" alt="Your image title" width="250"/>
+<img src="howto_conditions.png" alt="Fields corresponding to configuration" width="600"/>
 
 
 ## Fetching Trading Pairs

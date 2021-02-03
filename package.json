@@ -1,7 +1,7 @@
 {
   "name": "@alleyway/add-tradingview-alerts-tool",
   "repository": "git@github.com:alleyway/add-tradingview-alerts-tool.git",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Add TradingView Alerts in bulk",
   "scripts": {
     "build": "tsc",
@@ -21,10 +21,10 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "binance-api-node": "^0.10.25",
+    "binance-api-node": "^0.10.26",
     "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",
-    "puppeteer": "^5.5.0",
+    "puppeteer": "^6.0.0",
     "source-map-support": "^0.5.19",
     "yaml": "^1.10.0"
   },

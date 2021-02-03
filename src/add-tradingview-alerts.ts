@@ -64,8 +64,8 @@ const xpathQueries = {
 }
 
 const inputXpathQueries = {
-    tertiaryLeft: "//div[@class='tv-control-number-input tv-control-number-input--size_small js-number-input__wrap js-move-value-input-wrap']/input[@class='tv-alert-dialog__number-input tv-control-input tv-control-input--size_small js-number-input' and 1]",
-    tertiaryRight: "//div[@class='tv-control-number-input tv-control-number-input--size_small js-number-input__wrap js-period-input-wrap']/input[@class='tv-alert-dialog__number-input tv-control-input tv-control-input--size_small js-number-input' and 1]"
+    tertiaryLeft: "//div[contains(@class, 'tv-alert-dialog__group-item--left ')]//input[contains(@class, 'tv-alert-dialog__number-input')]",
+    tertiaryRight: "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]//input[contains(@class, 'tv-alert-dialog__number-input')]"
 }
 
 const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {

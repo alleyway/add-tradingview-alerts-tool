@@ -33,6 +33,7 @@ Open Terminal/PowerShell and run the following:
     git clone https://github.com/alleyway/add-tradingview-alerts-tool.git
     cd add-tradingview-alerts-tool
     npm install
+    npm install typescript -g
     cp config.example.yml config.yml
     
 Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here) 

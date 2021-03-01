@@ -3,11 +3,13 @@
   "repository": "git@github.com:alleyway/add-tradingview-alerts-tool.git",
   "version": "1.3.2",
   "description": "Add TradingView Alerts in bulk",
+  "type": "module",
+  "main": "./src/",
   "scripts": {
     "build": "npx tsc",
-    "fetch:binance:usdt": "npx tsc && cross-env QUOTE_ASSET=USDT node lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
-    "fetch:binance:btc": "npx tsc && cross-env QUOTE_ASSET=BTC node lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
-    "add-alerts": "npx tsc && node lib/add-tradingview-alerts.js"
+    "fetch:binance:usdt": "npx tsc && cross-env QUOTE_ASSET=USDT node -r source-map-support/register lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
+    "fetch:binance:btc": "npx tsc && cross-env QUOTE_ASSET=BTC node -r source-map-support/register lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
+    "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
   },
   "keywords": [
     "tradingview",

@@ -1,5 +1,7 @@
-const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
-    console.warn(`selector: ${selector}`)
+import {ISingleAlertSettings} from "./interfaces";
+
+const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
+    //console.warn(`selector: ${selector}`)
     await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
@@ -36,29 +38,25 @@ const inputXpathQueries = {
 
 export const login = async (page, username, pass) => {
 
-    // const emailSignInButton = await fetchFirstXPath(`//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, page)
-    // emailSignInButton.click()
-    // await page.waitForTimeout(400);
+    try {
+        const emailSignInButton = await fetchFirstXPath(page, `//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, 5000)
+        emailSignInButton.click()
+        await page.waitForTimeout(700);
+    } catch (e){
 
+        console.warn("no email toggle button showing!")
+    }
 
-    const usernameInput = await fetchFirstXPath('//input[@name=\'username\']', page)
+    const usernameInput = await fetchFirstXPath(page, '//input[@name=\'username\']')
     await usernameInput.type(`${username}`)
-    await page.waitForTimeout(8000);
+    await page.waitForTimeout(1000);
+    const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']')
 
-    const passwordInput = await fetchFirstXPath('//input[@name=\'password\']', page)
-    await passwordInput.type(`${pass}${String.fromCharCode(13)}`)
-    await page.waitForTimeout(8000);
+    await Promise.all([
+        passwordInput.type(`${pass}${String.fromCharCode(13)}`),
+        page.waitForNavigation()
+    ])
 
-    // await page.evaluate(() => {
-    //
-    //     alert("login here")
-    // })
-
-    // await page.goto("https://www.tradingview.com/u/", {
-    //     waitUntil: 'networkidle2'
-    // });
-
-    await page.waitForTimeout(8000);
 
 }
 
@@ -84,28 +82,23 @@ export const logout = async (page) => {
     await page.reload({
         waitUntil: 'networkidle2'
     });
-
-    await page.waitForTimeout(8000);
-
 }
 
 
 export const navigateToSymbol = async (page, symbol: string) => {
 
-    const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
+    const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]')
     await symbolHeaderInput.click()
     await page.waitForTimeout(800);
-    const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
+    const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
     await page.waitForTimeout(8000);
 
 }
 
-export const addAlert = async (page, symbol: string, quote: string, base: string, rowName: string, alertConfig: any) => {
+export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
-
-    const {condition, option, message} = alertConfig
-
+    const {condition, name, option, message} = singleAlertSettings
 
     await page.keyboard.down('AltLeft')
 
@@ -137,7 +130,7 @@ export const addAlert = async (page, symbol: string, quote: string, base: string
         if (!!conditionToMatch) {
             let isDropdown = true
             try {
-                const targetElement = await fetchFirstXPath(xpathQuery, page, 3000)
+                const targetElement = await fetchFirstXPath(page, xpathQuery, 3000)
                 //console.debug("Clicking: ", key)
                 targetElement.click()
 
@@ -151,7 +144,7 @@ export const addAlert = async (page, symbol: string, quote: string, base: string
             } else {
 
                 //console.log("clicking on input")
-                const valueInput = await fetchFirstXPath(inputXpathQueries[key], page, 3000)
+                const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
                 await valueInput.click({clickCount: 3})
                 //console.log("planning to type: ", conditionToMatch)
                 await valueInput.press('Backspace');
@@ -165,45 +158,43 @@ export const addAlert = async (page, symbol: string, quote: string, base: string
     await page.waitForTimeout(400);
 
     if (!!option) {
-        const optionButton = await fetchFirstXPath(`//*[text()='${option}']`, page)
+        const optionButton = await fetchFirstXPath(page, `//*[text()='${option}']`)
         optionButton.click()
         await page.waitForTimeout(400);
     }
 
-    const alertName = (rowName || alertConfig.name || "").toString().replace(/{{symbol}}/g, symbol).replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
 
-    if (!!alertName) {
-        const nameInput = await fetchFirstXPath("//input[@name='alert-name']", page)
+
+    if (!!name) {
+        const nameInput = await fetchFirstXPath(page, "//input[@name='alert-name']")
         nameInput.click()
         await nameInput.press('Backspace');
-        await nameInput.type(alertName)
+        await nameInput.type(name)
         await page.waitForTimeout(800);
     }
 
 
     if (!!message) {
-        const messageTextarea = await fetchFirstXPath("//textarea[@class='tv-control-textarea']", page)
+        const messageTextarea = await fetchFirstXPath(page, "//textarea[@class='tv-control-textarea']")
 
+        messageTextarea.click({clickCount: 1})
+        await page.waitForTimeout(500);
         messageTextarea.click({clickCount: 3})
-
         await page.waitForTimeout(500);
         await messageTextarea.press('Backspace');
         await page.waitForTimeout(500);
-
-        const messageText = message.toString().replace(/{{quote}}/g, quote).replace(/{{base}}/g, base)
-
-        await messageTextarea.type(messageText)
+        await messageTextarea.type(message)
     }
 
 
     await page.waitForTimeout(1000);
-    const continueButton = await fetchFirstXPath("//span[@class='tv-button__loader']", page)
+    const continueButton = await fetchFirstXPath(page, "//span[@class='tv-button__loader']")
     continueButton.click()
 
     await page.waitForTimeout(2000);
 
     try {
-        const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page, 3000)
+        const continueAnywayButton = await fetchFirstXPath(page, "//*[text()='Continue anyway']", 3000)
         continueAnywayButton.click()
         await page.waitForTimeout(5000);
     } catch (error) {

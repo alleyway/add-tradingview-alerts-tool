@@ -5,6 +5,8 @@ import YAML from "yaml"
 import {TimeoutError} from "puppeteer/lib/esm/puppeteer/common/Errors";
 import {configureInterval, addAlert} from "./index.js";
 import {navigateToSymbol, logout, login} from "./tv-page-actions.js";
+import {ISingleAlertSettings} from "./interfaces";
+
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -122,7 +124,25 @@ const main = async () => {
 
         await navigateToSymbol(page, row.symbol)
 
-        await addAlert(page, row.symbol, row.quote, row.base, row.name, alertConfig)
+        const message = alertConfig.message.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base)
+
+        const alertName = (row.name || alertConfig.name || "").toString().replace(/{{symbol}}/g, row.symbol).replace(/{{quote}}/g, row.quote).replace().replace(/{{base}}/g, row.base).replace()
+
+        const singleAlertSettings: ISingleAlertSettings = {
+            name: alertName,
+            message,
+            condition:{
+                primaryLeft: alertConfig.condition.primaryLeft,
+                primaryRight: alertConfig.condition.primaryRight,
+                secondary: alertConfig.condition.secondary,
+                tertiaryLeft: alertConfig.condition.tertiaryLeft,
+                tertiaryRight: alertConfig.condition.tertiaryRight,
+            },
+
+            option: alertConfig.option
+        }
+
+        await addAlert(page, singleAlertSettings)
     }
 
 

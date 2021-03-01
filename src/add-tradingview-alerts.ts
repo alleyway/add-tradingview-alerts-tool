@@ -4,7 +4,7 @@ import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {TimeoutError} from "puppeteer/lib/esm/puppeteer/common/Errors";
 import {configureInterval, addAlert} from "./index.js";
-import {delay} from "./util.js";
+import {navigateToSymbol, logout} from "./tv-page-actions.js";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -22,6 +22,8 @@ const readFilePromise = (filename: string) => {
 }
 
 const main = async () => {
+
+    const headless = false
 
     const configFileName = process.argv[2] || "config.yml"
 
@@ -42,38 +44,42 @@ const main = async () => {
     //console.log("alertConfig", alertConfig.message)
 
     const browser = await puppeteer.launch({
-        headless: true, userDataDir: "./user_data",
+        headless: headless, userDataDir: "./user_data",
         defaultViewport: null,
-        args: [
-            // `--app=${config.tradingview.chartUrl}#signin`,
+
+        args: headless ? null : [
+            `--app=${config.tradingview.chartUrl}#signin`,
             // '--window-size=1440,670'
         ]
     })
 
-    await delay(4000)
 
-    const page = await browser.newPage();
+    let page
+    let accessDenied = false
 
-    await page.goto(config.tradingview.chartUrl, {
-        waitUntil: 'networkidle2'
-    });
+    if (true || headless) {
+        page = await browser.newPage();
 
-    //const page = (await browser.pages())[0];
+        const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
+            waitUntil: 'networkidle2'
+        });
 
-    const isAccessDenied = await page.evaluate(() => {
-        return document.title.includes("Denied");
-    });
-
-    // const page = await browser.newPage()
-    // const response = await page.goto(config.tradingview.chartUrl + "#signin")
-
-    if (isAccessDenied) {
-
-        console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
-        await delay(1000000)
+        accessDenied = pageResponse.status() === 403
 
     } else {
-        await delay(3000)
+        page = (await browser.pages())[0];
+        await page.waitForTimeout(3000)
+        accessDenied = await page.evaluate(() => {
+            return document.title.includes("Denied");
+        });
+    }
+
+    if (accessDenied) {
+        console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
+        await page.waitForTimeout(1000000)
+
+    } else {
+        await page.waitForTimeout(3000)
 
         const blackListRows = await readFilePromise(config.files.exclude)
 
@@ -90,7 +96,6 @@ const main = async () => {
             await configureInterval(config.tradingview.interval, page)
         }
 
-
         const symbolRows = await readFilePromise(config.files.input)
 
         for (const row of symbolRows) {
@@ -101,12 +106,19 @@ const main = async () => {
             }
 
             console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
-            await delay(5000)
-            await addAlert(row.symbol, row.quote, row.base, row.name, alertConfig, page)
+
+            await page.waitForTimeout(5000)
+
+            await navigateToSymbol(page, row.symbol)
+
+            await addAlert(page, row.symbol, row.quote, row.base, row.name, alertConfig)
         }
     }
 
-    await delay(4000)
+
+    await page.waitForTimeout(4000)
+    await logout(page)
+    await page.waitForTimeout(4000)
     await browser.close()
 
 }

@@ -1,3 +1,3 @@
-import {configureInterval, addAlert} from "./tv-page-actions.js"
+import {configureInterval, addAlert, navigateToSymbol} from "./tv-page-actions.js"
 
-export {configureInterval, addAlert}
+export {configureInterval, addAlert, navigateToSymbol}

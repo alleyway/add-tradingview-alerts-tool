@@ -1,6 +1,3 @@
-import {delay} from "./util.js";
-
-
 const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
     //console.warn(`selector: ${selector}`)
     await page.waitForXPath(selector, {timeout})
@@ -9,17 +6,17 @@ const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
 }
 
 export const configureInterval = async (interval: string, page) => {
-    await delay(1000);
+    await page.waitForTimeout(1000);
     await page.keyboard.press(",")
-    await delay(1000);
+    await page.waitForTimeout(1000);
     try {
         interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
     } catch (e) {
         throw Error("configuration: interval specified incorrectly, should be something like '5m' or '1h' - see documentation")
     }
-    await delay(1000);
+    await page.waitForTimeout(1000);
     await page.keyboard.press('Enter')
-    await delay(5000);
+    await page.waitForTimeout(5000);
 }
 
 // queries used on the alert conditions
@@ -36,17 +33,66 @@ const inputXpathQueries = {
     tertiaryRight: "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]//input[contains(@class, 'tv-alert-dialog__number-input')]"
 }
 
-export const addAlert = async (symbol: string, quote: string, base: string, rowName: string, alertConfig: any, page) => {
+
+export const login = async (page, username, pass) => {
+
+    await page.evaluate(() => {
+
+        fetch("/accounts/logout/", {
+            method: "POST",
+            headers:{accept:"html"},
+            credentials:"same-origin"
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        });
+    })
+
+    await page.goto("https://www.tradingview.com/u/", {
+        waitUntil: 'networkidle2'
+    });
+
+    await page.waitForTimeout(8000);
+
+}
+
+export const logout = async (page) => {
+
+    await page.evaluate(() => {
+
+        fetch("/accounts/logout/", {
+            method: "POST",
+            headers:{accept:"html"},
+            credentials:"same-origin"
+        }).then(res => {
+            console.log("Request complete! response:", res);
+        });
+    })
+
+    await page.goto("https://www.tradingview.com/u/", {
+        waitUntil: 'networkidle2'
+    });
+
+    await page.waitForTimeout(8000);
+
+}
+
+
+export const navigateToSymbol = async (page, symbol: string) => {
+
+    const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
+    await symbolHeaderInput.click()
+    await page.waitForTimeout(800);
+    const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
+    await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
+    await page.waitForTimeout(8000);
+
+}
+
+export const addAlert = async (page, symbol: string, quote: string, base: string, rowName: string, alertConfig: any) => {
 
 
     const {condition, option, message} = alertConfig
 
-    const symbolHeaderInput = await fetchFirstXPath('//div[@id="header-toolbar-symbol-search"]', page)
-    await symbolHeaderInput.click()
-    await delay(800);
-    const symbolInput = await fetchFirstXPath('//input[@data-role=\'search\']', page)
-    await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
-    await delay(8000);
 
     await page.keyboard.down('AltLeft')
 
@@ -74,7 +120,7 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
 
         const conditionToMatch = condition[key];
         // console.log("selecting: ", conditionToMatch)
-        await delay(1000);
+        await page.waitForTimeout(1000);
         if (!!conditionToMatch) {
             let isDropdown = true
             try {
@@ -87,13 +133,13 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
                 isDropdown = false
             }
             if (isDropdown) {
-                await delay(1500);
+                await page.waitForTimeout(1500);
                 await selectFromDropDown(conditionToMatch)
             } else {
 
                 //console.log("clicking on input")
                 const valueInput = await fetchFirstXPath(inputXpathQueries[key], page, 3000)
-                await valueInput.click({ clickCount: 3 })
+                await valueInput.click({clickCount: 3})
                 //console.log("planning to type: ", conditionToMatch)
                 await valueInput.press('Backspace');
                 await valueInput.type(String(conditionToMatch))
@@ -103,12 +149,12 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
         }
     }
 
-    await delay(400);
+    await page.waitForTimeout(400);
 
     if (!!option) {
         const optionButton = await fetchFirstXPath(`//*[text()='${option}']`, page)
         optionButton.click()
-        await delay(400);
+        await page.waitForTimeout(400);
     }
 
     const alertName = (rowName || alertConfig.name || "").toString().replace(/{{symbol}}/g, symbol).replace(/{{quote}}/g, quote).replace().replace(/{{base}}/g, base).replace()
@@ -118,7 +164,7 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
         nameInput.click()
         await nameInput.press('Backspace');
         await nameInput.type(alertName)
-        await delay(800);
+        await page.waitForTimeout(800);
     }
 
 
@@ -127,9 +173,9 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
 
         messageTextarea.click({clickCount: 3})
 
-        await delay(500);
+        await page.waitForTimeout(500);
         await messageTextarea.press('Backspace');
-        await delay(500);
+        await page.waitForTimeout(500);
 
         const messageText = message.toString().replace(/{{quote}}/g, quote).replace(/{{base}}/g, base)
 
@@ -137,16 +183,16 @@ export const addAlert = async (symbol: string, quote: string, base: string, rowN
     }
 
 
-    await delay(1000);
+    await page.waitForTimeout(1000);
     const continueButton = await fetchFirstXPath("//span[@class='tv-button__loader']", page)
     continueButton.click()
 
-    await delay(2000);
+    await page.waitForTimeout(2000);
 
     try {
         const continueAnywayButton = await fetchFirstXPath("//*[text()='Continue anyway']", page, 3000)
         continueAnywayButton.click()
-        await delay(5000);
+        await page.waitForTimeout(5000);
     } catch (error) {
         //must not be alert on an indicator
     }

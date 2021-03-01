@@ -4,7 +4,7 @@ import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {TimeoutError} from "puppeteer/lib/esm/puppeteer/common/Errors";
 import {configureInterval, addAlert} from "./index.js";
-import {navigateToSymbol, logout} from "./tv-page-actions.js";
+import {navigateToSymbol, logout, login} from "./tv-page-actions.js";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -75,44 +75,54 @@ const main = async () => {
     }
 
     if (accessDenied) {
-        console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
-        await page.waitForTimeout(1000000)
 
-    } else {
-        await page.waitForTimeout(3000)
+        if (config.tradingview.username && config.tradingview.password) {
 
-        const blackListRows = await readFilePromise(config.files.exclude)
+            await login(page, config.tradingview.username, config.tradingview.password)
 
-        const isBlacklisted = (symbol: string) => {
-            for (const row of blackListRows) {
-                if (symbol.toLowerCase().includes(row.symbol.toLowerCase())) {
-                    return true
-                }
+        } else {
+            console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
+            await page.waitForTimeout(1000000)
+            await browser.close()
+            process.exit(1)
+        }
+
+
+    }
+
+    await page.waitForTimeout(3000)
+
+    const blackListRows = await readFilePromise(config.files.exclude)
+
+    const isBlacklisted = (symbol: string) => {
+        for (const row of blackListRows) {
+            if (symbol.toLowerCase().includes(row.symbol.toLowerCase())) {
+                return true
             }
-            return false
+        }
+        return false
+    }
+
+    if (config.tradingview.interval) {
+        await configureInterval(config.tradingview.interval, page)
+    }
+
+    const symbolRows = await readFilePromise(config.files.input)
+
+    for (const row of symbolRows) {
+
+        if (isBlacklisted(row.symbol)) {
+            console.warn(`Not adding blacklisted symbol: `, row.symbol)
+            continue
         }
 
-        if (config.tradingview.interval) {
-            await configureInterval(config.tradingview.interval, page)
-        }
+        console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
 
-        const symbolRows = await readFilePromise(config.files.input)
+        await page.waitForTimeout(5000)
 
-        for (const row of symbolRows) {
+        await navigateToSymbol(page, row.symbol)
 
-            if (isBlacklisted(row.symbol)) {
-                console.warn(`Not adding blacklisted symbol: `, row.symbol)
-                continue
-            }
-
-            console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
-
-            await page.waitForTimeout(5000)
-
-            await navigateToSymbol(page, row.symbol)
-
-            await addAlert(page, row.symbol, row.quote, row.base, row.name, alertConfig)
-        }
+        await addAlert(page, row.symbol, row.quote, row.base, row.name, alertConfig)
     }
 
 

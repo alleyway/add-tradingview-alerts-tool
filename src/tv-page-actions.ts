@@ -1,5 +1,5 @@
 const fetchFirstXPath = async (selector: string, page, timeout = 20000) => {
-    //console.warn(`selector: ${selector}`)
+    console.warn(`selector: ${selector}`)
     await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
@@ -36,20 +36,27 @@ const inputXpathQueries = {
 
 export const login = async (page, username, pass) => {
 
-    await page.evaluate(() => {
+    // const emailSignInButton = await fetchFirstXPath(`//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, page)
+    // emailSignInButton.click()
+    // await page.waitForTimeout(400);
 
-        fetch("/accounts/logout/", {
-            method: "POST",
-            headers:{accept:"html"},
-            credentials:"same-origin"
-        }).then(res => {
-            console.log("Request complete! response:", res);
-        });
-    })
 
-    await page.goto("https://www.tradingview.com/u/", {
-        waitUntil: 'networkidle2'
-    });
+    const usernameInput = await fetchFirstXPath('//input[@name=\'username\']', page)
+    await usernameInput.type(`${username}`)
+    await page.waitForTimeout(8000);
+
+    const passwordInput = await fetchFirstXPath('//input[@name=\'password\']', page)
+    await passwordInput.type(`${pass}${String.fromCharCode(13)}`)
+    await page.waitForTimeout(8000);
+
+    // await page.evaluate(() => {
+    //
+    //     alert("login here")
+    // })
+
+    // await page.goto("https://www.tradingview.com/u/", {
+    //     waitUntil: 'networkidle2'
+    // });
 
     await page.waitForTimeout(8000);
 
@@ -65,10 +72,16 @@ export const logout = async (page) => {
             credentials:"same-origin"
         }).then(res => {
             console.log("Request complete! response:", res);
+
         });
     })
 
-    await page.goto("https://www.tradingview.com/u/", {
+    page.on('dialog', async dialog => {
+        console.log(dialog.message());
+        await dialog.accept();
+    });
+
+    await page.reload({
         waitUntil: 'networkidle2'
     });
 

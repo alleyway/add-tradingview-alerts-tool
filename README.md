@@ -180,6 +180,8 @@ edit version in package.json
 
     npm login
 
+    npm run build
+
     npm publish
 
 [edit releases](https://github.com/alleyway/add-tradingview-alerts-tool/releases)

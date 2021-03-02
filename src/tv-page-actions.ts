@@ -36,6 +36,15 @@ const inputXpathQueries = {
 }
 
 
+
+const alertActionCorresponding = {
+    notifyOnApp: "send-push",
+    showPopup: "show-popup",
+    sendEmail: "send-email",
+    webhook: "webhook-toggle",
+}
+
+
 export const login = async (page, username, pass) => {
 
     try {
@@ -96,16 +105,11 @@ export const navigateToSymbol = async (page, symbol: string) => {
 
 }
 
-export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
-    const {condition, name, option, message} = singleAlertSettings
 
-    await page.keyboard.down('AltLeft')
+export const configureSingleAlertSettings = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
-    await page.keyboard.press("a")
-
-    await page.keyboard.up('AltLeft')
-
+    const {condition, name, option, message, actions} = singleAlertSettings
 
     const selectFromDropDown = async (conditionToMatch) => {
 
@@ -163,6 +167,37 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
         await page.waitForTimeout(400);
     }
 
+    // alert actions
+
+    for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
+
+        if (!!actions[configKey] !== undefined) {
+            await page.waitForTimeout(100)
+            const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`)
+            const isChecked = await page.evaluate(element => element.checked, el)
+
+            if (configKey === "webhook") {
+                if (isChecked != actions.webhook.enabled){
+                    el.click()
+                    await page.waitForTimeout(100)
+                }
+                if (actions.webhook.enabled && actions.webhook.url) {
+                    const webhookUrlEl = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='webhook-url']`, 1000)
+                    await webhookUrlEl.click({clickCount: 3})
+                    //console.log("planning to type: ", conditionToMatch)
+                    await webhookUrlEl.press('Backspace');
+                    await webhookUrlEl.type(String(actions.webhook.url))
+                }
+
+
+            } else {
+                if (isChecked != actions[configKey]){
+                    el.click()
+                }
+            }
+        }
+
+    }
 
 
     if (!!name) {
@@ -187,9 +222,24 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     }
 
 
+}
+
+export const clickSubmit = async (page) => {
+    const submitButton = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]/*/div[@data-name='submit']`)
+    submitButton.click()
+}
+
+export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) => {
+
+    await page.keyboard.down('AltLeft')
+    await page.keyboard.press("a")
+    await page.keyboard.up('AltLeft')
+
+    await configureSingleAlertSettings(page, singleAlertSettings)
+
     await page.waitForTimeout(1000);
-    const continueButton = await fetchFirstXPath(page, "//span[@class='tv-button__loader']")
-    continueButton.click()
+
+    await clickSubmit(page)
 
     await page.waitForTimeout(2000);
 

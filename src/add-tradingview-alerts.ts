@@ -138,8 +138,17 @@ const main = async () => {
                 tertiaryLeft: alertConfig.condition.tertiaryLeft,
                 tertiaryRight: alertConfig.condition.tertiaryRight,
             },
+            option: alertConfig.option,
+            actions: {
+                notifyOnApp: alertConfig.actions.notifyOnApp,
+                showPopup: alertConfig.actions.showPopup,
+                sendEmail: alertConfig.actions.sendEmail,
+                webhook: {
+                    enabled: alertConfig.actions.webhook.enabled,
+                    url: alertConfig.actions.webhook.url
+                },
+            },
 
-            option: alertConfig.option
         }
 
         await addAlert(page, singleAlertSettings)
@@ -148,7 +157,7 @@ const main = async () => {
 
     await page.waitForTimeout(4000)
     await logout(page)
-    await page.waitForTimeout(4000)
+    await page.waitForTimeout(2000)
     await browser.close()
 
 }

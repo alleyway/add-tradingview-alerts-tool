@@ -56,6 +56,13 @@ alert:
     tertiaryLeft:
     tertiaryRight:
   option: Once Per Bar Close
+  actions:
+    notifyOnApp: false
+    showPopup: false
+    sendEmail: false
+    webhook:
+      enabled: true
+      url: "https://3commas.io/trade_signal/trading_view"
   # alert name is optional - can override in csv if desired and use {{symbol|base|quote}}
   # name: MI dev3 for {{base}} {{quote}}
   # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
@@ -90,11 +97,8 @@ creates **binance_btc_pairs.csv**
 
 ### Before you run the script
 
-Create an alert with the default options you'd like to use.
-
-For example, (un)check your notification preferences, then set your Webhook URL to be:
-
-    https://3commas.io/trade_signal/trading_view
+When adding alerts TradingView uses your last settings as defaults for new alerts.
+If not explicitly set in the config.yml file, it will use the settings from the last alert made. So if you prefer to play a sound or not, create an alert with that setting before running the script. 
 
 You must actually create an alert once with those options, before they become defaults. (You can immediately delete the alert)
 

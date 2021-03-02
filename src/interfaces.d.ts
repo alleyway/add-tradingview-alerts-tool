@@ -11,6 +11,15 @@ export interface ISingleAlertSettings {
 
     //expiration:
     // TODO
+    actions?: {
+        notifyOnApp?: boolean
+        showPopup?: boolean
+        sendEmail?: boolean
+        webhook?: {
+            enabled: boolean
+            url: string
+        }
+    }
 
     name?: string,
     message?: string

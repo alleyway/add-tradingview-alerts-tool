@@ -2,7 +2,6 @@ import csv from 'csv-parser'
 import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
-import {TimeoutError} from "puppeteer/lib/esm/puppeteer/common/Errors";
 import {configureInterval, addAlert} from "./index.js";
 import {navigateToSymbol, logout, login} from "./tv-page-actions.js";
 import {ISingleAlertSettings} from "./interfaces";
@@ -157,7 +156,7 @@ const main = async () => {
 
     await page.waitForTimeout(4000)
     await logout(page)
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(1500)
     await browser.close()
 
 }

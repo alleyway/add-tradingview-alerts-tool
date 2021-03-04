@@ -103,7 +103,6 @@ export const logout = async (page) => {
     });
 }
 
-
 export const navigateToSymbol = async (page, symbol: string) => {
 
     const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]')
@@ -112,10 +111,7 @@ export const navigateToSymbol = async (page, symbol: string) => {
     const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
     await page.waitForTimeout(8000);
-
 }
-
-
 
 export const configureSingleAlertSettings = async (page, singleAlertSettings: ISingleAlertSettings) => {
 

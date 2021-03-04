@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./lib/index",
@@ -20,6 +20,7 @@
     "build": "npx tsc",
     "fetch:binance:usdt": "npx tsc && cross-env QUOTE_ASSET=USDT node -r source-map-support/register lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
     "fetch:binance:btc": "npx tsc && cross-env QUOTE_ASSET=BTC node -r source-map-support/register lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
+    "fetch:binance:bnb": "npx tsc && cross-env QUOTE_ASSET=BNB node -r source-map-support/register lib/fetch-binance-pairs.js > binance_bnb_pairs.csv",
     "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
   },
   "keywords": [

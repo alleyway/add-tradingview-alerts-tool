@@ -93,6 +93,10 @@ creates **binance_usdt_pairs.csv**
 
 creates **binance_btc_pairs.csv**
 
+    npm run fetch:binance:bnb
+
+creates **binance_bnb_pairs.csv**
+
 ## Adding TradingView Alerts 
 
 ### Before you run the script

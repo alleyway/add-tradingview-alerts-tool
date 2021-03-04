@@ -45,6 +45,16 @@ const alertActionCorresponding = {
 }
 
 
+const clickInputAndDelete = async (page, inputElement) => {
+    await inputElement.click({clickCount: 1})
+    await page.waitForTimeout(500);
+    await inputElement.click({clickCount: 3})
+    await page.waitForTimeout(500);
+    await inputElement.press('Backspace');
+    await page.waitForTimeout(500);
+}
+
+
 export const login = async (page, username, pass) => {
 
     try {
@@ -149,9 +159,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
                 //console.log("clicking on input")
                 const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
-                await valueInput.click({clickCount: 3})
-                //console.log("planning to type: ", conditionToMatch)
-                await valueInput.press('Backspace');
+                await clickInputAndDelete(page, valueInput)
                 await valueInput.type(String(conditionToMatch))
 
             }
@@ -171,7 +179,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
 
-        if (!!actions[configKey] !== undefined) {
+        if (!!actions && !!actions[configKey] !== undefined) {
             await page.waitForTimeout(100)
             const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`)
             const isChecked = await page.evaluate(element => element.checked, el)
@@ -183,9 +191,8 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 }
                 if (actions.webhook.enabled && actions.webhook.url) {
                     const webhookUrlEl = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='webhook-url']`, 1000)
-                    await webhookUrlEl.click({clickCount: 3})
-                    //console.log("planning to type: ", conditionToMatch)
-                    await webhookUrlEl.press('Backspace');
+
+                    await clickInputAndDelete(page, webhookUrlEl)
                     await webhookUrlEl.type(String(actions.webhook.url))
                 }
 
@@ -202,8 +209,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     if (!!name) {
         const nameInput = await fetchFirstXPath(page, "//input[@name='alert-name']")
-        nameInput.click()
-        await nameInput.press('Backspace');
+        await clickInputAndDelete(page, nameInput)
         await nameInput.type(name)
         await page.waitForTimeout(800);
     }
@@ -211,13 +217,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     if (!!message) {
         const messageTextarea = await fetchFirstXPath(page, "//textarea[@class='tv-control-textarea']")
-
-        messageTextarea.click({clickCount: 1})
-        await page.waitForTimeout(500);
-        messageTextarea.click({clickCount: 3})
-        await page.waitForTimeout(500);
-        await messageTextarea.press('Backspace');
-        await page.waitForTimeout(500);
+        await clickInputAndDelete(page, messageTextarea)
         await messageTextarea.type(message)
     }
 

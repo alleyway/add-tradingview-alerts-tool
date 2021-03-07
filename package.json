@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
   },
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./lib/index",
@@ -18,10 +18,11 @@
   ],
   "scripts": {
     "build": "npx tsc",
-    "fetch:binance:usdt": "npx tsc && cross-env QUOTE_ASSET=USDT node -r source-map-support/register lib/fetch-binance-pairs.js > binance_usdt_pairs.csv",
-    "fetch:binance:btc": "npx tsc && cross-env QUOTE_ASSET=BTC node -r source-map-support/register lib/fetch-binance-pairs.js > binance_btc_pairs.csv",
-    "fetch:binance:bnb": "npx tsc && cross-env QUOTE_ASSET=BNB node -r source-map-support/register lib/fetch-binance-pairs.js > binance_bnb_pairs.csv",
-    "fetch:binance:eth": "npx tsc && cross-env QUOTE_ASSET=ETH node -r source-map-support/register lib/fetch-binance-pairs.js > binance_eth_pairs.csv",
+    "fetch:binance:usdt": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance usdt'",
+    "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",
+    "fetch:binance:bnb": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance bnb'",
+    "fetch:binance:eth": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance eth'",
+    "fetch:binance": "npx tsc && node -r source-map-support/register lib/fetch-binance-pairs.js",
     "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
   },
   "keywords": [
@@ -37,8 +38,11 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
+    "@fast-csv/format": "^4.3.5",
+    "@fast-csv/parse": "^4.3.6",
     "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",
+    "fast-csv": "^4.3.6",
     "node-fetch": "^2.6.1",
     "puppeteer": "^8.0.0",
     "source-map-support": "^0.5.19",
@@ -46,6 +50,6 @@
   },
   "private": false,
   "engines": {
-    "node": ">= 14.0.0"
+    "node": ">= 12.0.0"
   }
 }

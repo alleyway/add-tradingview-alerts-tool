@@ -26,6 +26,14 @@ MacOS/Windows/Linux
 
 [Install NodeJS](https://nodejs.org/en/)
 
+Minimum node version: 12
+
+Check your node version with the following command:
+
+    node -v
+
+
+
 ## Installation
 
 Open Terminal/PowerShell and run the following:
@@ -85,22 +93,19 @@ Allows fetching all active Binance trading pairs (want other exchanges? [File an
 
 Generates CSV files to be used as input (see config above) 
  
-    npm run fetch:binance:usdt
+    npm run fetch:binance usdt
 
 creates **binance_usdt_pairs.csv** 
     
-    npm run fetch:binance:btc
+    npm run fetch:binance btc
 
 creates **binance_btc_pairs.csv**
 
-    npm run fetch:binance:bnb
-
-creates **binance_bnb_pairs.csv**
-
-    npm run fetch:binance:eth
+    npm run fetch:binance eth
 
 creates **binance_eth_pairs.csv**
 
+...and so on..
 
 ## Adding TradingView Alerts 
 

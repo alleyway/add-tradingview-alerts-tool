@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
   },
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./lib/index",
@@ -38,6 +38,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
+    "12": "^1.0.2",
     "@fast-csv/format": "^4.3.5",
     "@fast-csv/parse": "^4.3.6",
     "cross-env": "^7.0.3",

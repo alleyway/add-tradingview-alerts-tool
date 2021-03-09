@@ -56,6 +56,9 @@ tradingview:
   # (optional) set the chart interval before adding pairs, otherwise interval of last saved chart is used
   # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M
   interval: 4h
+  # Optionally supply login details or login manually once and restart script
+  #username: 
+  #password: 
 alert:
   condition:
     primaryLeft: MTF Deviation

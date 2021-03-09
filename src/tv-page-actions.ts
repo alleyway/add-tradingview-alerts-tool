@@ -1,7 +1,11 @@
 import {ISingleAlertSettings} from "./interfaces";
 
+const debug = process.env.DEBUG
+
 const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
-    //console.warn(`selector: ${selector}`)
+    if (debug){
+        console.warn(`selector: ${selector}`)
+    }
     await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
@@ -36,7 +40,6 @@ const inputXpathQueries = {
 }
 
 
-
 const alertActionCorresponding = {
     notifyOnApp: "send-push",
     showPopup: "show-popup",
@@ -61,7 +64,7 @@ export const login = async (page, username, pass) => {
         const emailSignInButton = await fetchFirstXPath(page, `//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, 5000)
         emailSignInButton.click()
         await page.waitForTimeout(700);
-    } catch (e){
+    } catch (e) {
 
         console.warn("no email toggle button showing!")
     }
@@ -85,8 +88,8 @@ export const logout = async (page) => {
 
         fetch("/accounts/logout/", {
             method: "POST",
-            headers:{accept:"html"},
-            credentials:"same-origin"
+            headers: {accept: "html"},
+            credentials: "same-origin"
         }).then(res => {
             console.log("Request complete! response:", res);
 
@@ -181,7 +184,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             const isChecked = await page.evaluate(element => element.checked, el)
 
             if (configKey === "webhook") {
-                if (isChecked != actions.webhook.enabled){
+                if (isChecked != actions.webhook.enabled) {
                     el.click()
                     await page.waitForTimeout(100)
                 }
@@ -194,7 +197,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
 
             } else {
-                if (isChecked != actions[configKey]){
+                if (isChecked != actions[configKey]) {
                     el.click()
                 }
             }
@@ -225,6 +228,19 @@ export const clickSubmit = async (page) => {
     submitButton.click()
 }
 
+// sometimes there's a warning of "this alert may trigger differently than expected"
+export const clickContinueIfWarning = async (page) => {
+    try {
+        const continueAnywayButton = await fetchFirstXPath(page, `//div[@data-name='warning-modal']/*//button[@name='ok-button']`,
+            3000)
+        continueAnywayButton.click()
+        await page.waitForTimeout(5000);
+    } catch (error) {
+        console.debug("No warning dialog")
+    }
+}
+
+
 export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
     await page.keyboard.down('AltLeft')
@@ -239,14 +255,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
 
     await page.waitForTimeout(2000);
 
-    try {
-        const continueAnywayButton = await fetchFirstXPath(page, "//*[text()='Continue anyway']", 3000)
-        continueAnywayButton.click()
-        await page.waitForTimeout(5000);
-    } catch (error) {
-        //must not be alert on an indicator
-    }
-
+    await clickContinueIfWarning(page)
 
 }
 

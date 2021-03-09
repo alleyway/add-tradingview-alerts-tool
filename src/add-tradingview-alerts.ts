@@ -58,7 +58,7 @@ const main = async () => {
     let page
     let accessDenied = false
 
-    if (true || headless) {
+    if (headless) {
         page = await browser.newPage();
 
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
@@ -155,8 +155,8 @@ const main = async () => {
 
 
     await page.waitForTimeout(4000)
-    await logout(page)
-    await page.waitForTimeout(1500)
+    // await logout(page)
+    // await page.waitForTimeout(1500)
     await browser.close()
 
 }

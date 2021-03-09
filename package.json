@@ -17,6 +17,7 @@
     "lib"
   ],
   "scripts": {
+    "postinstall": "npx tsc",
     "build": "npx tsc",
     "fetch:binance:usdt": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance usdt'",
     "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",

@@ -1,15 +1,25 @@
 import {ISingleAlertSettings} from "./interfaces";
 
 const debug = process.env.DEBUG
+const screenshot = process.env.SCREENSHOT
 
 const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
-    if (debug){
+    if (debug) {
         console.warn(`selector: ${selector}`)
     }
     await page.waitForXPath(selector, {timeout})
     const elements = await page.$x(selector)
     return elements[0]
 }
+
+
+export const takeScreenshot = async (page, name: string) => {
+    const screenshotPath = `screenshots/screenshot_${new Date().getTime()}_${name}.png`
+    await page.screenshot({
+        path: screenshotPath,
+    });
+}
+
 
 export const configureInterval = async (interval: string, page) => {
     await page.waitForTimeout(1000);
@@ -116,9 +126,12 @@ export const navigateToSymbol = async (page, symbol: string) => {
     await page.waitForTimeout(8000);
 }
 
+
 export const configureSingleAlertSettings = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
     const {condition, name, option, message, actions} = singleAlertSettings
+
+    if (screenshot) await takeScreenshot(page, "alert_begin_configure")
 
     const selectFromDropDown = async (conditionToMatch) => {
 
@@ -127,7 +140,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         for (const el of elements) {
             const optionText = await page.evaluate(element => element.innerText, el);
             if (optionText.indexOf(conditionToMatch) > -1) {
-                //console.debug(" - selecting: ", optionText)
+                if (debug) {
+                    console.debug(" - selecting: ", optionText)
+                }
                 el.click()
                 break;
             }
@@ -136,6 +151,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     }
 
     for (const [key, xpathQuery] of Object.entries(xpathQueries)) {
+        if (debug) console.debug(`key: (${key}) of xpathQueries `)
 
         const conditionToMatch = condition[key];
         // console.log("selecting: ", conditionToMatch)
@@ -144,7 +160,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             let isDropdown = true
             try {
                 const targetElement = await fetchFirstXPath(page, xpathQuery, 3000)
-                //console.debug("Clicking: ", key)
+                if (debug) console.debug("Clicking: ", key)
                 targetElement.click()
 
             } catch (TimeoutError) {

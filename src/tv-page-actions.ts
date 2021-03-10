@@ -14,10 +14,12 @@ const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
 
 
 export const takeScreenshot = async (page, name: string) => {
-    const screenshotPath = `screenshots/screenshot_${new Date().getTime()}_${name}.png`
-    await page.screenshot({
-        path: screenshotPath,
-    });
+    if (screenshot){
+        const screenshotPath = `screenshots/screenshot_${new Date().getTime()}_${name}.png`
+        await page.screenshot({
+            path: screenshotPath,
+        });
+    }
 }
 
 

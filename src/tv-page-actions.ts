@@ -133,7 +133,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     const {condition, name, option, message, actions} = singleAlertSettings
 
-    if (screenshot) await takeScreenshot(page, "alert_begin_configure")
+    await takeScreenshot(page, "alert_begin_configure")
 
     const selectFromDropDown = async (conditionToMatch) => {
 

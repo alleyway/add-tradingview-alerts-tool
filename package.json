@@ -7,7 +7,7 @@
   "bugs": {
     "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
   },
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./lib/index",
@@ -17,7 +17,6 @@
     "lib"
   ],
   "scripts": {
-    "postinstall": "npx tsc",
     "build": "npx tsc",
     "fetch:binance:usdt": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance usdt'",
     "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",

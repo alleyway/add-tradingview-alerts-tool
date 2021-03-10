@@ -10,7 +10,6 @@ export interface ISingleAlertSettings {
     option?: string,
 
     //expiration:
-    // TODO
     actions?: {
         notifyOnApp?: boolean
         showPopup?: boolean

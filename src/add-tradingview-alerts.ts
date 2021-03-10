@@ -93,7 +93,7 @@ const main = async () => {
 
     await page.waitForTimeout(3000)
 
-    const blackListRows = await readFilePromise(config.files.exclude)
+    const blackListRows = config.files.exclude? await readFilePromise(config.files.exclude) : []
 
     const isBlacklisted = (symbol: string) => {
         for (const row of blackListRows) {

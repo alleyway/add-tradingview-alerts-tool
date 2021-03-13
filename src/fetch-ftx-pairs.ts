@@ -36,6 +36,14 @@ const main = async () => {
                     base: symbol.baseCurrency,
                     name: ""
                 });
+            } else if (QUOTE_ASSET.toUpperCase() == "PERP" && symbol.enabled && symbol.name.endsWith("PERP")) {
+                csvStream.write({
+                    symbol: `FTX:${symbol.underlying}PERP`,
+                    quote: symbol.quoteCurrency || "USD",
+                    base: symbol.baseCurrency || symbol.underlying,
+                    name: ""
+                });
+
             }
         }
 

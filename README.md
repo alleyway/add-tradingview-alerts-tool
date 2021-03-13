@@ -104,9 +104,16 @@ creates **binance_usdt_pairs.csv**
 
 creates **binance_btc_pairs.csv**
 
+    npm run fetch:ftx perp
+
+creates **ftx_perp_pairs.csv**  (unique for grabbing perpetual futures contracts)
+
     npm run fetch:ftx eth
 
 creates **ftx_eth_pairs.csv**
+
+
+
 
 ...and so on..
 

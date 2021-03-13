@@ -24,6 +24,7 @@
     "fetch:binance:bnb": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance bnb'",
     "fetch:binance:eth": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance eth'",
     "fetch:binance": "npx tsc && node -r source-map-support/register lib/fetch-binance-pairs.js",
+    "fetch:ftx": "npx tsc && node -r source-map-support/register lib/fetch-ftx-pairs.js",
     "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
   },
   "keywords": [

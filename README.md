@@ -92,7 +92,7 @@ alert:
 
 ## Fetching Trading Pairs
 
-Allows fetching all active Binance trading pairs (want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)) 
+Allows fetching trading pairs on either Binance or FTX (want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)) 
 
 Generates CSV files to be used as input (see config above) 
  
@@ -104,9 +104,9 @@ creates **binance_usdt_pairs.csv**
 
 creates **binance_btc_pairs.csv**
 
-    npm run fetch:binance eth
+    npm run fetch:ftx eth
 
-creates **binance_eth_pairs.csv**
+creates **ftx_eth_pairs.csv**
 
 ...and so on..
 

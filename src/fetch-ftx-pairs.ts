@@ -8,11 +8,11 @@ const QUOTE_ASSET = process.argv[2]
 const main = async () => {
 
     if (!QUOTE_ASSET) {
-        console.error("You must specify a quote symbol, eg: npm run fetch:ftx eth")
+        console.error("You must specify a quote symbol, eg: npm run fetch:binance eth")
         process.exit(1)
     }
 
-    const outStream = fs.createWriteStream(`binance_${QUOTE_ASSET}_pairs.csv`)
+    const outStream = fs.createWriteStream(`ftx_${QUOTE_ASSET}_pairs.csv`)
 
     const csvStream = csv.format({headers: true});
 
@@ -21,19 +21,19 @@ const main = async () => {
 
     try {
 
-        const resp = await fetch("https://api.binance.com/api/v3/exchangeInfo")
+        const resp = await fetch("https://ftx.com/api/markets")
 
         const responseObject = await resp.json()
 
-        const {symbols} = responseObject
+        const symbols = responseObject.result
 
         for (const symbol of symbols) {
-            if (symbol.status === "TRADING" && symbol.quoteAsset === QUOTE_ASSET.toUpperCase()) {
+            if (symbol.enabled && symbol.quoteCurrency === QUOTE_ASSET.toUpperCase()) {
 
                 csvStream.write({
-                    symbol: `BINANCE:${symbol.baseAsset}${symbol.quoteAsset}`,
-                    quote: symbol.quoteAsset,
-                    base: symbol.baseAsset,
+                    symbol: `FTX:${symbol.baseCurrency}${symbol.quoteCurrency}`,
+                    quote: symbol.quoteCurrency,
+                    base: symbol.baseCurrency,
                     name: ""
                 });
             }

@@ -1,9 +1,11 @@
 import {ISingleAlertSettings} from "./interfaces";
 
-const debug = process.env.DEBUG
-const screenshot = process.env.SCREENSHOT
+const debug = Boolean(process.env.DEBUG)
+const screenshot = Boolean(process.env.SCREENSHOT)
 
-const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
+const [SHORT, MED, LONG] = [300, 500, 1000]
+
+export const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
     if (debug) {
         console.warn(`selector: ${selector}`)
     }
@@ -14,7 +16,7 @@ const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
 
 
 export const takeScreenshot = async (page, name: string) => {
-    if (screenshot){
+    if (screenshot) {
         const screenshotPath = `screenshots/screenshot_${new Date().getTime()}_${name}.png`
         await page.screenshot({
             path: screenshotPath,
@@ -24,17 +26,17 @@ export const takeScreenshot = async (page, name: string) => {
 
 
 export const configureInterval = async (interval: string, page) => {
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(SHORT);
     await page.keyboard.press(",")
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(MED);
     try {
         interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
     } catch (e) {
         throw Error("configuration: interval specified incorrectly, should be something like '5m' or '1h' - see documentation")
     }
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(MED);
     await page.keyboard.press('Enter')
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(LONG);
 }
 
 // queries used on the alert conditions
@@ -62,11 +64,11 @@ const alertActionCorresponding = {
 
 const clickInputAndDelete = async (page, inputElement) => {
     await inputElement.click({clickCount: 1})
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(SHORT);
     await inputElement.click({clickCount: 3})
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(SHORT);
     await inputElement.press('Backspace');
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(SHORT);
 }
 
 
@@ -75,7 +77,7 @@ export const login = async (page, username, pass) => {
     try {
         const emailSignInButton = await fetchFirstXPath(page, `//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, 5000)
         emailSignInButton.click()
-        await page.waitForTimeout(700);
+        await page.waitForTimeout(LONG);
     } catch (e) {
 
         console.warn("no email toggle button showing!")
@@ -83,7 +85,7 @@ export const login = async (page, username, pass) => {
 
     const usernameInput = await fetchFirstXPath(page, '//input[@name=\'username\']')
     await usernameInput.type(`${username}`)
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(SHORT);
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']')
 
     await Promise.all([
@@ -122,10 +124,9 @@ export const navigateToSymbol = async (page, symbol: string) => {
 
     const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]')
     await symbolHeaderInput.click()
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(MED);
     const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
-    await page.waitForTimeout(8000);
 }
 
 
@@ -157,7 +158,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         const conditionToMatch = condition[key];
         // console.log("selecting: ", conditionToMatch)
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(LONG);
         if (!!conditionToMatch) {
             let isDropdown = true
             try {
@@ -170,7 +171,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 isDropdown = false
             }
             if (isDropdown) {
-                await page.waitForTimeout(1500);
+                await page.waitForTimeout(LONG);
                 await selectFromDropDown(conditionToMatch)
             } else {
 
@@ -184,12 +185,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         }
     }
 
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(SHORT);
 
     if (!!option) {
         const optionButton = await fetchFirstXPath(page, `//*[text()='${option}']`)
         optionButton.click()
-        await page.waitForTimeout(400);
+        await page.waitForTimeout(SHORT);
     }
 
     // alert actions
@@ -197,14 +198,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
 
         if (!!actions && !!actions[configKey] !== undefined) {
-            await page.waitForTimeout(100)
+            await page.waitForTimeout(SHORT)
             const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`)
             const isChecked = await page.evaluate(element => element.checked, el)
 
             if (configKey === "webhook") {
                 if (isChecked != actions.webhook.enabled) {
                     el.click()
-                    await page.waitForTimeout(100)
+                    await page.waitForTimeout(SHORT)
                 }
                 if (actions.webhook.enabled && actions.webhook.url) {
                     const webhookUrlEl = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='webhook-url']`, 1000)
@@ -228,7 +229,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         const nameInput = await fetchFirstXPath(page, "//input[@name='alert-name']")
         await clickInputAndDelete(page, nameInput)
         await nameInput.type(name)
-        await page.waitForTimeout(800);
+        await page.waitForTimeout(MED);
     }
 
 
@@ -252,7 +253,7 @@ export const clickContinueIfWarning = async (page) => {
         const continueAnywayButton = await fetchFirstXPath(page, `//div[@data-name='warning-modal']/*//button[@name='ok-button']`,
             3000)
         continueAnywayButton.click()
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(3000);
     } catch (error) {
         console.debug("No warning dialog")
     }
@@ -267,7 +268,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
 
     await configureSingleAlertSettings(page, singleAlertSettings)
 
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(LONG);
 
     await clickSubmit(page)
 

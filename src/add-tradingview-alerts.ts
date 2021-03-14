@@ -91,7 +91,7 @@ const main = async () => {
 
     }
 
-    await page.waitForTimeout(3000)
+    await page.waitForTimeout(2000)
 
     const blackListRows = config.files.exclude? await readFilePromise(config.files.exclude) : []
 
@@ -107,6 +107,7 @@ const main = async () => {
     if (config.tradingview.interval) {
         await configureInterval(config.tradingview.interval, page)
     }
+    await page.waitForTimeout(3000)
 
     const symbolRows = await readFilePromise(config.files.input)
 
@@ -118,8 +119,6 @@ const main = async () => {
         }
 
         console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
-
-        await page.waitForTimeout(5000)
 
         await navigateToSymbol(page, row.symbol)
 
@@ -154,7 +153,7 @@ const main = async () => {
     }
 
 
-    await page.waitForTimeout(4000)
+    await page.waitForTimeout(3000)
     // await logout(page)
     // await page.waitForTimeout(1500)
     await browser.close()

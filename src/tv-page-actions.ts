@@ -124,7 +124,7 @@ export const navigateToSymbol = async (page, symbol: string) => {
 
     const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]')
     await symbolHeaderInput.click()
-    await page.waitForTimeout(MED);
+    await page.waitForTimeout(LONG);
     const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`)
 }

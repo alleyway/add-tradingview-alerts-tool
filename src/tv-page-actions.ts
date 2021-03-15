@@ -89,7 +89,8 @@ export const login = async (page, username, pass) => {
 
     const usernameInput = await fetchFirstXPath(page, '//input[@name=\'username\']')
     await usernameInput.type(`${username}`)
-    await page.waitForTimeout(SHORT);
+    await page.waitForTimeout(MED);
+    await takeScreenshot(page, "shouldbe_before_password_entry")
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']')
 
     await Promise.all([

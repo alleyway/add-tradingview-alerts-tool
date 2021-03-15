@@ -3,7 +3,11 @@ import {ISingleAlertSettings} from "./interfaces";
 const debug = Boolean(process.env.DEBUG)
 const screenshot = Boolean(process.env.SCREENSHOT)
 
-const [SHORT, MED, LONG] = [300, 500, 1000]
+const [SHORT, MED, LONG] = [
+    Number(process.env.DELAY_SHORT) || 300,
+    Number(process.env.DELAY_MEDIUM) || 500,
+    Number(process.env.DELAY_LONG) || 1000
+]
 
 export const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
     if (debug) {

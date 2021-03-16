@@ -4,6 +4,7 @@ import * as fs from "fs";
 
 const QUOTE_ASSET = process.argv[2]
 
+const EXCHANGE = process.env.EXCHANGE
 
 const main = async () => {
 
@@ -12,7 +13,7 @@ const main = async () => {
         process.exit(1)
     }
 
-    const outStream = fs.createWriteStream(`binance_${QUOTE_ASSET}_pairs.csv`)
+    const outStream = fs.createWriteStream(`${EXCHANGE.toLowerCase()}_${QUOTE_ASSET}_pairs.csv`)
 
     const csvStream = csv.format({headers: true});
 
@@ -21,7 +22,9 @@ const main = async () => {
 
     try {
 
-        const resp = await fetch("https://api.binance.com/api/v3/exchangeInfo")
+        const url = EXCHANGE == "BINANCEUS" ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
+
+        const resp = await fetch(url)
 
         const responseObject = await resp.json()
 
@@ -31,7 +34,7 @@ const main = async () => {
             if (symbol.status === "TRADING" && symbol.quoteAsset === QUOTE_ASSET.toUpperCase()) {
 
                 csvStream.write({
-                    symbol: `BINANCE:${symbol.baseAsset}${symbol.quoteAsset}`,
+                    symbol: `${EXCHANGE}:${symbol.baseAsset}${symbol.quoteAsset}`,
                     quote: symbol.quoteAsset,
                     base: symbol.baseAsset,
                     name: ""

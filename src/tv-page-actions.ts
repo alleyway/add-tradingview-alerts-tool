@@ -101,7 +101,7 @@ export const login = async (page, username, pass) => {
 
     await Promise.all([
         passwordInput.type(`${pass}${String.fromCharCode(13)}`),
-        page.waitForNavigation()
+        page.waitForNavigation({waitUntil: "networkidle2"})
     ])
 
 

@@ -23,3 +23,10 @@ export interface ISingleAlertSettings {
     name?: string,
     message?: string
 }
+
+interface ICsvSymbol {
+    symbol: string,
+    quote: string,
+    base: string
+    name: string
+}

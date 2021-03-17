@@ -23,9 +23,11 @@
     "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",
     "fetch:binance:bnb": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance bnb'",
     "fetch:binance:eth": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance eth'",
-    "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register lib/fetch-binance-pairs.js",
-    "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register lib/fetch-binance-pairs.js",
-    "fetch:ftx": "npx tsc && node -r source-map-support/register lib/fetch-ftx-pairs.js",
+    "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register lib/fetch-pairs.js",
+    "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register lib/fetch-pairs.js",
+    "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register lib/fetch-pairs.js",
+    "fetch:coinbase": "npx tsc && cross-env EXCHANGE=COINBASE node -r source-map-support/register lib/fetch-pairs.js",
+    "fetch:bittrex": "npx tsc && cross-env EXCHANGE=BITTREX node -r source-map-support/register lib/fetch-pairs.js",
     "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
   },
   "keywords": [

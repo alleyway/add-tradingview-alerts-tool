@@ -108,14 +108,19 @@ creates **binance_btc_pairs.csv**
 
 creates **ftx_perp_pairs.csv**  (unique for grabbing perpetual futures contracts)
 
-    npm run fetch:ftx eth
+    npm run fetch:bittrex btc
 
-creates **ftx_eth_pairs.csv**
+creates **bittrex_btc_pairs.csv**
 
+    npm run fetch:coinbase usd
 
+creates **coinbase_usd_pairs.csv**
 
 
 ...and so on..
+
+
+
 
 ## Adding TradingView Alerts 
 

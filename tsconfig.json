@@ -10,7 +10,7 @@
     "noUnusedLocals": false,
     "allowSyntheticDefaultImports": true,
     "noImplicitReturns": true,
-    "outDir": "build",
+    "outDir": "dist",
     "sourceMap": true,
     "esModuleInterop": true,
     "allowJs": true,

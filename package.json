@@ -19,10 +19,6 @@
     "build": "npx tsc",
     "postinstall": "npx tsc",
     "prepublishOnly": "npx tsc",
-    "fetch:binance:usdt": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance usdt'",
-    "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",
-    "fetch:binance:bnb": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance bnb'",
-    "fetch:binance:eth": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance eth'",
     "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register lib/fetch-pairs.js",
     "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register lib/fetch-pairs.js",
     "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register lib/fetch-pairs.js",
@@ -38,7 +34,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "devDependencies": {
     "@types/node": "latest",
     "typescript": "^4.2.3"

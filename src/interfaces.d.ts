@@ -24,7 +24,7 @@ export interface ISingleAlertSettings {
     message?: string
 }
 
-interface ICsvSymbol {
+export interface ICsvSymbol {
     symbol: string,
     quote: string,
     base: string

@@ -10,15 +10,16 @@
   "version": "1.6.5",
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
-  "main": "./lib/index",
-  "types": "./lib/interfaces.d.ts",
+  "main": "./dist/index",
+  "types": "./dist/interfaces.d.ts",
   "files": [
     "src",
-    "lib"
+    "dist"
   ],
   "scripts": {
     "build": "npx tsc",
     "postinstall": "npx tsc",
+    "prepublishOnly": "npx tsc",
     "fetch:binance:usdt": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance usdt'",
     "fetch:binance:btc": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance btc'",
     "fetch:binance:bnb": "echo 'DEPRECATED! Run the following instead(note lack of colon):  npm run fetch:binance bnb'",
@@ -28,7 +29,7 @@
     "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register lib/fetch-pairs.js",
     "fetch:coinbase": "npx tsc && cross-env EXCHANGE=COINBASE node -r source-map-support/register lib/fetch-pairs.js",
     "fetch:bittrex": "npx tsc && cross-env EXCHANGE=BITTREX node -r source-map-support/register lib/fetch-pairs.js",
-    "add-alerts": "npx tsc && node -r source-map-support/register lib/add-tradingview-alerts.js"
+    "add-alerts": "npx tsc && node -r source-map-support/register lib/add-alerts.js"
   },
   "keywords": [
     "tradingview",

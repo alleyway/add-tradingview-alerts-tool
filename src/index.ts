@@ -9,9 +9,9 @@ import {
     login,
     logout,
     fetchFirstXPath
-} from "./tv-page-actions.js"
-import {fetchPairsForExchange} from "./fetch-pairs.js"
-import {ISingleAlertSettings} from "./interfaces";
+} from "./service/tv-page-actions.js"
+import {fetchPairsForExchange} from "./service/exchange-service.js"
+import {ISingleAlertSettings, ICsvSymbol} from "./interfaces";
 
 export {
     fetchFirstXPath,
@@ -25,6 +25,7 @@ export {
     login,
     logout,
     fetchPairsForExchange,
-    ISingleAlertSettings
+    ISingleAlertSettings,
+    ICsvSymbol
 }
 

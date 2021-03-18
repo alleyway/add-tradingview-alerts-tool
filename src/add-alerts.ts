@@ -3,7 +3,7 @@ import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert} from "./index.js";
-import {navigateToSymbol, logout, login} from "./tv-page-actions.js";
+import {navigateToSymbol, logout, login} from "./service/tv-page-actions.js";
 import {ISingleAlertSettings} from "./interfaces";
 
 
@@ -42,8 +42,6 @@ const main = async () => {
 
     const {alert: alertConfig} = config
 
-    //console.log("alertConfig", alertConfig.message)
-
     const browser = await puppeteer.launch({
         headless: headless, userDataDir: "./user_data",
         defaultViewport: null,
@@ -54,9 +52,8 @@ const main = async () => {
         ]
     })
 
-
     let page
-    let accessDenied = false
+    let accessDenied;
 
     if (headless) {
         page = await browser.newPage();
@@ -154,10 +151,7 @@ const main = async () => {
 
 
     await page.waitForTimeout(3000)
-    // await logout(page)
-    // await page.waitForTimeout(1500)
     await browser.close()
-
 }
 
 

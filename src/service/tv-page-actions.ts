@@ -1,4 +1,4 @@
-import {ISingleAlertSettings} from "./interfaces";
+import {ISingleAlertSettings} from "../interfaces";
 
 const debug = Boolean(process.env.DEBUG)
 const screenshot = Boolean(process.env.SCREENSHOT)

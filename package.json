@@ -19,12 +19,12 @@
     "build": "npx tsc",
     "postinstall": "npx tsc",
     "prepublishOnly": "npx tsc",
-    "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register lib/fetch-pairs.js",
-    "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register lib/fetch-pairs.js",
-    "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register lib/fetch-pairs.js",
-    "fetch:coinbase": "npx tsc && cross-env EXCHANGE=COINBASE node -r source-map-support/register lib/fetch-pairs.js",
-    "fetch:bittrex": "npx tsc && cross-env EXCHANGE=BITTREX node -r source-map-support/register lib/fetch-pairs.js",
-    "add-alerts": "npx tsc && node -r source-map-support/register lib/add-alerts.js"
+    "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:coinbase": "npx tsc && cross-env EXCHANGE=COINBASE node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:bittrex": "npx tsc && cross-env EXCHANGE=BITTREX node -r source-map-support/register dist/fetch-pairs.js",
+    "add-alerts": "npx tsc && node -r source-map-support/register dist/add-alerts.js"
   },
   "keywords": [
     "tradingview",
@@ -34,7 +34,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "devDependencies": {
     "@types/node": "latest",
     "typescript": "^4.2.3"

@@ -121,6 +121,33 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<ICsvSymb
     return csvSymbols
 }
 
+export const fetchPairsForExchange = async (exchange: string, quoteAsset: string): Promise<ICsvSymbol[]> => {
+
+    let csvSymbolArray: ICsvSymbol[];
+
+    switch (exchange) {
+        case "binance":
+            csvSymbolArray = await fetchBinance(false, quoteAsset)
+            break;
+        case "binanceus":
+            csvSymbolArray = await fetchBinance(true, quoteAsset)
+            break;
+        case "ftx":
+            csvSymbolArray = await fetchFtx(quoteAsset)
+            break;
+        case "coinbase":
+            csvSymbolArray = await fetchCoinbase(quoteAsset)
+            break;
+        case "bittrex":
+            csvSymbolArray = await fetchBittrex(quoteAsset)
+            break;
+        default:
+            console.error("No exchange exists: ", exchange)
+            break;
+    }
+    return csvSymbolArray
+}
+
 
 const main = async () => {
 
@@ -133,28 +160,7 @@ const main = async () => {
 
     const EXCHANGE = (process.env.EXCHANGE || "").toLowerCase()
 
-    let csvSymbolArray: ICsvSymbol[];
-
-    switch (EXCHANGE) {
-        case "binance":
-            csvSymbolArray = await fetchBinance(false, QUOTE_ASSET)
-            break;
-        case "binanceus":
-            csvSymbolArray = await fetchBinance(true, QUOTE_ASSET)
-            break;
-        case "ftx":
-            csvSymbolArray = await fetchFtx(QUOTE_ASSET)
-            break;
-        case "coinbase":
-            csvSymbolArray = await fetchCoinbase(QUOTE_ASSET)
-            break;
-        case "bittrex":
-            csvSymbolArray = await fetchBittrex(QUOTE_ASSET)
-            break;
-        default:
-            console.error("No exchange exists: ", EXCHANGE)
-            break;
-    }
+    const csvSymbolArray = await fetchPairsForExchange(EXCHANGE, QUOTE_ASSET)
 
     if (!csvSymbolArray || csvSymbolArray.length == 0){
         console.error("No symbols fetched!")

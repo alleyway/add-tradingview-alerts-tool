@@ -1,5 +1,4 @@
 import {ISingleAlertSettings} from "./interfaces";
-import {TimeoutError} from "puppeteer";
 
 const debug = Boolean(process.env.DEBUG)
 const screenshot = Boolean(process.env.SCREENSHOT)
@@ -18,7 +17,7 @@ export const fetchFirstXPath = async (page, selector: string, timeout = 20000) =
         await page.waitForXPath(selector, {timeout})
     } catch (e) {
         await takeScreenshot(page, "waitForXPathFailed")
-        throw new TimeoutError(`waiting for XPath \`${selector}\` failed: timeout ${timeout}ms exceeded`)
+        throw(e)
     }
     const elements = await page.$x(selector)
     return elements[0]

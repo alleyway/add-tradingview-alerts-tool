@@ -156,12 +156,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     }
 
     for (const [key, xpathQuery] of Object.entries(xpathQueries)) {
-        const conditionOrInputValue = condition[key];
+        const conditionOrInputValue = String(condition[key]);
         log.trace(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`)
 
         await waitForTimeout(1);
 
-        if (!!conditionOrInputValue) {
+        if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
 
             try {
                 log.trace(`Searching potential dropdown xpath of ${kleur.yellow(key)}`)

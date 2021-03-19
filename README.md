@@ -142,6 +142,15 @@ You can stop the script in Terminal/PowerShell by pressing Ctrl-C
 If the tool gets interrupted for some reason, you can remove the rows of already-added alert symbols (from the .csv) and re-run
 
 
+
+## Troubleshooting
+
+Moving too fast for your connection speed? Try setting the BASE_DELAY environment variable (default is 1000) 
+
+    npx cross-env BASE_DELAY=1500 npm run add-alerts
+
+Anything else? File an issue
+
 ## Advanced Usage
 
 ### Multiple Configurations
@@ -212,8 +221,6 @@ Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-genera
 edit version in package.json
 
     npm login
-
-    npm run build
 
     npm publish
 

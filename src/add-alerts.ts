@@ -3,9 +3,11 @@ import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert} from "./index.js";
-import {navigateToSymbol, logout, login} from "./service/tv-page-actions.js";
+import {navigateToSymbol, login} from "./service/tv-page-actions.js";
 import {ISingleAlertSettings} from "./interfaces";
-
+import log from "./service/log.js"
+import kleur from "kleur";
+import {waitForTimeout} from "./index.js";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -28,13 +30,14 @@ const main = async () => {
 
     const configFileName = process.argv[2] || "config.yml"
 
-    if (!fs.exists) {
-        console.error("Unable to find config file: ", configFileName)
+    if (!fs.existsSync(configFileName)) {
+        log.error(`Unable to find config file: ${configFileName}`)
+        process.exit(1)
     }
 
-    console.log("Using config file: ", configFileName)
+    log.info("Using config file: ", kleur.yellow(configFileName))
 
-    console.log("Press Ctrl-C to stop this script")
+    log.info("Press Ctrl-C to stop this script")
 
     const configString = await fs.readFileSync(configFileName, {encoding: "utf-8"})
 
@@ -58,15 +61,17 @@ const main = async () => {
     if (headless) {
         page = await browser.newPage();
 
+        log.trace(`Go to ${config.tradingview.chartUrl} and wait until networkidle2`)
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
             waitUntil: 'networkidle2'
         });
+
 
         accessDenied = pageResponse.status() === 403
 
     } else {
         page = (await browser.pages())[0];
-        await page.waitForTimeout(3000)
+        await waitForTimeout(5, "let page load and see if access is denied")
         accessDenied = await page.evaluate(() => {
             return document.title.includes("Denied");
         });
@@ -79,8 +84,8 @@ const main = async () => {
             await login(page, config.tradingview.username, config.tradingview.password)
 
         } else {
-            console.log("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
-            await page.waitForTimeout(1000000)
+            log.warn("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again")
+            await waitForTimeout(1000000)
             await browser.close()
             process.exit(1)
         }
@@ -88,9 +93,9 @@ const main = async () => {
 
     }
 
-    await page.waitForTimeout(2000)
+    await waitForTimeout(3, "wait a little longer for page to load")
 
-    const blackListRows = config.files.exclude? await readFilePromise(config.files.exclude) : []
+    const blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : []
 
     const isBlacklisted = (symbol: string) => {
         for (const row of blackListRows) {
@@ -103,21 +108,25 @@ const main = async () => {
 
     if (config.tradingview.interval) {
         await configureInterval(config.tradingview.interval, page)
+        await waitForTimeout(3, "after changing the interval")
     }
-    await page.waitForTimeout(3000)
 
     const symbolRows = await readFilePromise(config.files.input)
 
     for (const row of symbolRows) {
 
         if (isBlacklisted(row.symbol)) {
-            console.warn(`Not adding blacklisted symbol: `, row.symbol)
+            log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol))
             continue
         }
 
-        console.log(`Adding symbol: ${row.symbol}  ( ${row.base} priced in ${row.quote} )`)
+        log.info(`Adding symbol: ${kleur.magenta(row.symbol)}  ( ${row.base} priced in ${row.quote} )`)
+
+        await waitForTimeout(2, "let things settle from processing last alert")
 
         await navigateToSymbol(page, row.symbol)
+
+        await waitForTimeout(2, "after navigating to ticker")
 
         const message = alertConfig.message.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base)
 
@@ -126,7 +135,7 @@ const main = async () => {
         const singleAlertSettings: ISingleAlertSettings = {
             name: alertName,
             message,
-            condition:{
+            condition: {
                 primaryLeft: alertConfig.condition.primaryLeft,
                 primaryRight: alertConfig.condition.primaryRight,
                 secondary: alertConfig.condition.secondary,
@@ -134,25 +143,36 @@ const main = async () => {
                 tertiaryRight: alertConfig.condition.tertiaryRight,
             },
             option: alertConfig.option,
-            actions: {
+        }
+
+        if (alertConfig.actions) {
+            singleAlertSettings.actions = {
                 notifyOnApp: alertConfig.actions.notifyOnApp,
                 showPopup: alertConfig.actions.showPopup,
                 sendEmail: alertConfig.actions.sendEmail,
-                webhook: {
+            }
+            if (alertConfig.actions.webhook) {
+                singleAlertSettings.actions.webhook = {
                     enabled: alertConfig.actions.webhook.enabled,
                     url: alertConfig.actions.webhook.url
-                },
-            },
+                }
+            }
 
         }
+
 
         await addAlert(page, singleAlertSettings)
     }
 
 
-    await page.waitForTimeout(3000)
+    await waitForTimeout(3)
     await browser.close()
 }
 
 
-main().catch(error => console.error(error))
+main().catch(error => {
+    log.error(error)
+    process.exit(1)
+}).then(() => {
+    process.exit(0)
+})

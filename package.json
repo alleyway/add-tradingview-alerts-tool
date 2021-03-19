@@ -19,12 +19,12 @@
     "build": "npx tsc",
     "postinstall": "npx tsc",
     "prepublishOnly": "npx tsc",
-    "fetch:binance": "npx tsc && cross-env EXCHANGE=BINANCE node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:binanceus": "npx tsc && cross-env EXCHANGE=BINANCEUS node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:ftx": "npx tsc && cross-env EXCHANGE=FTX node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:coinbase": "npx tsc && cross-env EXCHANGE=COINBASE node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:bittrex": "npx tsc && cross-env EXCHANGE=BITTREX node -r source-map-support/register dist/fetch-pairs.js",
-    "add-alerts": "npx tsc && node -r source-map-support/register dist/add-alerts.js"
+    "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:binanceus": "npx tsc && npx cross-env EXCHANGE=BINANCEUS node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:ftx": "npx tsc && npx cross-env EXCHANGE=FTX node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:coinbase": "npx tsc && npx cross-env EXCHANGE=COINBASE node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:bittrex": "npx tsc && npx cross-env EXCHANGE=BITTREX node -r source-map-support/register dist/fetch-pairs.js",
+    "add-alerts": "npx tsc && npx cross-env node -r source-map-support/register dist/add-alerts.js"
   },
   "keywords": [
     "tradingview",
@@ -42,9 +42,11 @@
   "dependencies": {
     "@fast-csv/format": "^4.3.5",
     "@fast-csv/parse": "^4.3.6",
+    "consola": "^2.15.3",
     "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",
     "fast-csv": "^4.3.6",
+    "kleur": "^4.1.4",
     "node-fetch": "^2.6.1",
     "puppeteer": "^7.1.0",
     "source-map-support": "^0.5.19",

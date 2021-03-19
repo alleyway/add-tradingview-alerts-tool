@@ -11,6 +11,8 @@ import {
     fetchFirstXPath
 } from "./service/tv-page-actions.js"
 import {fetchPairsForExchange} from "./service/exchange-service.js"
+import {waitForTimeout} from "./service/common-service.js"
+import log from "./service/log.js"
 import {ISingleAlertSettings, ICsvSymbol} from "./interfaces";
 
 export {
@@ -26,6 +28,8 @@ export {
     logout,
     fetchPairsForExchange,
     ISingleAlertSettings,
-    ICsvSymbol
+    ICsvSymbol,
+    waitForTimeout,
+    log
 }
 

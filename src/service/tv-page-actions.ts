@@ -159,7 +159,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         const conditionOrInputValue = String(condition[key]);
         log.trace(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`)
 
-        await waitForTimeout(1);
+        await waitForTimeout(.7);
 
         if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
 
@@ -169,7 +169,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 // must be a dropdown...
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
-                await waitForTimeout(1, "let dropdown populate");
+                await waitForTimeout(.5, "let dropdown populate");
                 await selectFromDropDown(conditionOrInputValue)
 
             } catch (TimeoutError) {

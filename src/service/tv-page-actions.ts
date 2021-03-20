@@ -268,7 +268,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await page.keyboard.press("a")
     await page.keyboard.up('AltLeft')
 
-    await waitForTimeout(.5, "after clicking shortcut for new alert dialog");
+    await waitForTimeout(1, "after clicking shortcut for new alert dialog");
 
     await configureSingleAlertSettings(page, singleAlertSettings)
 

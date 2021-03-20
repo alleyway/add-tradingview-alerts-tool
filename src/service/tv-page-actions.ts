@@ -272,7 +272,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
 
     await configureSingleAlertSettings(page, singleAlertSettings)
 
-    await waitForTimeout(1);
+    await waitForTimeout(.5);
 
     await clickSubmit(page)
 

@@ -69,7 +69,7 @@ const alertActionCorresponding = {
 
 const clickInputAndDelete = async (page, inputElement) => {
 
-    await page.evaluate( (el) => el.value = "", inputElement)
+    await page.evaluate((el) => el.value = "", inputElement)
 
     // await inputElement.click({clickCount: 1})
     // await waitForTimeout(.2);
@@ -176,11 +176,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 await selectFromDropDown(conditionOrInputValue)
 
             } catch (TimeoutError) {
-                log.trace("Timed out. Maybe it's not a dropdown. Search for 'input' xpath query")
-                const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
-                log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`)
-                await clickInputAndDelete(page, valueInput)
-                await valueInput.type(String(conditionOrInputValue))
+                if (inputXpathQueries[key]) {
+                    log.trace("Timed out. Maybe it's not a dropdown. Search for 'input' xpath query")
+                    const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
+                    log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`)
+                    await clickInputAndDelete(page, valueInput)
+                    await valueInput.type(String(conditionOrInputValue))
+                } else {
+                    throw (new Error("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
+                }
+
             }
         }
     }

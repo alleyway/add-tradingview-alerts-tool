@@ -96,15 +96,13 @@ export const login = async (page, username, pass) => {
     await waitForTimeout(.5);
     await takeScreenshot(page, "shouldbe_before_password_entry")
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']')
-
-    await passwordInput.click()
     log.trace("typing password")
-    await Promise.all([
-        passwordInput.type(`${pass}${String.fromCharCode(13)}`)
-        ,
-        page.waitForNavigation({waitUntil: "networkidle2"})
-    ])
+    await passwordInput.type(pass)
 
+    const submitButton = await fetchFirstXPath(page, '//button[@type=\'submit\']')
+    log.trace("clicking submit button")
+    submitButton.click()
+    await page.waitForNavigation({waitUntil: "networkidle2"})
 
 }
 

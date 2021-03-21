@@ -97,8 +97,10 @@ export const login = async (page, username, pass) => {
     await takeScreenshot(page, "shouldbe_before_password_entry")
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']')
 
-    await Promise.all([
-        passwordInput.type(`${pass}${String.fromCharCode(13)}`),
+    await Promise.all([async () => {
+        log.trace("typing password")
+        await passwordInput.type(`${pass}${String.fromCharCode(13)}`)
+    },
         page.waitForNavigation({waitUntil: "networkidle2"})
     ])
 

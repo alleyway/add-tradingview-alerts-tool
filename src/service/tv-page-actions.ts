@@ -102,7 +102,7 @@ export const login = async (page, username, pass) => {
     const submitButton = await fetchFirstXPath(page, '//button[@type=\'submit\']')
     log.trace("clicking submit button")
     submitButton.click()
-    await page.waitForNavigation({waitUntil: "networkidle2"})
+    await page.waitForNavigation()
 
 }
 

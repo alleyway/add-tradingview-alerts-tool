@@ -21,7 +21,7 @@ export const fetchFirstXPath = async (page, selector: string, timeout = 20000) =
 }
 
 
-export const takeScreenshot = async (page, name: string) => {
+export const takeScreenshot = async (page, name: string = "unnamed") => {
     if (screenshot) {
         const screenshotPath = `screenshot_${new Date().getTime()}_${name}.png`
         log.trace(`saving screenshot: ${screenshotPath}`)

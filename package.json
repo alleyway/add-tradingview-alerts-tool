@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "npx tsc",
-    "postinstall": "npx tsc",
+    "prepare": "npx tsc",
     "prepublishOnly": "npx tsc",
     "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node -r source-map-support/register dist/fetch-pairs.js",
     "fetch:binanceus": "npx tsc && npx cross-env EXCHANGE=BINANCEUS node -r source-map-support/register dist/fetch-pairs.js",

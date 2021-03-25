@@ -10,7 +10,6 @@
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
   "main": "./dist/index",
-  "types": "./src/interfaces.d.ts",
   "files": [
     "src",
     "dist"

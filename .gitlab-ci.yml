@@ -17,3 +17,7 @@ run_tam:
     - npm install npm -g
     - npm install
     - npm run build
+    - npm run fetch:binance eth
+    - npm run fetch:ftx btc
+    - npm run fetch:binanceus usdt
+    - npm run fetch:bittrex btc

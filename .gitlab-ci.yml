@@ -1,0 +1,19 @@
+variables:
+  FORCE_COLOR: '3'
+
+stages:
+  - build
+
+run_tam:
+  stage: build
+  #  tags:
+  #    - macmini
+  only:
+    refs:
+      - develop
+  image: node:14.16.0-buster-slim
+  script:
+    - node -v
+    - npm install npm -g
+    - npm install
+    - npm run build

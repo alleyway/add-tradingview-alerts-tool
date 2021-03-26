@@ -13,7 +13,7 @@ import {
 import {fetchPairsForExchange} from "./service/exchange-service.js"
 import {waitForTimeout} from "./service/common-service.js"
 import log from "./service/log.js"
-import {ISingleAlertSettings, ICsvSymbol} from "./interfaces";
+import {ISingleAlertSettings} from "./interfaces";
 
 export {
     fetchFirstXPath,
@@ -28,7 +28,6 @@ export {
     logout,
     fetchPairsForExchange,
     ISingleAlertSettings,
-    ICsvSymbol,
     waitForTimeout,
     log
 }

@@ -14,9 +14,9 @@ const main = async () => {
 
     const EXCHANGE = (process.env.EXCHANGE || "").toLowerCase()
 
-    const csvSymbolArray = await fetchPairsForExchange(EXCHANGE, QUOTE_ASSET)
+    const exchangeSymbols = await fetchPairsForExchange(EXCHANGE, QUOTE_ASSET)
 
-    if (!csvSymbolArray || csvSymbolArray.length == 0) {
+    if (!exchangeSymbols || exchangeSymbols.length == 0) {
         console.error("No symbols fetched!")
         process.exit(1)
     }
@@ -33,12 +33,12 @@ const main = async () => {
             process.exit()
         });
 
-    for (const csvSymbol of csvSymbolArray) {
+    for (const csvSymbol of exchangeSymbols) {
         csvStream.write({
-            symbol: csvSymbol.symbol,
-            base: csvSymbol.base,
-            quote: csvSymbol.quote,
-            name: csvSymbol.name
+            symbol: csvSymbol.id,
+            base: csvSymbol.baseAsset,
+            quote: csvSymbol.quoteAsset,
+            name: ""
         })
         numPairs += 1
     }

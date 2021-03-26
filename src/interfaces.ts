@@ -24,9 +24,9 @@ export interface ISingleAlertSettings {
     message?: string
 }
 
-export interface ICsvSymbol {
-    symbol: string,
-    quote: string,
-    base: string
-    name: string
+export interface IExchangeSymbol {
+    id: string,
+    exchange: string,
+    quoteAsset: string,
+    baseAsset: string
 }

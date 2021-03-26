@@ -1,58 +1,50 @@
-import {ICsvSymbol} from "../interfaces";
+import {IExchangeSymbol} from "../interfaces";
 import fetch from "node-fetch"
-const fetchBittrex = async (quoteAsset: string): Promise<ICsvSymbol[]> => {
+import {ExchangeSymbol} from "../classes.js";
+
+const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets")
 
     const responseObject = await resp.json()
 
     const symbols = responseObject.result
 
-    const csvSymbols: ICsvSymbol[] = []
+    const exchangeSymbols: IExchangeSymbol[] = []
 
     for (const symbol of symbols) {
 
         if (symbol.IsActive && symbol.BaseCurrency === quoteAsset.toUpperCase()) {
-
-            csvSymbols.push({
-                symbol: `BITTREX:${symbol.MarketCurrency}${symbol.BaseCurrency}`,
-                base: symbol.MarketCurrency,
-                quote: symbol.BaseCurrency,
-                name: ""
-            })
+            exchangeSymbols.push(
+                new ExchangeSymbol("BITTREX", symbol.MarketCurrency, symbol.BaseCurrency)
+            )
         }
     }
-
-    return csvSymbols
+    return exchangeSymbols
 }
 
-const fetchCoinbase = async (quoteAsset: string): Promise<ICsvSymbol[]> => {
+const fetchCoinbase = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.pro.coinbase.com/products")
 
     const responseObject = await resp.json()
 
     const symbols = responseObject
 
-    const csvSymbols: ICsvSymbol[] = []
+    const exchangeSymbols: IExchangeSymbol[] = []
 
     for (const symbol of symbols) {
 
         if (!symbol.trading_disabled && symbol.status == "online" && symbol.quote_currency === quoteAsset.toUpperCase()) {
 
-            csvSymbols.push({
-                symbol: `COINBASE:${symbol.base_currency}${symbol.quote_currency}`,
-                base: symbol.base_currency,
-                quote: symbol.quote_currency,
-                name: ""
-            })
+            exchangeSymbols.push(
+                new ExchangeSymbol("COINBASE", symbol.base_currency, symbol.quote_currency)
+            )
         }
     }
-
-    return csvSymbols
+    return exchangeSymbols
 }
 
 
-
-const fetchFtx = async (quoteAsset: string): Promise<ICsvSymbol[]> => {
+const fetchFtx = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const resp = await fetch("https://ftx.com/api/markets")
 
@@ -60,33 +52,33 @@ const fetchFtx = async (quoteAsset: string): Promise<ICsvSymbol[]> => {
 
     const symbols = responseObject.result
 
-    const csvSymbols: ICsvSymbol[] = []
+    const exchangeSymbols: IExchangeSymbol[] = []
 
     for (const symbol of symbols) {
         if (symbol.enabled && symbol.quoteCurrency === quoteAsset.toUpperCase()) {
 
-            csvSymbols.push({
-                symbol: `FTX:${symbol.baseCurrency}${symbol.quoteCurrency}`,
-                base: symbol.baseCurrency,
-                quote: symbol.quoteCurrency,
-                name: ""
-            })
+            exchangeSymbols.push(
+                new ExchangeSymbol("FTX", symbol.baseCurrency, symbol.quoteCurrency)
+            )
 
         } else if (quoteAsset.toUpperCase() == "PERP" && symbol.enabled && symbol.name.endsWith("PERP")) {
-            csvSymbols.push({
-                symbol: `FTX:${symbol.underlying}PERP`,
-                base: symbol.baseCurrency || symbol.underlying,
-                quote: symbol.quoteCurrency || "USD",
-                name: ""
-            })
+
+            exchangeSymbols.push(
+                {
+                    exchange: "FTX",
+                    id: `FTX:${symbol.underlying}PERP`,
+                    baseAsset: symbol.baseCurrency || symbol.underlying,
+                    quoteAsset: symbol.quoteCurrency || "USD",
+                }
+            )
         }
     }
 
-    return csvSymbols
+    return exchangeSymbols
 }
 
 
-const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<ICsvSymbol[]> => {
+const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
 
@@ -96,48 +88,46 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<ICsvSymb
 
     const {symbols} = responseObject
 
-    const csvSymbols: ICsvSymbol[] = []
+    const exchangeSymbols: IExchangeSymbol[] = []
 
     const exchange = isUs ? "BINANCEUS" : "BINANCE"
 
     for (const symbol of symbols) {
         if (symbol.status === "TRADING" && symbol.quoteAsset === quoteAsset.toUpperCase()) {
 
-            csvSymbols.push({
-                symbol: `${exchange}:${symbol.baseAsset}${symbol.quoteAsset}`,
-                base: symbol.baseAsset,
-                quote: symbol.quoteAsset,
-                name: ""
-            })
+            exchangeSymbols.push(
+                new ExchangeSymbol(exchange, symbol.baseAsset, symbol.quoteAsset)
+            )
+
         }
     }
 
-    return csvSymbols
+    return exchangeSymbols
 }
 
-export const fetchPairsForExchange = async (exchange: string, quoteAsset: string): Promise<ICsvSymbol[]> => {
+export const fetchPairsForExchange = async (exchange: string, quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
-    let csvSymbolArray: ICsvSymbol[];
+    let symbolArray: IExchangeSymbol[];
 
     switch (exchange) {
         case "binance":
-            csvSymbolArray = await fetchBinance(false, quoteAsset)
+            symbolArray = await fetchBinance(false, quoteAsset)
             break;
         case "binanceus":
-            csvSymbolArray = await fetchBinance(true, quoteAsset)
+            symbolArray = await fetchBinance(true, quoteAsset)
             break;
         case "ftx":
-            csvSymbolArray = await fetchFtx(quoteAsset)
+            symbolArray = await fetchFtx(quoteAsset)
             break;
         case "coinbase":
-            csvSymbolArray = await fetchCoinbase(quoteAsset)
+            symbolArray = await fetchCoinbase(quoteAsset)
             break;
         case "bittrex":
-            csvSymbolArray = await fetchBittrex(quoteAsset)
+            symbolArray = await fetchBittrex(quoteAsset)
             break;
         default:
             console.error("No exchange exists: ", exchange)
             break;
     }
-    return csvSymbolArray
+    return symbolArray
 }

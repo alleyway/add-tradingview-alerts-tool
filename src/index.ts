@@ -12,7 +12,7 @@ import {
 } from "./service/tv-page-actions"
 import {fetchPairsForExchange} from "./service/exchange-service"
 import {waitForTimeout} from "./service/common-service"
-import log from "./service/log.js"
+import log from "./service/log"
 import {ISingleAlertSettings} from "./interfaces";
 
 export {

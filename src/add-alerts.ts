@@ -5,7 +5,7 @@ import YAML from "yaml"
 import {configureInterval, addAlert} from "./index";
 import {navigateToSymbol, login} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
-import log from "./service/log.js"
+import log from "./service/log"
 import kleur from "kleur";
 import {waitForTimeout} from "./index";
 

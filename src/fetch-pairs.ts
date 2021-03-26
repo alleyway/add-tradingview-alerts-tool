@@ -1,6 +1,6 @@
 import fs from "fs";
 import * as csv from "fast-csv";
-import {fetchPairsForExchange} from "./service/exchange-service.js";
+import {fetchPairsForExchange} from "./service/exchange-service";
 
 
 const main = async () => {

@@ -9,9 +9,9 @@ import {
     login,
     logout,
     fetchFirstXPath
-} from "./service/tv-page-actions.js"
-import {fetchPairsForExchange} from "./service/exchange-service.js"
-import {waitForTimeout} from "./service/common-service.js"
+} from "./service/tv-page-actions"
+import {fetchPairsForExchange} from "./service/exchange-service"
+import {waitForTimeout} from "./service/common-service"
 import log from "./service/log.js"
 import {ISingleAlertSettings} from "./interfaces";
 

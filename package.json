@@ -9,7 +9,7 @@
   },
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
-  "main": "./dist/index",
+  "main": "./src/index",
   "files": [
     "src",
     "dist"

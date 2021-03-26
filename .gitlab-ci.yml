@@ -11,6 +11,7 @@ run_tam:
   only:
     refs:
       - develop
+      - master
   image: node:14.16.0-buster-slim
   script:
     - node -v

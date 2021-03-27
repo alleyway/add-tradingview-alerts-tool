@@ -1,4 +1,4 @@
-import log from "./log";
+import log from "./log.js";
 import kleur from "kleur";
 
 const BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;

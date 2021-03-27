@@ -1,6 +1,6 @@
 import {IExchangeSymbol} from "../interfaces";
 import fetch from "node-fetch"
-import {ExchangeSymbol} from "../classes";
+import {ExchangeSymbol} from "../classes.js";
 
 const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets")

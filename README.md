@@ -1,5 +1,6 @@
 *We are working on a service that would completely automate this tool!*
-*Register your interest as a beta tester at [tradingview-alerts-manager.com](https://tradingview-alerts-manager.com)
+
+*Register your interest as a beta tester at [tradingview-alerts-manager.com](https://tradingview-alerts-manager.com)*
 
 # Add TradingView Alerts Tool
 

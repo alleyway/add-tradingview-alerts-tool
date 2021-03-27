@@ -18,12 +18,12 @@
     "build": "npx tsc",
     "prepare": "npx tsc",
     "prepublishOnly": "npx tsc",
-    "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:binanceus": "npx tsc && npx cross-env EXCHANGE=BINANCEUS node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:ftx": "npx tsc && npx cross-env EXCHANGE=FTX node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:coinbase": "npx tsc && npx cross-env EXCHANGE=COINBASE node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:bittrex": "npx tsc && npx cross-env EXCHANGE=BITTREX node -r source-map-support/register dist/fetch-pairs.js",
-    "add-alerts": "npx tsc && npx cross-env node -r source-map-support/register dist/add-alerts.js",
+    "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:binanceus": "npx tsc && npx cross-env EXCHANGE=BINANCEUS node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:ftx": "npx tsc && npx cross-env EXCHANGE=FTX node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:coinbase": "npx tsc && npx cross-env EXCHANGE=COINBASE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
+    "fetch:bittrex": "npx tsc && npx cross-env EXCHANGE=BITTREX node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
+    "add-alerts": "npx tsc && npx cross-env node --es-module-specifier-resolution=node -r source-map-support/register dist/add-alerts.js",
     "release": "release-it"
   },
   "keywords": [

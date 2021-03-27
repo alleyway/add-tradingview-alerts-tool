@@ -2,10 +2,10 @@ import csv from 'csv-parser'
 import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
-import {configureInterval, addAlert, waitForTimeout} from "./index.js";
-import {navigateToSymbol, login} from "./service/tv-page-actions.js";
+import {configureInterval, addAlert, waitForTimeout} from "./index";
+import {navigateToSymbol, login} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
-import log from "./service/log.js"
+import log from "./service/log"
 import kleur from "kleur";
 
 

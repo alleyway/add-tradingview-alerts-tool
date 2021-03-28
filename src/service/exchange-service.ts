@@ -2,6 +2,9 @@ import {IExchangeSymbol} from "../interfaces";
 import fetch from "node-fetch"
 import {ExchangeSymbol} from "../classes";
 
+
+const CONST_ALL = "all"
+
 const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets")
 
@@ -13,7 +16,7 @@ const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     for (const symbol of symbols) {
 
-        if (symbol.IsActive && symbol.BaseCurrency === quoteAsset.toUpperCase()) {
+        if (symbol.IsActive && (quoteAsset === CONST_ALL || symbol.BaseCurrency === quoteAsset.toUpperCase())) {
             exchangeSymbols.push(
                 new ExchangeSymbol("BITTREX", symbol.MarketCurrency, symbol.BaseCurrency)
             )
@@ -33,7 +36,8 @@ const fetchCoinbase = async (quoteAsset: string): Promise<IExchangeSymbol[]> => 
 
     for (const symbol of symbols) {
 
-        if (!symbol.trading_disabled && symbol.status == "online" && symbol.quote_currency === quoteAsset.toUpperCase()) {
+        if (!symbol.trading_disabled && symbol.status == "online" &&
+            (quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
 
             exchangeSymbols.push(
                 new ExchangeSymbol("COINBASE", symbol.base_currency, symbol.quote_currency)
@@ -55,7 +59,10 @@ const fetchFtx = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const exchangeSymbols: IExchangeSymbol[] = []
 
     for (const symbol of symbols) {
-        if (symbol.enabled && symbol.quoteCurrency === quoteAsset.toUpperCase()) {
+        if (symbol.enabled &&
+            (quoteAsset === CONST_ALL || symbol.quoteCurrency === quoteAsset.toUpperCase())
+            && symbol.quoteCurrency && symbol.baseCurrency
+        ) {
 
             exchangeSymbols.push(
                 new ExchangeSymbol("FTX", symbol.baseCurrency, symbol.quoteCurrency)
@@ -93,7 +100,7 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchang
     const exchange = isUs ? "BINANCEUS" : "BINANCE"
 
     for (const symbol of symbols) {
-        if (symbol.status === "TRADING" && symbol.quoteAsset === quoteAsset.toUpperCase()) {
+        if (symbol.status === "TRADING" && (quoteAsset === CONST_ALL || symbol.quoteAsset === quoteAsset.toUpperCase())) {
 
             exchangeSymbols.push(
                 new ExchangeSymbol(exchange, symbol.baseAsset, symbol.quoteAsset)
@@ -105,7 +112,7 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchang
     return exchangeSymbols
 }
 
-export const fetchPairsForExchange = async (exchange: string, quoteAsset: string): Promise<IExchangeSymbol[]> => {
+export const fetchPairsForExchange = async (exchange: string, quoteAsset: string = CONST_ALL): Promise<IExchangeSymbol[]> => {
 
     let symbolArray: IExchangeSymbol[];
 

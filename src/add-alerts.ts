@@ -5,8 +5,9 @@ import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout} from "./index";
 import {navigateToSymbol, login} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
-import log from "./service/log"
+import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
+import {logBaseDelay} from "./service/common-service";
 
 
 const readFilePromise = (filename: string) => {
@@ -27,6 +28,9 @@ const readFilePromise = (filename: string) => {
 const main = async () => {
 
     const headless = false
+
+    logLogInfo()
+    logBaseDelay()
 
     const configFileName = process.argv[2] || "config.yml"
 

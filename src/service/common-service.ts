@@ -3,7 +3,9 @@ import kleur from "kleur";
 
 const BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;
 
-log.info(`Base delay: ${kleur.yellow(BASE_DELAY)} (you can set env variable BASE_DELAY=1000 to increase/decrease speed)`)
+export const logBaseDelay = () => {
+    log.info(`Base delay: ${kleur.yellow(BASE_DELAY)} (you can set env variable BASE_DELAY=1000 to increase/decrease speed)`)
+}
 
 export const waitForTimeout = (millsOrMultplier: number, message: string = ""): Promise<void> => {
 

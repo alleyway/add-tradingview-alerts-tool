@@ -4,7 +4,7 @@ variables:
 stages:
   - build
 
-run_tam:
+build_and_test:
   stage: build
   #  tags:
   #    - macmini

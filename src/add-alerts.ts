@@ -47,6 +47,11 @@ const main = async () => {
 
     const config = YAML.parse(configString)
 
+    if (config.tradingview.chartUrl === "https://www.tradingview.com/chart/XXXXXXXX/") {
+        log.fatal("oops! Looks like you need to set your chartUrl in the config file!")
+        process.exit(1)
+    }
+
     const {alert: alertConfig} = config
 
     const browser = await puppeteer.launch({

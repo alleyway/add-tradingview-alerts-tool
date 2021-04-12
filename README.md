@@ -30,7 +30,7 @@ MacOS/Windows/Linux
 
 [Install NodeJS](https://nodejs.org/en/)
 
-Minimum node version: 12
+Minimum node version: 14
 
 Check your node version with the following command:
 

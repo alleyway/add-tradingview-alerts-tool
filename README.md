@@ -96,34 +96,53 @@ alert:
 
 ## Fetching Trading Pairs
 
-Allows fetching trading pairs on either Binance or FTX (want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)) 
+Creates CSV file for use as input (see above config) for supported exchanges. Want other exchanges? [File an issue!](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)) 
 
-Generates CSV files to be used as input (see config above) 
- 
+#### Download Trading Pairs From Binance/BinanceUS
+
+This command downloads all USDT trading pairs for Binance: 
+```yaml 
     npm run fetch:binance usdt
-
-creates **binance_usdt_pairs.csv** 
     
-    npm run fetch:binance btc
+    # Creates binance_usdt_pairs.csv    
+```
 
-creates **binance_btc_pairs.csv**
+This command downloads all trading pairs for BinanceUS:
+```yaml
+    npm run fetch:binanceus all
 
+    # Creates binanceus_all_pairs.csv
+```
+
+#### Download Trading Pairs From FTX
+
+In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contracts by specifying "perp" 
+
+```yaml
     npm run fetch:ftx perp
 
-creates **ftx_perp_pairs.csv**  (unique for grabbing perpetual futures contracts)
+    # Creates ftx_perp_pairs.csv
+```
 
-    npm run fetch:bittrex btc
 
-creates **bittrex_btc_pairs.csv**
+#### Download Trading Pairs From Coinbase
 
+```yaml
     npm run fetch:coinbase usd
 
-creates **coinbase_usd_pairs.csv**
+    # Creates coinbase_usd_pairs.csv
+```
 
+
+#### Download Trading Pairs From Bittrex
+
+```yaml
+    npm run fetch:bittrex btc
+
+    # Creates bittrex_btc_pairs.csv
+```
 
 ...and so on..
-
-
 
 
 ## Adding TradingView Alerts 

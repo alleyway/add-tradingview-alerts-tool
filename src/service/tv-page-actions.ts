@@ -2,6 +2,7 @@ import {ISingleAlertSettings} from "../interfaces";
 import {waitForTimeout} from "./common-service";
 import log from "./log"
 import kleur from "kleur";
+import {NoInputFoundError} from "../classes";
 
 
 // data-dialog-name="gopro"
@@ -148,18 +149,22 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`)
         const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
         const elements = await page.$x(selector)
+        let found = false
         for (const el of elements) {
             const optionText = await page.evaluate(element => element.innerText, el);
             if (optionText.indexOf(conditionToMatch) > -1) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
+                found = true
                 el.click()
                 break;
             }
         }
+        if (!found) throw Error(`Unable to partial match ${conditionToMatch} in dropdown`)
 
     }
 
-    for (const [key, xpathQuery] of Object.entries(xpathQueries)) {
+
+    const performActualEntry = async (key) => {
         const conditionOrInputValue = String(condition[key]);
         log.trace(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`)
 
@@ -169,27 +174,48 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
             try {
                 log.trace(`Searching potential dropdown xpath of ${kleur.yellow(key)}`)
-                const targetElement = await fetchFirstXPath(page, xpathQuery, 3000)
+                const targetElement = await fetchFirstXPath(page, xpathQueries[key], 3000)
                 // must be a dropdown...
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
                 await waitForTimeout(.5, "let dropdown populate");
                 await selectFromDropDown(conditionOrInputValue)
 
-            } catch (TimeoutError) {
-                if (inputXpathQueries[key]) {
-                    log.trace("Timed out. Maybe it's not a dropdown. Search for 'input' xpath query")
-                    const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
-                    log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`)
-                    await clickInputAndDelete(page, valueInput)
-                    await valueInput.type(String(conditionOrInputValue))
-                } else {
-                    throw (new Error("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
-                }
+            } catch (e) {
 
+                if (e.constructor.name === "TimeoutError") {
+                    if (inputXpathQueries[key]) {
+                        log.trace("Timed out. Maybe it's not a dropdown. Search for 'input' xpath query")
+                        const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
+                        log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`)
+                        await clickInputAndDelete(page, valueInput)
+                        await valueInput.type(String(conditionOrInputValue))
+                    } else {
+                        throw (new NoInputFoundError("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
+                    }
+                } else {
+                    throw e
+                }
             }
         }
+
     }
+
+    await performActualEntry("primaryLeft")
+    try {
+        await performActualEntry("primaryRight")
+    } catch (e) {
+        if (e instanceof NoInputFoundError){
+            log.trace("NoInputFoundError, maybe we need to send secondary before setting primaryRight")
+            // sometimes the secondary must be set first before the primaryRight shows up
+            await performActualEntry("secondary")
+            await performActualEntry("primaryRight")
+        } else {
+            throw e
+        }
+    }
+    await performActualEntry("tertiaryLeft")
+    await performActualEntry("tertiaryRight")
 
     await waitForTimeout(.5);
 

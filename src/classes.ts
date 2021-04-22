@@ -15,3 +15,10 @@ export class ExchangeSymbol implements IExchangeSymbol {
         this.baseAsset = baseAsset;
     }
 }
+
+export class NoInputFoundError extends Error {
+
+    constructor(message: string) {
+        super(message);
+    }
+}

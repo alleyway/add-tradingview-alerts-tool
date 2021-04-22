@@ -239,12 +239,6 @@ Send ETH to
 
 Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-generator/dphfifdfpfabhbkghlmnkkdghbmocfeb) 
  
-### Publish to NPM
+### Publishing
 
-edit version in package.json
-
-    npm login
-
-    npm publish
-
-[edit releases](https://github.com/alleyway/add-tradingview-alerts-tool/releases)
+    npm run release-it

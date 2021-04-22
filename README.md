@@ -241,4 +241,5 @@ Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-genera
  
 ### Publishing
 
+    ./deploy_master.sh
     npm run release

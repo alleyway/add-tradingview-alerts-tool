@@ -241,4 +241,4 @@ Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-genera
  
 ### Publishing
 
-    npm run release-it
+    npm run release

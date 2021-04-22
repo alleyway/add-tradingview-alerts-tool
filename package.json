@@ -33,7 +33,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.6.11",
+  "version": "1.6.12",
   "devDependencies": {
     "release-it": "^14.6.1",
     "typescript": "^4.2.4"

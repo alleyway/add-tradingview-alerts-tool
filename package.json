@@ -9,12 +9,13 @@
   },
   "description": "Add TradingView Alerts in bulk",
   "type": "module",
-  "main": "./src/index",
+  "main": "./dist/index",
   "files": [
     "src",
     "dist"
   ],
   "scripts": {
+    "postinstall": "npx tsc",
     "build": "npx tsc",
     "prepublishOnly": "npx tsc",
     "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",

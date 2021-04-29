@@ -15,7 +15,6 @@
     "dist"
   ],
   "scripts": {
-    "postinstall": "npx tsc --project node_modules/@alleyway/add-tradingview-alerts-tool/tsconfig.json",
     "build": "npx tsc",
     "prepublishOnly": "npx tsc",
     "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",

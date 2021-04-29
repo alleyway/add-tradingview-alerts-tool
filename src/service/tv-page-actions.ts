@@ -204,6 +204,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     await performActualEntry("primaryLeft")
     try {
         await performActualEntry("primaryRight")
+        await performActualEntry("secondary")
     } catch (e) {
         if (e instanceof NoInputFoundError){
             log.trace("NoInputFoundError, maybe we need to send secondary before setting primaryRight")
@@ -287,7 +288,7 @@ export const clickSubmit = async (page) => {
 export const clickContinueIfWarning = async (page) => {
     try {
         log.trace("clickContinueIfWarning()")
-        const continueAnywayButton = await fetchFirstXPath(page, `//div[@data-name='warning-modal']/*//button[@name='ok-button']`,
+        const continueAnywayButton = await fetchFirstXPath(page, `//button[@name='continue']`,
             3000)
         continueAnywayButton.click()
         await waitForTimeout(3, "waiting after clicking 'continue anyway' button");

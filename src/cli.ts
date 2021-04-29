@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import {Command} from 'commander';
 import fetchPairsMain from "./fetch-pairs.js";
-import version from "./version.json"
+import manifest from "./manifest.json"
 const program = new Command();
 
 program
-    .version("1.2.2")
+    .version(manifest.version)
     .option('-d, --debug <level>', 'debug level (1-5)')
 
 

@@ -8,8 +8,8 @@ export class ExchangeSymbol implements IExchangeSymbol {
     quoteAsset: string;
     baseAsset: string;
 
-    constructor(exchange: string, baseAsset: string, quoteAsset: string) {
-        this.id = `${exchange.toUpperCase()}:${baseAsset}${quoteAsset}`
+    constructor(exchange: string, baseAsset: string, quoteAsset: string, id?: string) {
+        this.id = id || `${exchange.toUpperCase()}:${baseAsset}${quoteAsset}`
         this.exchange = exchange;
         this.quoteAsset = quoteAsset;
         this.baseAsset = baseAsset;

@@ -84,6 +84,31 @@ const fetchFtx = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     return exchangeSymbols
 }
 
+const fetchBinanceFutures = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+
+    const url = "https://fapi.binance.com/fapi/v1/exchangeInfo";
+
+    const resp = await fetch(url)
+
+    const responseObject = await resp.json()
+
+    const {symbols} = responseObject
+
+    const exchangeSymbols: IExchangeSymbol[] = []
+
+    const exchange = "BINANCE"
+
+    for (const symbol of symbols) {
+        if (symbol.status === "TRADING" && (quoteAsset === CONST_ALL || symbol.quoteAsset === quoteAsset.toUpperCase())) {
+            exchangeSymbols.push(
+                new ExchangeSymbol(exchange, symbol.baseAsset, symbol.quoteAsset,
+                    `${exchange.toUpperCase()}:${symbol.baseAsset}${symbol.quoteAsset}PERP`)
+            )
+        }
+    }
+
+    return exchangeSymbols
+}
 
 const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
@@ -117,6 +142,9 @@ export const fetchPairsForExchange = async (exchange: string, quoteAsset: string
     let symbolArray: IExchangeSymbol[];
 
     switch (exchange) {
+        case "binancefutures":
+            symbolArray = await fetchBinanceFutures(quoteAsset)
+            break;
         case "binance":
             symbolArray = await fetchBinance(false, quoteAsset)
             break;

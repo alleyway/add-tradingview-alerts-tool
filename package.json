@@ -40,12 +40,14 @@
   "license": "MIT",
   "version": "1.6.13",
   "devDependencies": {
+    "@release-it/bumper": "^2.0.0",
     "release-it": "^14.6.1",
     "typescript": "^4.2.4"
   },
   "dependencies": {
     "@fast-csv/format": "^4.3.5",
     "@fast-csv/parse": "^4.3.6",
+    "commander": "^7.2.0",
     "consola": "^2.15.3",
     "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",

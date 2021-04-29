@@ -1,5 +1,10 @@
 {
   "github": {
     "release": true
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": "src/version.json"
+    }
   }
 }

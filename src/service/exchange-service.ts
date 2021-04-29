@@ -1,6 +1,6 @@
-import {IExchangeSymbol} from "../interfaces";
+import {IExchangeSymbol} from "../interfaces.js";
 import fetch from "node-fetch"
-import {ExchangeSymbol} from "../classes";
+import {ExchangeSymbol} from "../classes.js";
 
 
 const CONST_ALL = "all"

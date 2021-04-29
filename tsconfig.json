@@ -18,7 +18,8 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": ["node"]
+    "types": ["node"],
+    "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": [

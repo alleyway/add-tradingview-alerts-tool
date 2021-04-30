@@ -28,10 +28,8 @@ const readFilePromise = (filename: string) => {
 const addAlertsMain = async (configFileName) => {
 
     const headless = false
-
     logLogInfo()
     logBaseDelay()
-
 
     if (!fs.existsSync(configFileName)) {
         log.error(`Unable to find config file: ${configFileName}`)

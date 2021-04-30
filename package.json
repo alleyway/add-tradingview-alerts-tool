@@ -55,6 +55,7 @@
     "fast-csv": "^4.3.6",
     "kleur": "^4.1.4",
     "node-fetch": "^2.6.1",
+    "prompts": "^2.4.1",
     "puppeteer": "^9.0.0",
     "source-map-support": "^0.5.19",
     "yaml": "^1.10.0"

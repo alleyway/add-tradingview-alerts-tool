@@ -7,6 +7,7 @@ import log from "./service/log.js";
 import addAlertsMain from "./add-alerts.js";
 import {initBaseDelay} from "./service/common-service.js";
 import initializeMain from "./initialize.js";
+import kleur from "kleur";
 // @ts-ignore
 const json = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));
 
@@ -25,6 +26,7 @@ const initialize = () => {
     if (options.delay) {
         initBaseDelay(Number(options.delay))
     }
+    log.info(`ATAT Version: ${kleur.yellow(json.version)} | Node Version: ${kleur.yellow(process.version)}`)
 }
 
 

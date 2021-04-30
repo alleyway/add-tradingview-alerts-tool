@@ -26,27 +26,23 @@ Watch as this tool enters your TradingView alerts automatically.
 
 MacOS/Windows/Linux
 
-[Install git](https://git-scm.com/)
-
 [Install NodeJS](https://nodejs.org/en/)
 
 Minimum node version: 14
-
-Check your node version with the following command:
-
-    node -v
-
-
 
 ## Installation
 
 Open Terminal/PowerShell and run the following:
 
-    git clone https://github.com/alleyway/add-tradingview-alerts-tool.git
-    cd add-tradingview-alerts-tool
-    npm install
-    npm install typescript -g
-    cp config.example.yml config.yml
+    # make sure you're running at least version 14
+    
+    node -v 
+
+    # install the 'atat' command tool
+    npm i @alleyway/add-tradingview-alerts-tool -g 
+    
+    # Follow prompts to initialize your tradingview-alerts-home 
+    atat init
     
 Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here) 
 
@@ -102,14 +98,14 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 
 This command downloads all USDT trading pairs for Binance: 
 ```yaml 
-    npm run fetch:binance usdt
+    atat fetch-pairs binance usdt
     
     # Creates binance_usdt_pairs.csv    
 ```
 
 This command downloads all trading pairs for BinanceUS:
 ```yaml
-    npm run fetch:binanceus all
+    atat fetch-pairs binanceus all
 
     # Creates binanceus_all_pairs.csv
 ```
@@ -119,7 +115,7 @@ This command downloads all trading pairs for BinanceUS:
 In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contracts by specifying "perp" 
 
 ```yaml
-    npm run fetch:ftx perp
+    atat fetch-pairs ftx perp
 
     # Creates ftx_perp_pairs.csv
 ```
@@ -128,7 +124,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Coinbase
 
 ```yaml
-    npm run fetch:coinbase usd
+    atat fetch-pairs coinbase usd
 
     # Creates coinbase_usd_pairs.csv
 ```
@@ -137,7 +133,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Bittrex
 
 ```yaml
-    npm run fetch:bittrex btc
+    atat fetch-pairs bittrex btc
 
     # Creates bittrex_btc_pairs.csv
 ```
@@ -158,7 +154,7 @@ You must actually create an alert once with those options, before they become de
 
 NOTE: You'll need to log into TradingView the first time you run the script, then you'll need to close the browser and re-run the command 
 
-    npm run add-alerts
+    atat add-alerts
 
 You can stop the script in Terminal/PowerShell by pressing Ctrl-C
     
@@ -168,9 +164,9 @@ If the tool gets interrupted for some reason, you can remove the rows of already
 
 ## Troubleshooting
 
-Moving too fast for your connection speed? Try setting the BASE_DELAY environment variable (default is 1000) 
+Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
 
-    npx cross-env BASE_DELAY=1500 npm run add-alerts
+    atat --delay 1500 add-alerts 
 
 Anything else? File an issue
 
@@ -182,12 +178,12 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 
 | Abstract                                                                                                        | Concretely                                                                                                                                                                                |
 |-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "npm run fetch:binance:btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
+| List of pairs quoted only in BTC                                                                                | Run "atat fetch-pairs binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
 | TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                     |
 | 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
-| A dedicated configuration file for the above                                                                    | npm run add-alerts config.btc.yml                                                                                                                                                         |
+| A dedicated configuration file for the above                                                                    | atat add-alerts config.btc.yml                                                                                                                                                         |
 
-NOTE: by default running "npm run add-alerts" will default to config.yml unless you specify one (eg. "npm run add-alerts config.btc.yml")
+NOTE: running "atat add-alerts" will default to config.yml unless you specify one (eg. "atat add-alerts config.btc.yml")
 
 ### Send a single alert to multiple bots(or use multiple commands)
 
@@ -238,8 +234,13 @@ Send ETH to
 ## Developer Notes
 
 Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-generator/dphfifdfpfabhbkghlmnkkdghbmocfeb) 
- 
+
+
 ### Publishing
 
+### Beta Testing
+    npm run release-beta
+
+### Stable Release
     ./deploy_master.sh
     npm run release

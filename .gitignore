@@ -8,3 +8,4 @@ config.yml
 /config.*.yml
 /blacklist.csv
 responses/
+tradingview-alerts-home

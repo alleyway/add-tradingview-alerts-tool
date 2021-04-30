@@ -28,7 +28,8 @@
     "fetch:coinbase": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "fetch:bittrex": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "add-alerts": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
-    "release": "release-it"
+    "release": "npx release-it",
+    "release-beta": "npx release-it minor --preRelease=beta"
   },
   "keywords": [
     "tradingview",

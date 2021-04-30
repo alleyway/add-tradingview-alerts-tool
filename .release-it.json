@@ -4,7 +4,7 @@
   },
   "plugins": {
     "@release-it/bumper": {
-      "out": "src/version.json"
+      "out": "src/manifest.json"
     }
   }
 }

@@ -29,7 +29,7 @@
     "fetch:bittrex": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "add-alerts": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "release": "npx release-it",
-    "release-beta": "npx release-it minor --preRelease=beta"
+    "release-beta": "npx release-it patch --preRelease=beta"
   },
   "keywords": [
     "tradingview",

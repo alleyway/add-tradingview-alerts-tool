@@ -39,7 +39,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.7.0-beta.3",
+  "version": "1.7.0-beta.4",
   "devDependencies": {
     "@release-it/bumper": "^2.0.0",
     "release-it": "^14.6.1",

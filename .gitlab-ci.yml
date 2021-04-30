@@ -18,7 +18,7 @@ build_and_test:
     - npm install npm -g
     - npm install
     - npm run build
-    - npm run fetch:binance eth
-    - npm run fetch:ftx btc
-    - npm run fetch:binanceus usdt
-    - npm run fetch:bittrex btc
+    - npx atat fetch-pairs binance eth
+    - npx atat fetch-pairs ftx btc
+    - npx atat fetch-pairs binanceus usdt
+    - npx atat fetch-pairs bittrex btc

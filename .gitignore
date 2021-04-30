@@ -6,4 +6,4 @@ user_data/
 config.yml
 *_pairs.csv
 config.*.yml
-blacklist.csv
+/blacklist.csv

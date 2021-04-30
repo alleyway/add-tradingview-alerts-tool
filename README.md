@@ -34,8 +34,7 @@ Minimum node version: 14
 
 Open Terminal/PowerShell and run the following:
 
-    # make sure you're running at least version 14
-    
+    # make sure you're running at least node version 14
     node -v 
 
     # install the 'atat' command tool

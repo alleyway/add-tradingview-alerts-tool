@@ -20,8 +20,8 @@ program
 
 const initialize = () => {
     const options = program.opts();
-    if (options.debug) {
-        log.level = Number(options.debug)
+    if (options.loglevel) {
+        log.level = Number(options.loglevel)
     }
     if (options.delay) {
         initBaseDelay(Number(options.delay))

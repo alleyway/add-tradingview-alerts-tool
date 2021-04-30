@@ -21,13 +21,13 @@
   "scripts": {
     "build": "npx tsc",
     "prepublishOnly": "npx tsc",
-    "fetch:binance-futures": "npx tsc && npx cross-env EXCHANGE=BINANCEFUTURES node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:binance": "npx tsc && npx cross-env EXCHANGE=BINANCE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:binanceus": "npx tsc && npx cross-env EXCHANGE=BINANCEUS node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:ftx": "npx tsc && npx cross-env EXCHANGE=FTX node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:coinbase": "npx tsc && npx cross-env EXCHANGE=COINBASE node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "fetch:bittrex": "npx tsc && npx cross-env EXCHANGE=BITTREX node --es-module-specifier-resolution=node -r source-map-support/register dist/fetch-pairs.js",
-    "add-alerts": "npx tsc && npx cross-env node --es-module-specifier-resolution=node -r source-map-support/register dist/add-alerts.js",
+    "fetch:binance-futures": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "fetch:binance": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "fetch:binanceus": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "fetch:ftx": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "fetch:coinbase": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "fetch:bittrex": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
+    "add-alerts": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "release": "release-it"
   },
   "keywords": [
@@ -42,7 +42,7 @@
   "devDependencies": {
     "@release-it/bumper": "^2.0.0",
     "release-it": "^14.6.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.3"
   },
   "dependencies": {
     "@fast-csv/format": "^4.3.5",

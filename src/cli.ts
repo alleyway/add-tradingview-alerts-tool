@@ -1,37 +1,49 @@
 #!/usr/bin/env node
+import 'source-map-support/register.js'
 import {Command} from 'commander';
 import fetchPairsMain from "./fetch-pairs.js";
-import manifest from "./manifest.json"
+import {readFile} from 'fs/promises';
+import log from "./service/log.js";
+import addAlertsMain from "./add-alerts.js";
+import {initBaseDelay} from "./service/common-service.js";
+// @ts-ignore
+const json = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));
+
 const program = new Command();
 
 program
-    .version(manifest.version)
-    .option('-d, --debug <level>', 'debug level (1-5)')
+    .version(json.version)
+    .option('-v, --verbosity <level>', 'verbosity level (1-5), default 3')
+    .option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000')
 
+const initialize = () => {
+    const options = program.opts();
+    if (options.debug) {
+        log.level = Number(options.debug)
+    }
+    if (options.delay) {
+        initBaseDelay(Number(options.delay))
+    }
+}
 
-program.command('fetch-pairs <exchange> <quote-asset>')
+program.command('fetch-pairs <exchange> [quote]')
     .description('fetch trading pairs for exchange')
     .action(async (exchange, quote) => {
-        await fetchPairsMain(exchange, quote)
+        initialize()
+        await fetchPairsMain(exchange, quote || "all")
     })
 
 program.command('add-alerts [config]')
     .description('add alerts')
     .action(async (config) => {
-        console.log("config")
-        //await fetchPairsMain(exchange, quote)
+        initialize()
+        try {
+            await addAlertsMain(config || "config.yml")
+        } catch (e) {
+            log.error(e)
+            process.exit(1)
+        }
     })
 
 
-
 program.parse(process.argv);
-
-// const options = program.opts();
-//
-// if (options.debug) console.log(options);
-//
-// console.log('pizza details:');
-//
-// if (options.small) console.log('- small pizza size');
-//
-// if (options.pizzaType) console.log(`- ${options.pizzaType}`);

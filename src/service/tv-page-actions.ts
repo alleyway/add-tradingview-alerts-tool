@@ -1,6 +1,6 @@
 import {ISingleAlertSettings} from "../interfaces.js";
 import {waitForTimeout} from "./common-service.js";
-import log from "./log"
+import log from "./log.js"
 import kleur from "kleur";
 import {NoInputFoundError} from "../classes.js";
 

@@ -2,12 +2,12 @@ import csv from 'csv-parser'
 import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
-import {configureInterval, addAlert, waitForTimeout} from "./index";
-import {navigateToSymbol, login} from "./service/tv-page-actions";
+import {configureInterval, addAlert, waitForTimeout} from "./index.js";
+import {navigateToSymbol, login} from "./service/tv-page-actions.js";
 import {ISingleAlertSettings} from "./interfaces";
-import log, {logLogInfo} from "./service/log"
+import log, {logLogInfo} from "./service/log.js"
 import kleur from "kleur";
-import {logBaseDelay} from "./service/common-service";
+import {logBaseDelay} from "./service/common-service.js";
 
 
 const readFilePromise = (filename: string) => {
@@ -25,14 +25,13 @@ const readFilePromise = (filename: string) => {
     })
 }
 
-const main = async () => {
+const addAlertsMain = async (configFileName) => {
 
     const headless = false
 
     logLogInfo()
     logBaseDelay()
 
-    const configFileName = process.argv[2] || "config.yml"
 
     if (!fs.existsSync(configFileName)) {
         log.error(`Unable to find config file: ${configFileName}`)
@@ -178,10 +177,4 @@ const main = async () => {
     await browser.close()
 }
 
-
-main().catch(error => {
-    log.error(error)
-    process.exit(1)
-}).then(() => {
-    process.exit(0)
-})
+export default addAlertsMain

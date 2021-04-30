@@ -14,6 +14,9 @@ const initializeMain = async () => {
     await writeFile(path.join(process.cwd(), "blacklist.csv"), blacklistData)
 
 
+    // @ts-ignore
+    const configData = await readFile(new URL('./init/config.init.yml', import.meta.url), {encoding: "utf-8"})
+    await writeFile(path.join(process.cwd(), "config.yml"), configData)
 
 }
 

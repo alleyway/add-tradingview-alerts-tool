@@ -19,7 +19,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build": "npx tsc && mkdir -p dist/init && cp config.example.yml src/init/* dist/init/",
+    "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
     "prepublishOnly": "npm run build",
     "fetch:binance-futures": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",
     "fetch:binance": "echo New command-line program - no need for git checkout. Install with \\\"npm i @alleyway/add-tradingview-alerts -g\\\" ",

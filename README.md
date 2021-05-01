@@ -26,9 +26,7 @@ Watch as this tool enters your TradingView alerts automatically.
 
 MacOS/Windows/Linux
 
-[Install NodeJS](https://nodejs.org/en/)
-
-Minimum node version: 14.15.0
+[Install NodeJS](https://nodejs.org/en/) (minimum version: 14.15.0)
 
 ## Installation
 
@@ -236,7 +234,7 @@ Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-genera
 
 ### Publishing
 
-### Beta Testing
+#### Beta Testing
 
 Create a beta release:
 
@@ -246,6 +244,11 @@ Ask a user to run the following:
 
     npm install @alleyway/add-tradingview-alerts-tool@beta
 
-### Stable Release
-    ./deploy_master.sh
+#### Stable Release 
     npm run release
+    ./deploy_master.sh
+
+
+#### Stable Release (create-tradingview-alerts-home)
+
+    create-tradingview-alerts-home$ npm publish

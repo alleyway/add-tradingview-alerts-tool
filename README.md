@@ -244,6 +244,10 @@ Ask a user to run the following:
 
     npm install @alleyway/add-tradingview-alerts-tool@beta
 
+When release is made, ask user to return to stable:
+
+    npm install @alleyway/add-tradingview-alerts-tool@latest
+
 #### Stable Release 
     npm run release
     ./deploy_master.sh

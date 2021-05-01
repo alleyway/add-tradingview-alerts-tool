@@ -1,0 +1,7 @@
+{
+  "name": "tradingview-alerts-home",
+  "version": "1.0.0",
+  "dependencies": {
+    "@alleyway/add-tradingview-alerts-tool": "latest"
+  }
+}

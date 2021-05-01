@@ -1,0 +1,11 @@
+
+If you forgot why you have this directory and how run commands...
+
+1) The command you're looking for is "npx atat"
+
+2) You probably installed this project by running the following:
+
+   npx @alleyway/create-tradingview-alerts-home
+
+3) Read more at https://github.com/alleyway/add-tradingview-alerts-tool
+

@@ -6,7 +6,6 @@ import {readFile} from 'fs/promises';
 import log from "./service/log.js";
 import addAlertsMain from "./add-alerts.js";
 import {initBaseDelay} from "./service/common-service.js";
-import initializeMain from "./initialize.js";
 import kleur from "kleur";
 import updateNotifier from "./update-notifier.js";
 // @ts-ignore
@@ -37,20 +36,6 @@ const initialize = () => {
     log.info(`ATAT Version: ${kleur.yellow(json.version)} | Node Version: ${kleur.yellow(process.version)}`)
 }
 
-
-program.command('init')
-    .description('initialize with config')
-    .action(async (exchange, quote) => {
-        initialize()
-        try {
-            await initializeMain()
-        } catch (e){
-            log.error(e)
-            process.exit(1)
-        } finally {
-            checkForUpdate()
-        }
-    })
 
 
 program.command('fetch-pairs <exchange> [quote]')

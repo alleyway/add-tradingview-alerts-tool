@@ -9,3 +9,4 @@ config.yml
 /blacklist.csv
 responses/
 tradingview-alerts-home
+create-tradingview-alerts-home/dist

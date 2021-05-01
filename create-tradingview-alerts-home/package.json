@@ -1,0 +1,20 @@
+{
+  "name": "@alleyway/create-tradingview-alerts-home",
+  "version": "1.0.2",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-tradingview-alerts-home": "/dist/index.js"
+  },
+  "scripts": {
+    "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "kleur": "^4.1.4",
+    "prompts": "^2.4.1"
+  }
+}

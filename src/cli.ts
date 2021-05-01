@@ -37,19 +37,19 @@ const initialize = () => {
 }
 
 
-
 program.command('fetch-pairs <exchange> [quote]')
     .description('fetch trading pairs for exchange')
     .action(async (exchange, quote) => {
         initialize()
         try {
             await fetchPairsMain(exchange, quote || "all")
-        } catch (e){
+        } catch (e) {
             log.error(e)
-            process.exit(1)
-        } finally {
             checkForUpdate()
+            process.exit(1)
         }
+        checkForUpdate()
+
     })
 
 program.command('add-alerts [config]')
@@ -60,10 +60,11 @@ program.command('add-alerts [config]')
             await addAlertsMain(config || "config.yml")
         } catch (e) {
             log.error(e)
-            process.exit(1)
-        } finally {
             checkForUpdate()
+            process.exit(1)
         }
+        checkForUpdate()
+
     })
 
 

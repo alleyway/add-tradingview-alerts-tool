@@ -96,7 +96,7 @@ const updateNotifier =  async (version, spec = 'latest') => {
     const latestc = !useColor ? latest : kleur.green(latest)
     const changelog = `https://github.com/alleyway/add-tradingview-alerts-tool/releases/tag/${latest}`
     const changelogc = !useColor ? `<${changelog}>` : kleur.cyan(changelog)
-    const cmd = `npm install -g @alleyway/add-tradingview-alerts-tool@${latest}`
+    const cmd = `npm install @alleyway/add-tradingview-alerts-tool@${latest}`
     const cmdc = !useColor ? `\`${cmd}\`` : kleur.green(cmd)
     const message = `\nNew ${typec} version of atat available! ` +
         `${oldc} -> ${latestc}\n` +

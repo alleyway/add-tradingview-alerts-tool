@@ -30,7 +30,8 @@
     "fetch:bittrex": "npm run show-deprecation",
     "add-alerts": "npm run show-deprecation",
     "release": "npx release-it",
-    "release-beta": "npx release-it --preRelease=beta"
+    "release-beta": "npx release-it --preRelease=beta",
+    "prepare": "husky install"
   },
   "keywords": [
     "tradingview",
@@ -43,6 +44,7 @@
   "version": "1.7.2",
   "devDependencies": {
     "@release-it/bumper": "^2.0.0",
+    "husky": "^6.0.0",
     "release-it": "^14.6.1",
     "typescript": "^4.2.3"
   },

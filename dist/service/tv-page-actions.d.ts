@@ -1,0 +1,11 @@
+import { ISingleAlertSettings } from "../interfaces.js";
+export declare const fetchFirstXPath: (page: any, selector: string, timeout?: number) => Promise<any>;
+export declare const takeScreenshot: (page: any, name?: string) => Promise<void>;
+export declare const configureInterval: (interval: string, page: any) => Promise<void>;
+export declare const login: (page: any, username: any, pass: any) => Promise<void>;
+export declare const logout: (page: any) => Promise<void>;
+export declare const navigateToSymbol: (page: any, symbol: string) => Promise<void>;
+export declare const configureSingleAlertSettings: (page: any, singleAlertSettings: ISingleAlertSettings) => Promise<void>;
+export declare const clickSubmit: (page: any) => Promise<void>;
+export declare const clickContinueIfWarning: (page: any) => Promise<void>;
+export declare const addAlert: (page: any, singleAlertSettings: ISingleAlertSettings) => Promise<void>;

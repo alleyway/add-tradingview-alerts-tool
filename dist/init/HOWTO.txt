@@ -1,0 +1,9 @@
+
+If you forgot why you have this directory and how run commands...
+
+1) The command you're looking for is "atat"
+
+2) You probably installed it by running "npm i @alleyway/add-tradingview-alerts-tool -g"
+
+3) Read more at https://github.com/alleyway/add-tradingview-alerts-tool
+

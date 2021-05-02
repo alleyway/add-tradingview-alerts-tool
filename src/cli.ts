@@ -5,23 +5,21 @@ import fetchPairsMain from "./fetch-pairs.js";
 import {readFile} from 'fs/promises';
 import log from "./service/log.js";
 import addAlertsMain from "./add-alerts.js";
-import {initBaseDelay} from "./service/common-service.js";
+import {initBaseDelay, atatVersion} from "./service/common-service.js";
 import kleur from "kleur";
 import updateNotifier from "./update-notifier.js";
 import {exchangesAvailable} from "./service/exchange-service.js";
-// @ts-ignore
-const json = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));
 
 const program = new Command();
 
 program
-    .version(json.version)
+    .version(atatVersion)
     .option('-l, --loglevel <level>', 'log level (1-5), default 3')
     .option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000')
 
 
 const checkForUpdate = () => {
-    updateNotifier(json.version).then((message) => {
+    updateNotifier(atatVersion).then((message) => {
         if (message) console.log(message)
     })
 }
@@ -34,7 +32,7 @@ const initialize = () => {
     if (options.delay) {
         initBaseDelay(Number(options.delay))
     }
-    log.info(`ATAT Version: ${kleur.yellow(json.version)} | Node Version: ${kleur.yellow(process.version)}`)
+    log.info(`ATAT Version: ${kleur.yellow(atatVersion)} | Node Version: ${kleur.yellow(process.version)}`)
 }
 
 

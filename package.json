@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "build": "npx tsc",
+    "atat": "npm run build && ./dist/cli.js",
     "prepublishOnly": "npm run build",
     "show-deprecation": "echo New command-line program - no need for git checkout. Install with \\\"npx @alleyway/create-tradingview-alerts-home\\\" ",
     "fetch:binance-futures": "npm run show-deprecation",

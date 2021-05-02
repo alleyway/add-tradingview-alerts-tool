@@ -1,5 +1,12 @@
 import fetch from "node-fetch";
 import { ExchangeSymbol } from "../classes.js";
+const BINANCEFUTURES = "binancefutures";
+const BINANCE = "binance";
+const BINANCEUS = "binanceus";
+const BITTREX = "bittrex";
+const COINBASE = "coinbase";
+const FTX = "ftx";
+export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX];
 const CONST_ALL = "all";
 const fetchBittrex = async (quoteAsset) => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets");
@@ -79,22 +86,22 @@ const fetchBinance = async (isUs, quoteAsset) => {
 export const fetchPairsForExchange = async (exchange, quoteAsset = CONST_ALL) => {
     let symbolArray;
     switch (exchange) {
-        case "binancefutures":
+        case BINANCEFUTURES:
             symbolArray = await fetchBinanceFutures(quoteAsset);
             break;
-        case "binance":
+        case BINANCE:
             symbolArray = await fetchBinance(false, quoteAsset);
             break;
-        case "binanceus":
+        case BINANCEUS:
             symbolArray = await fetchBinance(true, quoteAsset);
             break;
-        case "ftx":
+        case FTX:
             symbolArray = await fetchFtx(quoteAsset);
             break;
-        case "coinbase":
+        case COINBASE:
             symbolArray = await fetchCoinbase(quoteAsset);
             break;
-        case "bittrex":
+        case BITTREX:
             symbolArray = await fetchBittrex(quoteAsset);
             break;
         default:

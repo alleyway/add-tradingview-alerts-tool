@@ -8,6 +8,7 @@ import addAlertsMain from "./add-alerts.js";
 import {initBaseDelay} from "./service/common-service.js";
 import kleur from "kleur";
 import updateNotifier from "./update-notifier.js";
+import {exchangesAvailable} from "./service/exchange-service.js";
 // @ts-ignore
 const json = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));
 
@@ -38,7 +39,15 @@ const initialize = () => {
 
 
 program.command('fetch-pairs <exchange> [quote]')
-    .description('fetch trading pairs for exchange')
+    .description('fetch trading pairs for exchange').addHelpText("after", `
+    
+    Where <exchange> is one of the following:
+    ${exchangesAvailable.join(", ")}
+    
+    And <quote> represents the quote asset (eg. BTC, ETH, USDT, BNB)
+    
+    `
+)
     .action(async (exchange, quote) => {
         initialize()
         try {

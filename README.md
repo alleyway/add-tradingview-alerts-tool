@@ -218,13 +218,21 @@ This works in the same way as for 3Commas, but Alertatron using a different form
     }
 ```
 
-## Donations
+## Do You Find This Tool Helpful? 
 
-Not necessary, but motivating to keep the project up to date
+Consider one of the following:
 
-Send ETH to 
+1) Increase awareness on GitHub: Click the ⭐ at the top of the page!
 
-0x37f79c0bAC4068a56E36694c5F5d8853F54022cb
+
+2) Donate something to the following ethereum address (see [past donations on etherscan](https://etherscan.io/address/0x37f79c0bAC4068a56E36694c5F5d8853F54022cb)):
+
+
+    0x37f79c0bAC4068a56E36694c5F5d8853F54022cb
+
+3) Consider our paid service (when it launches!)
+   
+* Add yourself at [https://www.tradingview-alerts-manager.com/](https://www.tradingview-alerts-manager.com/)
 
 
 ## Developer Notes

@@ -26,7 +26,10 @@ export const waitForTimeout = (millsOrMultplier, message = "") => {
         setTimeout(resolve, waitTime);
     });
 };
+export const isEnvEnabled = (envVariable) => {
+    return (envVariable && (envVariable === "true" || Boolean(Number(envVariable))));
+};
 export const isDebug = () => {
-    return Boolean(process.env.DEBUG === "true");
+    return isEnvEnabled(process.env.DEBUG);
 };
 //# sourceMappingURL=common-service.js.map

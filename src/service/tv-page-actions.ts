@@ -1,5 +1,5 @@
 import {ISingleAlertSettings} from "../interfaces.js";
-import {waitForTimeout} from "./common-service.js";
+import {waitForTimeout, isEnvEnabled} from "./common-service.js";
 import log from "./log.js"
 import kleur from "kleur";
 import {NoInputFoundError} from "../classes.js";
@@ -7,7 +7,7 @@ import {NoInputFoundError} from "../classes.js";
 
 // data-dialog-name="gopro"
 
-const screenshot = Boolean(process.env.SCREENSHOT)
+const screenshot = isEnvEnabled(process.env.SCREENSHOT)
 
 export const fetchFirstXPath = async (page, selector: string, timeout = 20000) => {
     log.trace(kleur.gray(`...selector: ${kleur.yellow(selector)}`))

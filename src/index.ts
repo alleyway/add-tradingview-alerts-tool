@@ -11,7 +11,7 @@ import {
     fetchFirstXPath
 } from "./service/tv-page-actions.js"
 import {fetchPairsForExchange} from "./service/exchange-service.js"
-import {waitForTimeout, atatVersion} from "./service/common-service.js"
+import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service.js"
 import log from "./service/log.js"
 
 export {
@@ -28,6 +28,8 @@ export {
     fetchPairsForExchange,
     waitForTimeout,
     atatVersion,
-    log
+    log,
+    isEnvEnabled
+
 }
 

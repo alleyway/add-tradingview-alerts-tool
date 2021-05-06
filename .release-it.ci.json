@@ -1,7 +1,6 @@
 {
   "git": {
     "commit": false,
-    "requireBranch": "develop",
     "tag": false,
     "push": false
   },

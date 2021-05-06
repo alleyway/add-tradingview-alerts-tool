@@ -23,8 +23,8 @@ build_and_test:
     - npm run atat fetch-pairs binanceus usdt
     - npm run atat fetch-pairs bittrex btc
     - npm run atat fetch-pairs binancefutures usdt
-    - echo "//registry.npmjs.org/:_authToken=$NPM_PUBLISH_KEY" >> .npmrc
-    - echo email=$NPM_PUBLISH_EMAIL >> .npmrc
+    - echo "//registry.npmjs.org/:_authToken=${NPM_PUBLISH_KEY}" >> .npmrc
+    - echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
     - echo always-auth=true >> .npmrc
     - cat .npmrc
     - npm run release-ci

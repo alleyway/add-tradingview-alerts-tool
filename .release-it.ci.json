@@ -1,6 +1,6 @@
 {
   "git": {
-    "requireCleanWorkingDir": false,
+    "requireCleanWorkingDir": false
   },
   "github": {
     "release": false

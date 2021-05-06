@@ -75,7 +75,7 @@ const updateNotifier = async (version, spec = 'latest') => {
                 : kleur.green(type);
     const oldc = !useColor ? current : kleur.red(current);
     const latestc = !useColor ? latest : kleur.green(latest);
-    const changelog = `https://github.com/alleyway/add-tradingview-alerts-tool/releases/tag/${latest}`;
+    const changelog = `https://github.com/alleyway/add-tradingview-alerts-tool/releases/tag/v${latest}`;
     const changelogc = !useColor ? `<${changelog}>` : kleur.cyan(changelog);
     const cmd = `npm install @alleyway/add-tradingview-alerts-tool@${latest}`;
     const cmdc = !useColor ? `\`${cmd}\`` : kleur.green(cmd);

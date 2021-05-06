@@ -62,6 +62,8 @@ alert:
     secondary: Tier1 long
     tertiaryLeft:
     tertiaryRight:
+    quaternaryLeft: 
+    quaternaryRight:
   option: Once Per Bar Close
   actions:
     notifyOnApp: false

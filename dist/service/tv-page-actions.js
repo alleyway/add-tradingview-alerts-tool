@@ -2,6 +2,7 @@ import { waitForTimeout, isEnvEnabled } from "./common-service.js";
 import log from "./log.js";
 import kleur from "kleur";
 import { NoInputFoundError } from "../classes.js";
+import RegexParser from "regex-parser";
 // data-dialog-name="gopro"
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);
 export const fetchFirstXPath = async (page, selector, timeout = 20000) => {
@@ -42,12 +43,16 @@ const xpathQueries = {
     primaryLeft: "//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
     primaryRight: "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
     secondary: "//*[@class='tv-control-fieldset__value tv-alert-dialog__fieldset-value js-condition-operator-input-wrap']/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
-    tertiaryLeft: "//div[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--left js-second-operand-select-wrap__band-main']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]",
-    tertiaryRight: "//div[@class='tv-alert-dialog__group-item tv-alert-dialog__group-item--right js-second-operand-value-wrap__band-main']/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button' and 1]"
+    tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-select-wrap__')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
+    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-select-wrap__')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+    tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-select-wrap__')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
+    quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-select-wrap__')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
 };
 const inputXpathQueries = {
-    tertiaryLeft: "//div[contains(@class, 'tv-alert-dialog__group-item--left ')]//input[contains(@class, 'tv-alert-dialog__number-input')]",
-    tertiaryRight: "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]//input[contains(@class, 'tv-alert-dialog__number-input')]"
+    tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[1]",
+    tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[1]",
+    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[2]",
+    quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[2]",
 };
 const alertActionCorresponding = {
     notifyOnApp: "send-push",
@@ -109,6 +114,16 @@ export const navigateToSymbol = async (page, symbol) => {
     const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']');
     await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`);
 };
+const isMatch = (needle, haystack) => {
+    if (needle.startsWith("/")) {
+        log.trace(`Parsing what appears to be regular expression: ${kleur.yellow(needle)}`);
+        const regexp = RegexParser(needle);
+        return !!regexp.exec(haystack);
+    }
+    else {
+        return haystack.indexOf(needle) > -1;
+    }
+};
 export const configureSingleAlertSettings = async (page, singleAlertSettings) => {
     const { condition, name, option, message, actions } = singleAlertSettings;
     await takeScreenshot(page, "alert_begin_configure");
@@ -119,7 +134,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         let found = false;
         for (const el of elements) {
             const optionText = await page.evaluate(element => element.innerText, el);
-            if (optionText.indexOf(conditionToMatch) > -1) {
+            if (isMatch(conditionToMatch, optionText)) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 el.click();
@@ -142,6 +157,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 targetElement.click();
                 await waitForTimeout(.5, "let dropdown populate");
                 await selectFromDropDown(conditionOrInputValue);
+                await waitForTimeout(.5, "let dropdown populate");
             }
             catch (e) {
                 if (e.constructor.name === "TimeoutError") {
@@ -180,6 +196,8 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     }
     await performActualEntry("tertiaryLeft");
     await performActualEntry("tertiaryRight");
+    await performActualEntry("quaternaryLeft");
+    await performActualEntry("quaternaryRight");
     await waitForTimeout(.5);
     if (!!option) {
         log.trace(`Selecting option: ${kleur.blue(option)}`);

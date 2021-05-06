@@ -108,6 +108,8 @@ const addAlertsMain = async (configFileName) => {
                 secondary: alertConfig.condition.secondary,
                 tertiaryLeft: alertConfig.condition.tertiaryLeft,
                 tertiaryRight: alertConfig.condition.tertiaryRight,
+                quaternaryLeft: alertConfig.condition.quaternaryLeft,
+                quaternaryRight: alertConfig.condition.quaternaryRight,
             },
             option: alertConfig.option,
         };

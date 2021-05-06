@@ -5,6 +5,8 @@ export interface ISingleAlertSettings {
         secondary?: string,
         tertiaryLeft?: string | number,
         tertiaryRight?: string | number,
+        quaternaryLeft?: string | number,
+        quaternaryRight?: string | number,
     }
     // option
     option?: string,

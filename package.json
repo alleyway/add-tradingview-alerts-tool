@@ -63,6 +63,7 @@
     "pacote": "^11.3.3",
     "prompts": "^2.4.1",
     "puppeteer": "^9.1.1",
+    "regex-parser": "^2.2.11",
     "source-map-support": "^0.5.19",
     "yaml": "^1.10.0"
   },

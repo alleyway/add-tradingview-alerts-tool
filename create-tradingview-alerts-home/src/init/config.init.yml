@@ -17,6 +17,8 @@ alert:
     secondary: Moving Up
     tertiaryLeft: 3.4
     tertiaryRight: 14
+    quaternaryLeft:
+    quaternaryRight:
   option: Once Per Bar Close
   actions:
     notifyOnApp: false

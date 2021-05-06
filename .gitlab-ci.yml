@@ -18,12 +18,12 @@ build_and_test:
     - npm install npm -g
     - npm install
     - npm run build
-    - echo _auth=$NPM_PUBLSH_KEY >> .npmrc
-    - echo email=$NPM_PUBLSH_EMAIL >> .npmrc
-    - echo always-auth=true >> .npmrc
-    - npm run release-ci
     - npm run atat fetch-pairs binance eth
     - npm run atat fetch-pairs ftx perp
     - npm run atat fetch-pairs binanceus usdt
     - npm run atat fetch-pairs bittrex btc
     - npm run atat fetch-pairs binancefutures usdt
+    - echo _auth=$NPM_PUBLSH_KEY >> .npmrc
+    - echo email=$NPM_PUBLSH_EMAIL >> .npmrc
+    - echo always-auth=true >> .npmrc
+    - npm run release-ci

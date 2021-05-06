@@ -18,6 +18,7 @@ build_and_test:
     - npm install npm -g
     - npm install
     - npm run build
+    - npm run release-ci
     - npm run atat fetch-pairs binance eth
     - npm run atat fetch-pairs ftx perp
     - npm run atat fetch-pairs binanceus usdt

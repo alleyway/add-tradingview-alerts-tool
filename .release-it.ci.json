@@ -1,0 +1,20 @@
+{
+  "git": {
+    "commit": false,
+    "requireBranch": "develop",
+    "tag": false,
+    "push": false
+  },
+  "github": {
+    "release": false
+  },
+  "npm": {
+    "publish": true,
+    "tag": "ci"
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": "src/manifest.json"
+    }
+  }
+}

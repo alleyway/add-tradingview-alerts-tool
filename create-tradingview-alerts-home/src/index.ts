@@ -80,7 +80,7 @@ const initializeMain = async () => {
 
     try {
         console.info(kleur.cyan("Installing dependencies"))
-        execSync(`cd ${dir} && npm install`, {stdio: "inherit"})
+        execSync(`cd '${dir}' && npm install`, {stdio: "inherit"})
 
         console.log(`${kleur.green("Initialization complete!")} Edit the newly created ${kleur.yellow("config.yml")} file!`)
     } catch (e) {

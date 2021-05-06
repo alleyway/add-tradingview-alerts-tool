@@ -1,6 +1,6 @@
 {
   "name": "@alleyway/create-tradingview-alerts-home",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "type": "module",
   "bin": {

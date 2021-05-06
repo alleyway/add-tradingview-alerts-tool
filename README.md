@@ -162,11 +162,49 @@ If the tool gets interrupted for some reason, you can remove the rows of already
 
 ## Troubleshooting
 
-Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
+* Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
+
 
     npx atat --delay 1500 add-alerts 
 
-Anything else? File an issue
+* Selecting the wrong option? Conditions can be regular expressions. For example...
+
+Let's say you have a conditions dropdown with multiple indicator configurations like so:
+
+    MTF Deviation - Mtrl_Scientist v0.7 (50, 530, 750, 3)
+    MTF Deviation - Mtrl_Scientist v0.7 (50, 530, 750, 6)
+    MTF Deviation - Mtrl_Scientist v0.7 (50, 530, 750, 9)
+
+If your configuration only used the term "MTF Deviation" the tool might incorrectly select the first option containing that term.
+
+For example, the following regular expression will match the indicator with percent deviation setting of **6** :
+
+```yaml
+alert:
+  condition:
+    primaryLeft: /^MTF Deviation.*,\s6\)$/
+```
+
+Another common issue is sometimes option text for one condition can exist entirely within another.
+
+For example:
+
+    Blue Wave Crossing Down [Sm. Red Dot]
+    Blue Wave Crossing UP [Sm. Green Dot]
+    Green Dot
+
+A regular expression to match "Green Dot" exactly would be the following:
+
+```yaml
+alert:
+  condition:
+    primaryLeft: /^Green Dot$/
+```
+
+❓[Learn more about regular expression syntax](https://www.w3schools.com/jsref/jsref_obj_regexp.asp)
+
+
+* Any other hiccups? [File an issue](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)
 
 ## Advanced Usage
 

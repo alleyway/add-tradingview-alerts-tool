@@ -7,6 +7,8 @@
   },
   "npm": {
     "publish": true,
+    "ignoreVersion": false,
+    "skipChecks": true,
     "tag": "ci"
   },
   "plugins": {

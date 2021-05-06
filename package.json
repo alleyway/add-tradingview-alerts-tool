@@ -32,7 +32,7 @@
     "add-alerts": "npm run show-deprecation",
     "release": "npx release-it",
     "release-beta": "npx release-it --preRelease=beta",
-    "release-ci": "npx release-it --config .release-it.ci.json --ci",
+    "release-ci": "npx release-it --config .release-it.ci.json --ci --verbose",
     "prepare": "husky install"
   },
   "keywords": [

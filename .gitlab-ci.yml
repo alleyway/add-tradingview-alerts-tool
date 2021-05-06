@@ -29,3 +29,4 @@ build_and_test:
 #    - cat .npmrc
     - npm --no-git-tag-version version prerelease --preid="${CI_COMMIT_SHORT_SHA}"
     - npm run release-ci
+    - npm publish --tag ci

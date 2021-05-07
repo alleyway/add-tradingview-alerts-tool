@@ -1,4 +1,4 @@
-import consola, {Consola} from "consola"
+import consola from "consola"
 import kleur from "kleur";
 
 const DEFAULT_LEVEL = 3

@@ -5,6 +5,10 @@ import prompts from "prompts";
 import kleur from "kleur";
 import {execSync} from "child_process"
 import os from "os"
+
+// @ts-ignore
+const manifest = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));
+
 async function exists(path) {
     try {
         await access(path)
@@ -17,6 +21,8 @@ async function exists(path) {
 const TRADINGVIEW_ALERTS_HOME = "tradingview-alerts-home"
 
 const initializeMain = async () => {
+
+    console.log(`${kleur.gray("@alleyway/create-tradingview-alerts-home..")} version: ${kleur.yellow(manifest.version)}`)
 
     const choices = [
         {

@@ -9,10 +9,12 @@
   "scripts": {
     "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
     "prepublishOnly": "npm run build",
-    "publish-beta": "echo 'add beta manually before running this' && npm publish --tag beta"
+    "publish-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta' && npm publish --tag beta"
   },
   "devDependencies": {
-    "typescript": "^4.2.4"
+    "release-it": "^14.6.1",
+    "typescript": "^4.2.4",
+    "@release-it/bumper": "^2.0.0"
   },
   "dependencies": {
     "kleur": "^4.1.4",

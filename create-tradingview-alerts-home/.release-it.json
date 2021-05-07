@@ -1,0 +1,10 @@
+{
+  "github": {
+    "release": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": "src/manifest.json"
+    }
+  }
+}

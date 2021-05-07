@@ -23,6 +23,7 @@
   },
   "compileOnSave": true,
   "include": [
-    "src"
+    "src",
+    "src/manifest.json"
   ]
 }

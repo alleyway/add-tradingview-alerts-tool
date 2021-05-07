@@ -28,4 +28,3 @@ build_and_test:
     - echo always-auth=true >> .npmrc
 #    - cat .npmrc
     - npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId="${CI_COMMIT_SHORT_SHA}"
-    - npm publish --tag ci

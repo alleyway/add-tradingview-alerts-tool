@@ -32,7 +32,6 @@
     "add-alerts": "npm run show-deprecation",
     "release": "npx release-it",
     "release-beta": "npx release-it --preRelease=beta",
-    "release-ci": "npx release-it --config .release-it.ci.json --ci --no-git --no-npm --verbose",
     "prepare": "husky install"
   },
   "keywords": [
@@ -43,7 +42,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.8.0",
+  "version": "1.8.1-asdf.0",
   "devDependencies": {
     "@release-it/bumper": "^2.0.0",
     "husky": "^6.0.0",

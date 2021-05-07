@@ -27,6 +27,5 @@ build_and_test:
     - echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
     - echo always-auth=true >> .npmrc
 #    - cat .npmrc
-    - npm --no-git-tag-version version prerelease --preid="${CI_COMMIT_SHORT_SHA}"
-    - npm run release-ci
+    - npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId="${CI_COMMIT_SHORT_SHA}"
     - npm publish --tag ci

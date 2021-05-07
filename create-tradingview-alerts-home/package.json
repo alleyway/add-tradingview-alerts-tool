@@ -1,6 +1,6 @@
 {
   "name": "@alleyway/create-tradingview-alerts-home",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -9,7 +9,8 @@
   "scripts": {
     "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
     "prepublishOnly": "npm run build",
-    "publish-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta' && npm publish --tag beta"
+    "publish-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta'",
+    "publish-release": "npx release-it minor --no-git --verbose"
   },
   "devDependencies": {
     "release-it": "^14.6.1",

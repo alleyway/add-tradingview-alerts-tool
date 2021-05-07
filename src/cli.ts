@@ -2,7 +2,6 @@
 import 'source-map-support/register.js'
 import {Command} from 'commander';
 import fetchPairsMain from "./fetch-pairs.js";
-import {readFile} from 'fs/promises';
 import log from "./service/log.js";
 import addAlertsMain from "./add-alerts.js";
 import {initBaseDelay, atatVersion} from "./service/common-service.js";
@@ -44,6 +43,7 @@ program.command('fetch-pairs <exchange> [quote]')
     
     And <quote> represents the quote asset (eg. BTC, ETH, USDT, BNB)
     
+    Note: use "ftx perp" to get all ftx perpetual contracts 
     `
 )
     .action(async (exchange, quote) => {

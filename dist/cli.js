@@ -37,6 +37,7 @@ program.command('fetch-pairs <exchange> [quote]')
     
     And <quote> represents the quote asset (eg. BTC, ETH, USDT, BNB)
     
+    Note: use "ftx perp" to get all ftx perpetual contracts 
     `)
     .action(async (exchange, quote) => {
     initialize();

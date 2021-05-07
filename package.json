@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "build": "npx tsc",
-    "atat": "npm run build && ./dist/cli.js",
+    "atat": "./dist/cli.js",
     "prepublishOnly": "npm run build",
     "show-deprecation": "echo New command-line program - no need for git checkout. Install with \\\"npx @alleyway/create-tradingview-alerts-home\\\" ",
     "fetch:binance-futures": "npm run show-deprecation",
@@ -55,7 +55,6 @@
     "@fast-csv/parse": "^4.3.6",
     "commander": "^7.2.0",
     "consola": "^2.15.3",
-    "cross-env": "^7.0.3",
     "csv-parser": "^3.0.0",
     "fast-csv": "^4.3.6",
     "kleur": "^4.1.4",

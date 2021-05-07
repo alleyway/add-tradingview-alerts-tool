@@ -1,6 +1,6 @@
 {
   "name": "@alleyway/create-tradingview-alerts-home",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish-beta": "echo 'add beta manually before running this' && npm publish --tag beta"
   },
   "devDependencies": {
     "typescript": "^4.2.4"

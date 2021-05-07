@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import {readFile, writeFile, mkdir, access} from 'fs/promises';
+import {readFile, writeFile, mkdir, access, chmod} from 'fs/promises';
 import path from "path"
 import prompts from "prompts";
 import kleur from "kleur";
 import {execSync} from "child_process"
-
+import os from "os"
 async function exists(path) {
     try {
         await access(path)
@@ -14,12 +14,14 @@ async function exists(path) {
     }
 }
 
+const TRADINGVIEW_ALERTS_HOME = "tradingview-alerts-home"
+
 const initializeMain = async () => {
 
     const choices = [
         {
             title: "Initialize in sub-folder",
-            description: "Will create a new directory called 'tradingview-alerts-home' at your current path",
+            description: `Will create a new directory called '${TRADINGVIEW_ALERTS_HOME}' at your current path`,
             value: "new-dir"
         },
         {
@@ -49,9 +51,9 @@ const initializeMain = async () => {
     } else if (response.dir === "new-dir") {
         if (!(await exists(dir))) {
             await mkdir(dir)
-            console.log(`Created new directory, run ${kleur.green('cd tradingview-alerts-home')} to enter that directory`)
+            console.log(`Created new directory, run ${kleur.green(`cd '${TRADINGVIEW_ALERTS_HOME}'`)} to enter that directory`)
         } else {
-            console.error(kleur.red(`Directory ${dir} already exists. Exiting.`))
+            console.error(kleur.red(`Directory ${dir} already exists...change to that directory and run this command again.`))
             process.exit(1)
         }
 
@@ -59,7 +61,7 @@ const initializeMain = async () => {
         dir = process.cwd()
     }
 
-    const copyFile = async (from, to, overwrite = false) => {
+    const copyFile = async (from, to, overwrite = false, executable = false) => {
 
         const target = path.join(dir, to);
 
@@ -68,6 +70,9 @@ const initializeMain = async () => {
             // @ts-ignore
             const data = await readFile(new URL(from, import.meta.url), {encoding: "utf-8"})
             await writeFile(target, data)
+            if (executable) {
+                await chmod(target, "755");
+            }
         } else {
             console.warn(kleur.yellow(`file exists(or permissions error), not copying file: ${to}`))
         }
@@ -77,10 +82,18 @@ const initializeMain = async () => {
     await copyFile("./init/blacklist.csv", "blacklist.csv")
     await copyFile("./init/config.init.yml", "config.yml")
     await copyFile("./init/package.json", "package.json", true)
+    await copyFile("./init/atat", "atat", true, true)
+
+    if (os.platform().toLowerCase() === "win32") {
+        await copyFile("./init/atat.cmd", "atat.cmd", true, true)
+        await copyFile("./init/atat.ps1", "atat.ps1", true, true)
+    }
+
 
     try {
         console.info(kleur.cyan("Installing dependencies"))
-        execSync(`cd '${dir}' && npm install`, {stdio: "inherit"})
+
+        execSync(`npm --loglevel=error --prefix '${response.dir === "new-dir" ? `./${TRADINGVIEW_ALERTS_HOME}` : "./"}' install`, {stdio: "inherit"})
 
         console.log(`${kleur.green("Initialization complete!")} Edit the newly created ${kleur.yellow("config.yml")} file!`)
     } catch (e) {

@@ -35,7 +35,7 @@ Open Terminal/PowerShell and run the following:
     # make sure you're running at least node version 14.15.0
     node -v 
 
-    # create your tradingview-alerts-home directory
+    # create your tradingview-alerts-home directory and/or upgrade version
     npx @alleyway/create-tradingview-alerts-home
     
     # Follow prompts to initialize your tradingview-alerts-home
@@ -96,14 +96,14 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 
 This command downloads all USDT trading pairs for Binance: 
 ```yaml 
-    npx atat fetch-pairs binance usdt
+    ./atat fetch-pairs binance usdt
     
     # Creates binance_usdt_pairs.csv    
 ```
 
 This command downloads all trading pairs for BinanceUS:
 ```yaml
-    npx atat fetch-pairs binanceus all
+    ./atat fetch-pairs binanceus all
 
     # Creates binanceus_all_pairs.csv
 ```
@@ -113,7 +113,7 @@ This command downloads all trading pairs for BinanceUS:
 In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contracts by specifying "perp" 
 
 ```yaml
-    npx atat fetch-pairs ftx perp
+    ./atat fetch-pairs ftx perp
 
     # Creates ftx_perp_pairs.csv
 ```
@@ -122,7 +122,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Coinbase
 
 ```yaml
-    npx atat fetch-pairs coinbase usd
+    ./atat fetch-pairs coinbase usd
 
     # Creates coinbase_usd_pairs.csv
 ```
@@ -131,7 +131,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Bittrex
 
 ```yaml
-    npx atat fetch-pairs bittrex btc
+    ./atat fetch-pairs bittrex btc
 
     # Creates bittrex_btc_pairs.csv
 ```
@@ -152,7 +152,7 @@ You must actually create an alert once with those options, before they become de
 
 NOTE: You'll need to log into TradingView the first time you run the script, then you'll need to close the browser and re-run the command 
 
-    npx atat add-alerts
+    ./atat add-alerts
 
 You can stop the script in Terminal/PowerShell by pressing Ctrl-C
     
@@ -165,7 +165,7 @@ If the tool gets interrupted for some reason, you can remove the rows of already
 * Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
 
 
-    npx atat --delay 1500 add-alerts 
+    ./atat --delay 1500 add-alerts 
 
 * Selecting the wrong option? Conditions can be regular expressions. For example...
 
@@ -204,6 +204,11 @@ alert:
 ❓[Learn more about regular expression syntax](https://www.w3schools.com/jsref/jsref_obj_regexp.asp)
 
 
+* "atat" command not found? From your tradingview-alerts-home directory run the following:
+
+
+    npx @alleyway/create-tradingview-alerts-home
+
 * Any other hiccups? [File an issue](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)
 
 ## Advanced Usage
@@ -214,12 +219,12 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 
 | Abstract                                                                                                        | Concretely                                                                                                                                                                                |
 |-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "npx atat fetch-pairs binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
+| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-pairs binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
 | TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                     |
 | 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
-| A dedicated configuration file for the above                                                                    | npx atat add-alerts config.btc.yml                                                                                                                                                         |
+| A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                         |
 
-NOTE: running "npx atat add-alerts" will default to config.yml unless you specify one (eg. "npx atat add-alerts config.btc.yml")
+NOTE: running "./atat add-alerts" will default to config.yml unless you specify one (eg. "./atat add-alerts config.btc.yml")
 
 ### Send a single alert to multiple bots(or use multiple commands)
 

@@ -149,7 +149,7 @@ export const navigateToSymbol = async (page, symbol: string) => {
 const isMatch = (needle: string, haystack: string) => {
 
     if (needle.startsWith("/")) {
-        log.trace(`Parsing what appears to be regular expression: ${kleur.yellow(needle)}`)
+        log.trace(`Parsing what appears to be regular expression: ${kleur.yellow(needle)} ... Haystack: ${kleur.gray(haystack)}`)
         const regexp: RegExp = RegexParser(needle)
         return !!regexp.exec(haystack)
     } else {

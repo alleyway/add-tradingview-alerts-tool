@@ -27,4 +27,4 @@ build_and_test:
     - echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
     - echo always-auth=true >> .npmrc
 #    - cat .npmrc
-    - npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId="${CI_COMMIT_SHORT_SHA}"
+    - npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId="ci"

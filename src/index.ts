@@ -14,6 +14,10 @@ import {fetchPairsForExchange} from "./service/exchange-service.js"
 import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service.js"
 import log from "./service/log.js"
 
+import {IExchangeSymbol, ISingleAlertSettings } from "./interfaces.js"
+
+export type {IExchangeSymbol, ISingleAlertSettings}
+
 export {
     fetchFirstXPath,
     clickContinueIfWarning,

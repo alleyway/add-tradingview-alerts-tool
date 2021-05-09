@@ -10,14 +10,23 @@ import { logBaseDelay } from "./service/common-service.js";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
         const results = [];
-        fs.createReadStream(filename)
-            .pipe(csv())
-            .on('data', (data) => results.push(data))
-            .on('end', () => {
-            resolve(results);
-        }).on('error', () => {
-            reject("Unable to read csv");
-        });
+        try {
+            const readStream = fs.createReadStream(filename);
+            readStream.on("error", () => {
+                reject("unable to read csv");
+            });
+            readStream
+                .pipe(csv())
+                .on('data', (data) => results.push(data))
+                .on('end', () => {
+                resolve(results);
+            }).on('error', () => {
+                reject("Unable to read csv");
+            });
+        }
+        catch (e) {
+            reject(e.message);
+        }
     });
 };
 const addAlertsMain = async (configFileName) => {
@@ -34,6 +43,28 @@ const addAlertsMain = async (configFileName) => {
     const config = YAML.parse(configString);
     if (config.tradingview.chartUrl === "https://www.tradingview.com/chart/XXXXXXXX/") {
         log.fatal("oops! Looks like you need to set your chartUrl in the config file!");
+        process.exit(1);
+    }
+    let blackListRows = [];
+    try {
+        blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : [];
+    }
+    catch (e) {
+        log.fatal(`Unable to open file specified in config: ${config.files.exclude}`);
+        process.exit(1);
+    }
+    let symbolRows = [];
+    try {
+        symbolRows = await readFilePromise(config.files.input);
+    }
+    catch (e) {
+        log.fatal(`Unable to open file specified in config: ${config.files.input}`);
+        process.exit(1);
+    }
+    const firstRow = symbolRows[0];
+    // symbol,base,quote,name
+    if (!firstRow.symbol || !firstRow.base || !firstRow.quote || !firstRow.name) {
+        log.error("Invalid csv file format");
         process.exit(1);
     }
     const { alert: alertConfig } = config;
@@ -74,7 +105,6 @@ const addAlertsMain = async (configFileName) => {
         }
     }
     await waitForTimeout(3, "wait a little longer for page to load");
-    const blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : [];
     const isBlacklisted = (symbol) => {
         for (const row of blackListRows) {
             if (symbol.toLowerCase().includes(row.symbol.toLowerCase())) {
@@ -87,7 +117,6 @@ const addAlertsMain = async (configFileName) => {
         await configureInterval(config.tradingview.interval, page);
         await waitForTimeout(3, "after changing the interval");
     }
-    const symbolRows = await readFilePromise(config.files.input);
     for (const row of symbolRows) {
         if (isBlacklisted(row.symbol)) {
             log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol));

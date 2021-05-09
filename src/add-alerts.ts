@@ -14,14 +14,23 @@ const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
         const results = []
 
-        fs.createReadStream(filename)
-            .pipe(csv())
-            .on('data', (data) => results.push(data))
-            .on('end', () => {
-                resolve(results)
-            }).on('error', () => {
-            reject("Unable to read csv")
-        })
+        try {
+            const readStream = fs.createReadStream(filename);
+            readStream.on("error", () => {
+                reject("unable to read csv")
+            })
+
+            readStream
+                .pipe(csv())
+                .on('data', (data) => results.push(data))
+                .on('end', () => {
+                    resolve(results)
+                }).on('error', () => {
+                reject("Unable to read csv")
+            })
+        } catch (e) {
+            reject(e.message)
+        }
     })
 }
 
@@ -46,6 +55,34 @@ const addAlertsMain = async (configFileName) => {
 
     if (config.tradingview.chartUrl === "https://www.tradingview.com/chart/XXXXXXXX/") {
         log.fatal("oops! Looks like you need to set your chartUrl in the config file!")
+        process.exit(1)
+    }
+
+
+    let blackListRows = []
+
+    try {
+        blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : []
+    } catch (e) {
+        log.fatal(`Unable to open file specified in config: ${config.files.exclude}`)
+        process.exit(1)
+    }
+
+    let symbolRows = []
+
+    try {
+        symbolRows = await readFilePromise(config.files.input)
+    } catch (e) {
+        log.fatal(`Unable to open file specified in config: ${config.files.input}`)
+        process.exit(1)
+    }
+
+
+    const firstRow = symbolRows[0]
+
+    // symbol,base,quote,name
+    if (!firstRow.symbol || !firstRow.base || !firstRow.quote || !firstRow.name) {
+        log.error("Invalid csv file format")
         process.exit(1)
     }
 
@@ -101,7 +138,6 @@ const addAlertsMain = async (configFileName) => {
 
     await waitForTimeout(3, "wait a little longer for page to load")
 
-    const blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : []
 
     const isBlacklisted = (symbol: string) => {
         for (const row of blackListRows) {
@@ -117,7 +153,6 @@ const addAlertsMain = async (configFileName) => {
         await waitForTimeout(3, "after changing the interval")
     }
 
-    const symbolRows = await readFilePromise(config.files.input)
 
     for (const row of symbolRows) {
 

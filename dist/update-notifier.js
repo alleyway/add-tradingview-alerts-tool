@@ -56,8 +56,8 @@ const updateNotifier = async (version, spec = 'latest') => {
     // and should get the updates from that release train.
     // Note that this isn't another http request over the network, because
     // the packument will be cached by pacote from previous request.
-    if (semver.gt(version, latest) && spec === 'latest')
-        return updateNotifier(`^${version}`);
+    // if (semver.gt(version, latest) && spec === 'latest')
+    //     return updateNotifier( `^${version}`)
     // if we already have something >= the desired spec, then we're done
     if (semver.gte(version, latest))
         return null;

@@ -7,6 +7,7 @@ import { navigateToSymbol, login } from "./service/tv-page-actions.js";
 import log, { logLogInfo } from "./service/log.js";
 import kleur from "kleur";
 import { logBaseDelay } from "./service/common-service.js";
+import stripBomStream from "strip-bom-stream";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
         const results = [];
@@ -16,6 +17,7 @@ const readFilePromise = (filename) => {
                 reject("unable to read csv");
             });
             readStream
+                .pipe(stripBomStream())
                 .pipe(csv())
                 .on('data', (data) => results.push(data))
                 .on('end', () => {

@@ -8,7 +8,7 @@ import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log.js"
 import kleur from "kleur";
 import {logBaseDelay} from "./service/common-service.js";
-
+import stripBomStream from "strip-bom-stream";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -21,6 +21,7 @@ const readFilePromise = (filename: string) => {
             })
 
             readStream
+                .pipe(stripBomStream())
                 .pipe(csv())
                 .on('data', (data) => results.push(data))
                 .on('end', () => {

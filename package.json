@@ -63,6 +63,7 @@
     "puppeteer": "^9.1.1",
     "regex-parser": "^2.2.11",
     "source-map-support": "^0.5.19",
+    "strip-bom-stream": "^4.0.0",
     "yaml": "^1.10.0"
   },
   "private": false,

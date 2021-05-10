@@ -48,12 +48,20 @@ const addAlertsMain = async (configFileName) => {
         process.exit(1);
     }
     let blackListRows = [];
-    try {
-        blackListRows = config.files.exclude ? await readFilePromise(config.files.exclude) : [];
-    }
-    catch (e) {
-        log.fatal(`Unable to open file specified in config: ${config.files.exclude}`);
-        process.exit(1);
+    if (config.files.exclude) {
+        try {
+            blackListRows = await readFilePromise(config.files.exclude);
+            if (blackListRows.length > 0) {
+                if (!blackListRows[0].symbol) {
+                    log.error(`Invalid csv file format(${config.files.exclude}), first line must have at the following header: ${kleur.blue("symbol")}`);
+                    process.exit(1);
+                }
+            }
+        }
+        catch (e) {
+            log.fatal(`Unable to open file specified in config: ${config.files.exclude}`);
+            process.exit(1);
+        }
     }
     let symbolRows = [];
     try {
@@ -65,9 +73,8 @@ const addAlertsMain = async (configFileName) => {
         process.exit(1);
     }
     const firstRow = symbolRows[0];
-    // symbol,base,quote,name
     if (!firstRow.symbol || !firstRow.base || !firstRow.quote) {
-        log.error("Invalid csv file format");
+        log.error(`Invalid input csv file format, first line should have at least the following headers(no spaces!): ${kleur.blue("symbol,base,quote")}`);
         process.exit(1);
     }
     const { alert: alertConfig } = config;

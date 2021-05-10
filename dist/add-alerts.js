@@ -65,7 +65,7 @@ const addAlertsMain = async (configFileName) => {
     }
     const firstRow = symbolRows[0];
     // symbol,base,quote,name
-    if (!firstRow.symbol || !firstRow.base || !firstRow.quote || !firstRow.name) {
+    if (!firstRow.symbol || !firstRow.base || !firstRow.quote) {
         log.error("Invalid csv file format");
         process.exit(1);
     }

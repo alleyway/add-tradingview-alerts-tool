@@ -72,6 +72,7 @@ const addAlertsMain = async (configFileName) => {
     let symbolRows = []
 
     try {
+        log.trace(`${kleur.gray("Reading input file: ")}${kleur.cyan(config.files.input)}`)
         symbolRows = await readFilePromise(config.files.input)
     } catch (e) {
         log.fatal(`Unable to open file specified in config: ${config.files.input}`)

@@ -189,15 +189,15 @@ const addAlertsMain = async (configFileName) => {
             name: alertName,
             message,
             condition: {
-                primaryLeft: alertConfig.condition.primaryLeft,
-                primaryRight: alertConfig.condition.primaryRight,
-                secondary: alertConfig.condition.secondary,
-                tertiaryLeft: alertConfig.condition.tertiaryLeft,
-                tertiaryRight: alertConfig.condition.tertiaryRight,
-                quaternaryLeft: alertConfig.condition.quaternaryLeft,
-                quaternaryRight: alertConfig.condition.quaternaryRight,
+                primaryLeft: alertConfig.condition.primaryLeft || null,
+                primaryRight: alertConfig.condition.primaryRight || null,
+                secondary: alertConfig.condition.secondary || null,
+                tertiaryLeft: alertConfig.condition.tertiaryLeft || null,
+                tertiaryRight: alertConfig.condition.tertiaryRight || null,
+                quaternaryLeft: alertConfig.condition.quaternaryLeft || null,
+                quaternaryRight: alertConfig.condition.quaternaryRight || null,
             },
-            option: alertConfig.option,
+            option: alertConfig.option || null,
         }
 
         if (alertConfig.actions) {

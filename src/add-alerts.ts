@@ -3,7 +3,7 @@ import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout} from "./index.js";
-import {navigateToSymbol, login} from "./service/tv-page-actions.js";
+import {navigateToSymbol, login, minimizeFooterChartPanel} from "./service/tv-page-actions.js";
 import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log.js"
 import kleur from "kleur";
@@ -161,6 +161,7 @@ const addAlertsMain = async (configFileName) => {
     }
 
     if (config.tradingview.interval) {
+        await minimizeFooterChartPanel(page) // otherwise pine script editor might capture focus
         await configureInterval(config.tradingview.interval, page)
         await waitForTimeout(3, "after changing the interval")
     }

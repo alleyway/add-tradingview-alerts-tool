@@ -26,6 +26,17 @@ export const takeScreenshot = async (page, name = "unnamed") => {
         });
     }
 };
+export const minimizeFooterChartPanel = async (page) => {
+    log.trace(`minimizing footer chart panel`);
+    try {
+        const footerPanelMinimizeButton = await fetchFirstXPath(page, `//div[@id='footer-chart-panel']//button[@data-name='toggle-visibility-button' and @data-active='false']`, 5000);
+        footerPanelMinimizeButton.click();
+        await waitForTimeout(.4);
+    }
+    catch (e) {
+        log.warn("no minimize button found, footer chart panel must be hidden already");
+    }
+};
 export const configureInterval = async (interval, page) => {
     log.trace(`set ${kleur.blue("interval")}: ${kleur.yellow(interval)}`);
     await page.keyboard.press(",");

@@ -137,7 +137,7 @@ const addAlertsMain = async (configFileName) => {
         await waitForTimeout(2, "let things settle from processing last alert");
         await navigateToSymbol(page, row.symbol);
         await waitForTimeout(2, "after navigating to ticker");
-        const message = alertConfig.message.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base);
+        const message = alertConfig.message?.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base);
         const alertName = (row.name || alertConfig.name || "").toString().replace(/{{symbol}}/g, row.symbol).replace(/{{quote}}/g, row.quote).replace().replace(/{{base}}/g, row.base).replace();
         const singleAlertSettings = {
             name: alertName,

@@ -16,7 +16,7 @@ build_and_test:
   script:
     - node -v
     - npm install npm -g
-    - npm install
+    - npm ci
     - npm run build
     - npm run atat fetch-pairs binance eth
     - npm run atat fetch-pairs ftx perp

@@ -17,10 +17,20 @@ program
     .option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000')
 
 
-const checkForUpdate = () => {
-    updateNotifier(atatVersion).then((message) => {
-        if (message) console.log(message)
-    })
+const checkForUpdate = async (verbose: boolean) => {
+
+    if (verbose) {
+        log.info(kleur.gray("Checking for ATAT update..."))
+    }
+    const message = await updateNotifier(atatVersion)
+
+    if (message) {
+        console.log(message)
+    } else {
+        if (verbose) {
+            log.success("Looks like you're running the latest version")
+        }
+    }
 }
 
 const initialize = () => {
@@ -52,10 +62,10 @@ program.command('fetch-pairs <exchange> [quote]')
             await fetchPairsMain(exchange, quote || "all")
         } catch (e) {
             log.error(e)
-            checkForUpdate()
+            await checkForUpdate(false)
             process.exit(1)
         }
-        checkForUpdate()
+        await checkForUpdate(false)
 
     })
 
@@ -67,12 +77,46 @@ program.command('add-alerts [config]')
             await addAlertsMain(config || "config.yml")
         } catch (e) {
             log.error(e)
-            checkForUpdate()
+            await checkForUpdate(false)
             process.exit(1)
         }
-        checkForUpdate()
+        await checkForUpdate(false)
 
     })
 
+program.exitOverride();
 
-program.parse(process.argv);
+
+const main = async () => {
+
+    try {
+        program.parse(process.argv);
+
+        if (program.opts().help) {
+            await checkForUpdate(false)
+        }
+
+    } catch (e) {
+
+        try {
+            await checkForUpdate(true)
+        } catch (error) {
+
+        }
+
+        if (e.code === "commander.version" || e.code === "commander.helpDisplayed") {
+            process.exit(e.exitCode)
+        } else {
+            console.log(e)
+            process.exit(1)
+        }
+    }
+
+
+}
+
+
+main()
+
+
+

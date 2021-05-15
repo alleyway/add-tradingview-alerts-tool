@@ -40,7 +40,7 @@ export const minimizeFooterChartPanel = async (page) => {
         footerPanelMinimizeButton.click()
         await waitForTimeout(.4);
     } catch (e) {
-        log.warn("no minimize button found, footer chart panel must be hidden already")
+        log.trace("no minimize button found, footer chart panel must be hidden already")
     }
 }
 

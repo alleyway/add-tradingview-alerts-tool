@@ -338,7 +338,21 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await page.keyboard.press("a")
     await page.keyboard.up('AltLeft')
 
-    await waitForTimeout(1, "after clicking shortcut for new alert dialog");
+    await waitForTimeout(1, "after keyboard shortcut for new alert dialog");
+
+    let invalidSymbolModal
+
+    try {
+        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200)
+    } catch (e) {
+
+    }
+
+    if (invalidSymbolModal){
+        throw Error("Invalid symbol")
+    }
+
+    await waitForTimeout(1, "after keyboard shortcut for new alert dialog");
 
     await configureSingleAlertSettings(page, singleAlertSettings)
 

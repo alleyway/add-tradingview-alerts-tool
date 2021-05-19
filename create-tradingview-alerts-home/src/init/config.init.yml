@@ -11,7 +11,7 @@ tradingview:
   #username: JimmyJohnson
   #password: SuperSecret
 alert:
-  condition:
+  condition: # tertiary/quaternary rows might not exist for your indicator. If not remove those values
     primaryLeft: RSI
     primaryRight:
     secondary: Moving Up

@@ -128,6 +128,10 @@ const addAlertsMain = async (configFileName) => {
         await configureInterval(config.tradingview.interval, page);
         await waitForTimeout(3, "after changing the interval");
     }
+
+    // Added support for multiple alerts
+    const {alerts: alertsConfig } = config;
+    //
     for (const row of symbolRows) {
         if (isBlacklisted(row.symbol)) {
             log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol));
@@ -137,36 +141,41 @@ const addAlertsMain = async (configFileName) => {
         await waitForTimeout(2, "let things settle from processing last alert");
         await navigateToSymbol(page, row.symbol);
         await waitForTimeout(2, "after navigating to ticker");
-        const message = alertConfig.message?.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base);
-        const alertName = (row.name || alertConfig.name || "").toString().replace(/{{symbol}}/g, row.symbol).replace(/{{quote}}/g, row.quote).replace().replace(/{{base}}/g, row.base).replace();
-        const singleAlertSettings = {
-            name: alertName,
-            message,
-            condition: {
-                primaryLeft: alertConfig.condition.primaryLeft || null,
-                primaryRight: alertConfig.condition.primaryRight || null,
-                secondary: alertConfig.condition.secondary || null,
-                tertiaryLeft: alertConfig.condition.tertiaryLeft || null,
-                tertiaryRight: alertConfig.condition.tertiaryRight || null,
-                quaternaryLeft: alertConfig.condition.quaternaryLeft || null,
-                quaternaryRight: alertConfig.condition.quaternaryRight || null,
-            },
-            option: alertConfig.option || null,
-        };
-        if (alertConfig.actions) {
-            singleAlertSettings.actions = {
-                notifyOnApp: alertConfig.actions.notifyOnApp,
-                showPopup: alertConfig.actions.showPopup,
-                sendEmail: alertConfig.actions.sendEmail,
+        // Added support for multiple alerts
+        for (const alertname in alertsConfig) {
+        //
+            const message = alertConfig.message?.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base);
+            const alertName = (row.name || alertConfig.name || "").toString().replace(/{{symbol}}/g, row.symbol).replace(/{{quote}}/g, row.quote).replace().replace(/{{base}}/g, row.base).replace();
+            log.info(`  Adding alert: ${kleur.magenta(alertName)}`)
+            const singleAlertSettings = {
+                name: alertName,
+                message,
+                condition: {
+                    primaryLeft: alertConfig.condition.primaryLeft || null,
+                    primaryRight: alertConfig.condition.primaryRight || null,
+                    secondary: alertConfig.condition.secondary || null,
+                    tertiaryLeft: alertConfig.condition.tertiaryLeft || null,
+                    tertiaryRight: alertConfig.condition.tertiaryRight || null,
+                    quaternaryLeft: alertConfig.condition.quaternaryLeft || null,
+                    quaternaryRight: alertConfig.condition.quaternaryRight || null,
+                },
+                option: alertConfig.option || null,
             };
-            if (alertConfig.actions.webhook) {
-                singleAlertSettings.actions.webhook = {
-                    enabled: alertConfig.actions.webhook.enabled,
-                    url: alertConfig.actions.webhook.url
+            if (alertConfig.actions) {
+                singleAlertSettings.actions = {
+                    notifyOnApp: alertConfig.actions.notifyOnApp,
+                    showPopup: alertConfig.actions.showPopup,
+                    sendEmail: alertConfig.actions.sendEmail,
                 };
+                if (alertConfig.actions.webhook) {
+                    singleAlertSettings.actions.webhook = {
+                        enabled: alertConfig.actions.webhook.enabled,
+                        url: alertConfig.actions.webhook.url
+                    };
+                }
             }
+            await addAlert(page, singleAlertSettings);
         }
-        await addAlert(page, singleAlertSettings);
     }
     await waitForTimeout(3);
     await browser.close();

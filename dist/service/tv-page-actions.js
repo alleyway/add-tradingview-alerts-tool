@@ -122,8 +122,11 @@ export const navigateToSymbol = async (page, symbol) => {
     const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]');
     await symbolHeaderInput.click();
     await waitForTimeout(1);
-    const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']');
-    await symbolInput.type(`  ${symbol}${String.fromCharCode(13)}`);
+    await page.keyboard.type(`${symbol}`, { delay: 0.3 });
+    await waitForTimeout(.3);
+    await page.keyboard.press('Enter');
+    // const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
+    // await symbolInput.type()
 };
 const isMatch = (needle, haystack) => {
     if (needle.startsWith("/")) {

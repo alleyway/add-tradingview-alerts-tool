@@ -8,10 +8,39 @@ const BINANCEUS = "binanceus"
 const BITTREX = "bittrex"
 const COINBASE = "coinbase"
 const FTX = "ftx"
+const KRAKEN = "kraken"
 
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX]
+export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN]
 
 const CONST_ALL = "all"
+
+const fetchKraken = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+    const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
+
+    const responseObject = await resp.json()
+
+    const symbolsObject = responseObject.result
+
+    const exchangeSymbols: IExchangeSymbol[] = []
+
+    for (const key of Object.keys(symbolsObject)) { // key = "AAVEAUD"
+
+        const symbolObj = symbolsObject[key]
+
+        if (symbolObj.wsname){
+            const [symbolBase, symbolQuote] = symbolObj.wsname.split("\/") // "AAVE\/AUD"
+
+            if ((quoteAsset === CONST_ALL || symbolQuote === quoteAsset.toUpperCase())) {
+                exchangeSymbols.push(
+                    new ExchangeSymbol("KRAKEN", symbolBase, symbolQuote)
+                )
+            }
+        } else {
+            // some results are strange things like "ETHCAD.d"
+        }
+    }
+    return exchangeSymbols
+}
 
 const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets")
@@ -167,6 +196,9 @@ export const fetchPairsForExchange = async (exchange: string, quoteAsset: string
             break;
         case BITTREX:
             symbolArray = await fetchBittrex(quoteAsset)
+            break;
+        case KRAKEN:
+            symbolArray = await fetchKraken(quoteAsset)
             break;
         default:
             console.error("No exchange exists: ", exchange)

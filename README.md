@@ -136,6 +136,15 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
     # Creates bittrex_btc_pairs.csv
 ```
 
+#### Download Trading Pairs From Kraken
+
+```yaml
+    ./atat fetch-pairs kraken usd
+
+    # Creates kraken_usd_pairs.csv
+```
+
+
 ...and so on..
 
 

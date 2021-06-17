@@ -144,6 +144,15 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
     # Creates kraken_usd_pairs.csv
 ```
 
+#### Download Trading Pairs From KuCoin
+
+```yaml
+    ./atat fetch-pairs kucoin usdt
+
+    # Creates kraken_usd_pairs.csv
+```
+
+
 
 ...and so on..
 

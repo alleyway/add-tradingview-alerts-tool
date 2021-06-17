@@ -9,10 +9,53 @@ const BITTREX = "bittrex"
 const COINBASE = "coinbase"
 const FTX = "ftx"
 const KRAKEN = "kraken"
+const KUCOIN = "kucoin"
 
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN]
+export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN]
 
 const CONST_ALL = "all"
+
+const fetchKucoin = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+    const resp = await fetch("https://api.kucoin.com/api/v1/symbols")
+
+    const responseObject = await resp.json()
+
+    const symbolArray = responseObject.data
+
+    const exchangeSymbols: IExchangeSymbol[] = []
+
+    for (const symObj of symbolArray) { // key = "AAVEAUD"
+        /*
+            {
+              "symbol": "REQ-ETH",
+              "name": "REQ-ETH",
+              "baseCurrency": "REQ",
+              "quoteCurrency": "ETH",
+              "feeCurrency": "ETH",
+              "market": "ALTS",
+              "baseMinSize": "1",
+              "quoteMinSize": "0.0001",
+              "baseMaxSize": "10000000000",
+              "quoteMaxSize": "99999999",
+              "baseIncrement": "0.0001",
+              "quoteIncrement": "0.0000001",
+              "priceIncrement": "0.0000001",
+              "priceLimitRate": "0.1",
+              "isMarginEnabled": false,
+              "enableTrading": true
+            },
+         */
+        const symbolBase = symObj.baseCurrency
+        const symbolQuote = symObj.quoteCurrency
+
+        if (symObj.enableTrading && (quoteAsset === CONST_ALL || symbolQuote === quoteAsset.toUpperCase())) {
+            exchangeSymbols.push(
+                new ExchangeSymbol("KUCOIN", symbolBase, symbolQuote)
+            )
+        }
+    }
+    return exchangeSymbols
+}
 
 const fetchKraken = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
@@ -27,7 +70,7 @@ const fetchKraken = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
         const symbolObj = symbolsObject[key]
 
-        if (symbolObj.wsname){
+        if (symbolObj.wsname) {
             const [symbolBase, symbolQuote] = symbolObj.wsname.split("\/") // "AAVE\/AUD"
 
             if ((quoteAsset === CONST_ALL || symbolQuote === quoteAsset.toUpperCase())) {
@@ -199,6 +242,9 @@ export const fetchPairsForExchange = async (exchange: string, quoteAsset: string
             break;
         case KRAKEN:
             symbolArray = await fetchKraken(quoteAsset)
+            break;
+        case KUCOIN:
+            symbolArray = await fetchKucoin(quoteAsset)
             break;
         default:
             console.error("No exchange exists: ", exchange)

@@ -10,8 +10,9 @@ const COINBASE = "coinbase"
 const FTX = "ftx"
 const KRAKEN = "kraken"
 const KUCOIN = "kucoin"
+const OKEX = "okex"
 
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN]
+export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX]
 
 const CONST_ALL = "all"
 
@@ -217,6 +218,38 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchang
     return exchangeSymbols
 }
 
+
+const fetchOkex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+
+    const url = "https://www.okex.com/api/spot/v3/instruments"
+
+    const resp = await fetch(url)
+
+    const responseObject = await resp.json()
+
+    const symbols = responseObject
+
+    const exchangeSymbols: IExchangeSymbol[] = []
+
+    const exchange = "OKEX"
+
+    for (const symbol of symbols) {
+        if ((quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
+
+            exchangeSymbols.push(
+                new ExchangeSymbol(exchange, symbol.base_currency, symbol.quote_currency)
+            )
+
+        }
+    }
+
+    return exchangeSymbols
+}
+
+
+
+
+
 export const fetchPairsForExchange = async (exchange: string, quoteAsset: string = CONST_ALL): Promise<IExchangeSymbol[]> => {
 
     let symbolArray: IExchangeSymbol[];
@@ -245,6 +278,9 @@ export const fetchPairsForExchange = async (exchange: string, quoteAsset: string
             break;
         case KUCOIN:
             symbolArray = await fetchKucoin(quoteAsset)
+            break;
+        case OKEX:
+            symbolArray = await fetchOkex(quoteAsset)
             break;
         default:
             console.error("No exchange exists: ", exchange)

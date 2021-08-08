@@ -104,7 +104,7 @@ const main = async () => {
 
         }
 
-        if (e.code === "commander.version" || e.code === "commander.helpDisplayed") {
+        if (e.code === "commander.version" || e.code === "commander.helpDisplayed" || e.code === "commander.help") {
             process.exit(e.exitCode)
         } else {
             console.log(e)

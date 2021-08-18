@@ -123,7 +123,7 @@ export const login = async (page, username, pass) => {
     const submitButton = await fetchFirstXPath(page, "//button[@type='submit' and contains(@class, 'tv-button--primary')]")
     log.trace("clicking submit button")
     submitButton.click()
-    await page.waitForNavigation()
+    await waitForTimeout(2);
 
 }
 

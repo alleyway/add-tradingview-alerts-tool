@@ -5,13 +5,14 @@ import { NoInputFoundError } from "../classes.js";
 import RegexParser from "regex-parser";
 // data-dialog-name="gopro"
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);
-export const fetchFirstXPath = async (page, selector, timeout = 20000) => {
+export const fetchFirstXPath = async (page, selector, timeout = 20000, screenshotOnFail = true) => {
     log.trace(kleur.gray(`...selector: ${kleur.yellow(selector)}`));
     try {
         await page.waitForXPath(selector, { timeout });
     }
     catch (e) {
-        await takeScreenshot(page, "waitForXPathFailed");
+        if (screenshotOnFail)
+            await takeScreenshot(page, "waitForXPathFailed");
         throw (e);
     }
     const elements = await page.$x(selector);

@@ -1,6 +1,6 @@
 *We are working on a service that would completely automate this tool!*
 
-*Register your interest as a beta tester at [tradingview-alerts-manager.com](https://tradingview-alerts-manager.com)*
+*Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link)*
 
 # Add TradingView Alerts Tool
 

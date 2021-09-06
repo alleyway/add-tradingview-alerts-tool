@@ -287,7 +287,7 @@ export const addAlert = async (page, singleAlertSettings) => {
     await waitForTimeout(1, "after keyboard shortcut for new alert dialog");
     let invalidSymbolModal;
     try {
-        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200);
+        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200, false);
     }
     catch (e) {
     }

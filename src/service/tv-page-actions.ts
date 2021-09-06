@@ -346,7 +346,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     let invalidSymbolModal
 
     try {
-        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200)
+        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200, false)
     } catch (e) {
 
     }

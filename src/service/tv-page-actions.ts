@@ -326,7 +326,7 @@ export const clickContinueIfWarning = async (page) => {
     try {
         log.trace("clickContinueIfWarning()")
         const continueAnywayButton = await fetchFirstXPath(page, `//button[@name='continue']`,
-            3000)
+            3000, false)
         continueAnywayButton.click()
         await waitForTimeout(3, "waiting after clicking 'continue anyway' button");
     } catch (error) {

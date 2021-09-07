@@ -213,12 +213,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     await performActualEntry("tertiaryRight");
     await performActualEntry("quaternaryLeft");
     await performActualEntry("quaternaryRight");
-    await waitForTimeout(.5);
+    await waitForTimeout(.4);
     if (!!option) {
         log.trace(`Selecting option: ${kleur.blue(option)}`);
         const optionButton = await fetchFirstXPath(page, `//*[text()='${option}']`);
-        optionButton.click();
         await waitForTimeout(.3);
+        await page.evaluate((el) => el.click(), optionButton);
     }
     // alert actions
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {

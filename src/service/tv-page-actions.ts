@@ -183,8 +183,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
         const elements = await page.$x(selector)
         let found = false
+        let foundOptions = []
         for (const el of elements) {
             const optionText = await page.evaluate(element => element.innerText, el);
+            foundOptions.push(optionText)
             if (isMatch(conditionToMatch, optionText)) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
@@ -192,7 +194,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 break;
             }
         }
-        if (!found) throw Error(`Unable to partial match ${conditionToMatch} in dropdown`)
+        if (!found) throw Error(`Unable to partial match '${conditionToMatch}' in dropdown of following options:\n${foundOptions.join("\n")}`)
 
     }
 

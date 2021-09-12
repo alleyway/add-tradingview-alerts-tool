@@ -137,21 +137,31 @@ const addAlertsMain = async (configFileName) => {
         await waitForTimeout(2, "let things settle from processing last alert");
         await navigateToSymbol(page, row.symbol);
         await waitForTimeout(2, "after navigating to ticker");
-        const message = alertConfig.message?.toString().replace(/{{quote}}/g, row.quote).replace(/{{base}}/g, row.base);
-        const alertName = (row.name || alertConfig.name || "").toString().replace(/{{symbol}}/g, row.symbol).replace(/{{quote}}/g, row.quote).replace().replace(/{{base}}/g, row.base).replace();
+        const makeReplacements = (value) => {
+            if (value) {
+                let val = value;
+                for (const column of Object.keys(row)) {
+                    val = val.replace(`{{${column}}}`, row[column], "g");
+                }
+                return val;
+            }
+            else {
+                return null;
+            }
+        };
         const singleAlertSettings = {
-            name: alertName,
-            message,
+            name: makeReplacements(row.name || alertConfig.name),
+            message: makeReplacements(alertConfig.message),
             condition: {
-                primaryLeft: alertConfig.condition.primaryLeft || null,
-                primaryRight: alertConfig.condition.primaryRight || null,
-                secondary: alertConfig.condition.secondary || null,
-                tertiaryLeft: alertConfig.condition.tertiaryLeft || null,
-                tertiaryRight: alertConfig.condition.tertiaryRight || null,
-                quaternaryLeft: alertConfig.condition.quaternaryLeft || null,
-                quaternaryRight: alertConfig.condition.quaternaryRight || null,
+                primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
+                primaryRight: makeReplacements(alertConfig.condition.primaryRight),
+                secondary: makeReplacements(alertConfig.condition.secondary),
+                tertiaryLeft: makeReplacements(alertConfig.condition.tertiaryLeft),
+                tertiaryRight: makeReplacements(alertConfig.condition.tertiaryRight),
+                quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
+                quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
             },
-            option: alertConfig.option || null,
+            option: makeReplacements(alertConfig.option),
         };
         if (alertConfig.actions) {
             singleAlertSettings.actions = {
@@ -162,7 +172,7 @@ const addAlertsMain = async (configFileName) => {
             if (alertConfig.actions.webhook) {
                 singleAlertSettings.actions.webhook = {
                     enabled: alertConfig.actions.webhook.enabled,
-                    url: alertConfig.actions.webhook.url
+                    url: makeReplacements(alertConfig.actions.webhook.url)
                 };
             }
         }

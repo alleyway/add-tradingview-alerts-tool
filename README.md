@@ -252,7 +252,37 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 
 NOTE: running "./atat add-alerts" will default to config.yml unless you specify one (eg. "./atat add-alerts config.btc.yml")
 
-### Send a single alert to multiple bots(or use multiple commands)
+
+### Token Replacement in Alert Settings
+
+There are some scenarios where you may want some pairs to use different indicators or the same indicator with different settings (must be added to the chart for each setting - this script CANNOT adjust indicator settings yet)  
+
+
+
+![tradingview indicators](.README_images/multiple indicators.png)
+
+Then you could add an arbitrary column to your .csv - here we use "DSMAsetting"
+
+```
+symbol,quote,base,DSMAsetting
+BINANCE:1INCHUSDT,USDT,1INCH,40
+BINANCE:AAVEUSDT,USDT,AAVE,20
+BINANCE:ACMUSDT,USDT,ACM,40
+BINANCE:ADAUSDT,USDT,ADA,20
+```
+
+You can then use any value from your csv by surrounding the column header name with double braces as follows:
+
+```yaml
+...
+alert:
+  condition:
+    primaryLeft: "DSMA ({{DSMAsetting}}, 50)"
+...
+```
+
+
+### Send a single alert to multiple 3commas bots
 
 3commas will allow you to use an array of commands in the message, I typically send a message to two bots: one for paper trading, and another "real" account which I can choose to disable.
 

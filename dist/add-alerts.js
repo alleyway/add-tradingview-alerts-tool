@@ -18,7 +18,9 @@ const readFilePromise = (filename) => {
             });
             readStream
                 .pipe(stripBomStream())
-                .pipe(csv())
+                .pipe(csv({
+                mapHeaders: ({ header, index }) => header.trim()
+            }))
                 .on('data', (data) => results.push(data))
                 .on('end', () => {
                 resolve(results);
@@ -142,6 +144,12 @@ const addAlertsMain = async (configFileName) => {
                 let val = value;
                 for (const column of Object.keys(row)) {
                     val = val.replace(`{{${column}}}`, row[column], "g");
+                }
+                const matches = val.match(/\{\{.*?\}\}/g);
+                if (matches) {
+                    for (const match of matches) {
+                        log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`);
+                    }
                 }
                 return val;
             }

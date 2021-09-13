@@ -30,7 +30,7 @@
     "fetch:coinbase": "npm run show-deprecation",
     "fetch:bittrex": "npm run show-deprecation",
     "add-alerts": "npm run show-deprecation",
-    "release": "npx release-it",
+    "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first!' && npx release-it",
     "release-beta": "npx release-it --preRelease=beta",
     "prepare": "husky install"
   },

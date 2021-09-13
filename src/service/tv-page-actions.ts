@@ -70,6 +70,7 @@ const dropdownXpathQueries = {
     quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
 }
 
+
 const inputXpathQueries = {
 
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[1]",
@@ -77,6 +78,11 @@ const inputXpathQueries = {
 
     quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[2]",
     quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[2]",
+}
+
+const readOnlyInputQueries = {
+    tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[1]//input[@type='text']",
+    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[2]//input[@type='text']"
 }
 
 
@@ -208,7 +214,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
 
             try {
-                log.trace(`Searching potential dropdown xpath of ${kleur.yellow(key)}`)
+                log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow(key)}`)
                 const targetElement = await fetchFirstXPath(page, dropdownXpathQueries[key], 3000)
                 // must be a dropdown...
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
@@ -220,15 +226,36 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             } catch (e) {
 
                 if (e.constructor.name === "TimeoutError") {
-                    if (inputXpathQueries[key]) {
-                        log.trace("Timed out. Maybe it's not a dropdown. Search for 'input' xpath query")
-                        const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 3000)
+                    if (!inputXpathQueries[key]) throw (new NoInputFoundError("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
+
+                    log.trace(`Timed out looking for dropdown. Looking for INPUT xpath of ${kleur.yellow(key)}`)
+                    try {
+                        const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 1000)
                         log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`)
                         await clickInputAndDelete(page, valueInput)
                         await valueInput.type(String(conditionOrInputValue))
-                    } else {
-                        throw (new NoInputFoundError("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
+                    } catch (inputError) {
+
+                        if (inputError.constructor.name === "TimeoutError") {
+                            if (!readOnlyInputQueries[key]) throw (new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`))
+                            log.trace(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`)
+
+                            const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000)
+
+                            const readOnlyValue = await page.evaluate((el) => el.value , valueReadonlyInput)
+
+                            if (readOnlyValue === conditionOrInputValue) {
+                                log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`)
+                            } else {
+                                throw new Error(`Read only input value for ${key} is ${readOnlyValue}, but expected ${conditionOrInputValue}`)
+                            }
+
+
+                        } else {
+                            throw inputError
+                        }
                     }
+
                 } else {
                     throw e
                 }
@@ -353,7 +380,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
 
     }
 
-    if (invalidSymbolModal){
+    if (invalidSymbolModal) {
         throw Error("Invalid symbol")
     }
 

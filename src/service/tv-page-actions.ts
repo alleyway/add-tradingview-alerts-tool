@@ -2,7 +2,7 @@ import {ISingleAlertSettings} from "../interfaces.js";
 import {waitForTimeout, isEnvEnabled} from "./common-service.js";
 import log from "./log.js"
 import kleur from "kleur";
-import {NoInputFoundError} from "../classes.js";
+import {NoInputFoundError, DropdownError} from "../classes.js";
 import RegexParser from "regex-parser"
 
 // data-dialog-name="gopro"
@@ -200,7 +200,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 break;
             }
         }
-        if (!found) throw Error(`Unable to partial match '${conditionToMatch}' in dropdown of following options:\n${foundOptions.join("\n")}`)
+        if (!found) throw new DropdownError(conditionToMatch, foundOptions,  name)
 
     }
 

@@ -9,3 +9,9 @@ export declare class ExchangeSymbol implements IExchangeSymbol {
 export declare class NoInputFoundError extends Error {
     constructor(message: string);
 }
+export declare class DropdownError extends Error {
+    _configName: string;
+    _needle: string;
+    _haystack: string[];
+    constructor(needle: string, haystack: string[], configName: string);
+}

@@ -10,6 +10,7 @@ import {
     logout,
     fetchFirstXPath
 } from "./service/tv-page-actions.js"
+import {DropdownError} from "./classes.js";
 import {fetchPairsForExchange} from "./service/exchange-service.js"
 import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service.js"
 import log from "./service/log.js"
@@ -33,7 +34,7 @@ export {
     waitForTimeout,
     atatVersion,
     log,
-    isEnvEnabled
-
+    isEnvEnabled,
+    DropdownError
 }
 

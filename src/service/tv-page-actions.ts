@@ -226,7 +226,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             } catch (e) {
 
                 if (e.constructor.name === "TimeoutError") {
-                    if (!inputXpathQueries[key]) throw (new NoInputFoundError("Unable to find Xpath target for primaryLeft/secondary which doesn't have inputs, so won't even try"))
+                    if (!inputXpathQueries[key]) throw (new NoInputFoundError(`Unable to find dropdown xpath target for primaryLeft/secondary. Make sure chart layout is SAVED with an indicator that contains/matches this: ${conditionOrInputValue}`))
 
                     log.trace(`Timed out looking for dropdown. Looking for INPUT xpath of ${kleur.yellow(key)}`)
                     try {

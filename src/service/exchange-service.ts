@@ -21,6 +21,7 @@ const fetchKucoin = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const symbolArray = responseObject.data
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -63,6 +64,7 @@ const fetchKraken = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const symbolsObject = responseObject.result
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -91,6 +93,7 @@ const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const symbols = responseObject.result
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -115,6 +118,7 @@ const fetchCoinbase = async (quoteAsset: string): Promise<IExchangeSymbol[]> => 
 
     const exchangeSymbols: IExchangeSymbol[] = []
 
+    // @ts-ignore
     for (const symbol of symbols) {
 
         if (!symbol.trading_disabled && symbol.status == "online" &&
@@ -135,6 +139,7 @@ const fetchFtx = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const symbols = responseObject.result
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -173,6 +178,7 @@ const fetchBinanceFutures = async (quoteAsset: string): Promise<IExchangeSymbol[
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const {symbols} = responseObject
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -199,6 +205,7 @@ const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchang
 
     const responseObject = await resp.json()
 
+    // @ts-ignore
     const {symbols} = responseObject
 
     const exchangeSymbols: IExchangeSymbol[] = []
@@ -233,6 +240,7 @@ const fetchOkex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
 
     const exchange = "OKEX"
 
+    // @ts-ignore
     for (const symbol of symbols) {
         if ((quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
 

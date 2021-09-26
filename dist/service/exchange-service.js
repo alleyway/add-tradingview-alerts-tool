@@ -14,6 +14,7 @@ const CONST_ALL = "all";
 const fetchKucoin = async (quoteAsset) => {
     const resp = await fetch("https://api.kucoin.com/api/v1/symbols");
     const responseObject = await resp.json();
+    // @ts-ignore
     const symbolArray = responseObject.data;
     const exchangeSymbols = [];
     for (const symObj of symbolArray) { // key = "AAVEAUD"
@@ -48,6 +49,7 @@ const fetchKucoin = async (quoteAsset) => {
 const fetchKraken = async (quoteAsset) => {
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs");
     const responseObject = await resp.json();
+    // @ts-ignore
     const symbolsObject = responseObject.result;
     const exchangeSymbols = [];
     for (const key of Object.keys(symbolsObject)) { // key = "AAVEAUD"
@@ -67,6 +69,7 @@ const fetchKraken = async (quoteAsset) => {
 const fetchBittrex = async (quoteAsset) => {
     const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets");
     const responseObject = await resp.json();
+    // @ts-ignore
     const symbols = responseObject.result;
     const exchangeSymbols = [];
     for (const symbol of symbols) {
@@ -81,6 +84,7 @@ const fetchCoinbase = async (quoteAsset) => {
     const responseObject = await resp.json();
     const symbols = responseObject;
     const exchangeSymbols = [];
+    // @ts-ignore
     for (const symbol of symbols) {
         if (!symbol.trading_disabled && symbol.status == "online" &&
             (quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
@@ -92,6 +96,7 @@ const fetchCoinbase = async (quoteAsset) => {
 const fetchFtx = async (quoteAsset) => {
     const resp = await fetch("https://ftx.com/api/markets");
     const responseObject = await resp.json();
+    // @ts-ignore
     const symbols = responseObject.result;
     const exchangeSymbols = [];
     for (const symbol of symbols) {
@@ -115,6 +120,7 @@ const fetchBinanceFutures = async (quoteAsset) => {
     const url = "https://fapi.binance.com/fapi/v1/exchangeInfo";
     const resp = await fetch(url);
     const responseObject = await resp.json();
+    // @ts-ignore
     const { symbols } = responseObject;
     const exchangeSymbols = [];
     const exchange = "BINANCE";
@@ -129,6 +135,7 @@ const fetchBinance = async (isUs, quoteAsset) => {
     const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
     const resp = await fetch(url);
     const responseObject = await resp.json();
+    // @ts-ignore
     const { symbols } = responseObject;
     const exchangeSymbols = [];
     const exchange = isUs ? "BINANCEUS" : "BINANCE";
@@ -146,6 +153,7 @@ const fetchOkex = async (quoteAsset) => {
     const symbols = responseObject;
     const exchangeSymbols = [];
     const exchange = "OKEX";
+    // @ts-ignore
     for (const symbol of symbols) {
         if ((quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
             exchangeSymbols.push(new ExchangeSymbol(exchange, symbol.base_currency, symbol.quote_currency));

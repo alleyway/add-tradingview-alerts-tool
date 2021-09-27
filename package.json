@@ -60,7 +60,7 @@
     "node-fetch": "^3.0.0",
     "pacote": "^11.3.5",
     "prompts": "^2.4.1",
-    "puppeteer": "^10.4.0",
+    "puppeteer": "^9.1.1",
     "regex-parser": "^2.2.11",
     "source-map-support": "^0.5.20",
     "strip-bom-stream": "^5.0.0",

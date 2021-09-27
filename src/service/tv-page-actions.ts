@@ -157,14 +157,13 @@ export const logout = async (page) => {
 
 export const navigateToSymbol = async (page, symbol: string) => {
 
-    const symbolHeaderInput = await fetchFirstXPath(page, '//div[@id="header-toolbar-symbol-search"]')
-    await symbolHeaderInput.click()
-    await waitForTimeout(1);
+    await page.keyboard.press('Escape')
+    await waitForTimeout(.3);
+    await page.keyboard.press('Escape')
+    await waitForTimeout(.5);
     await page.keyboard.type(`${symbol}`, {delay: 0.3})
     await waitForTimeout(.3);
     await page.keyboard.press('Enter')
-    // const symbolInput = await fetchFirstXPath(page, '//input[@data-role=\'search\']')
-    // await symbolInput.type()
 }
 
 const isMatch = (needle: string, haystack: string) => {

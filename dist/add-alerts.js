@@ -125,8 +125,8 @@ const addAlertsMain = async (configFileName) => {
         }
         return false;
     };
+    await minimizeFooterChartPanel(page); // otherwise pine script editor might capture focus
     if (config.tradingview.interval) {
-        await minimizeFooterChartPanel(page); // otherwise pine script editor might capture focus
         await configureInterval(config.tradingview.interval, page);
         await waitForTimeout(3, "after changing the interval");
     }
@@ -143,7 +143,7 @@ const addAlertsMain = async (configFileName) => {
             if (value) {
                 let val = value;
                 for (const column of Object.keys(row)) {
-                    val = val.replace(`{{${column}}}`, row[column], "g");
+                    val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column]);
                 }
                 const matches = val.match(/\{\{.*?\}\}/g);
                 if (matches) {

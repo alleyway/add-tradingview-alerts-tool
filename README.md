@@ -160,6 +160,13 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
     # Creates okex_usd_pairs.csv
 ```
 
+#### Download Trading Pairs From ByBit
+
+```yaml
+    ./atat fetch-pairs bybit all
+
+    # Creates bybit_all_pairs.csv
+```
 
 
 ...and so on..

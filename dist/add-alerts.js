@@ -141,7 +141,7 @@ const addAlertsMain = async (configFileName) => {
         await waitForTimeout(2, "after navigating to ticker");
         const makeReplacements = (value) => {
             if (value) {
-                let val = value;
+                let val = String(value); // sometimes YAML config parameters are numbers
                 for (const column of Object.keys(row)) {
                     val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column]);
                 }

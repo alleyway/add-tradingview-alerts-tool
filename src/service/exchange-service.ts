@@ -11,10 +11,34 @@ const FTX = "ftx"
 const KRAKEN = "kraken"
 const KUCOIN = "kucoin"
 const OKEX = "okex"
+const BYBIT = "bybit"
 
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX]
+export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX, BYBIT]
 
 const CONST_ALL = "all"
+
+
+const fetchByBit = async(quoteAsset: string): Promise<IExchangeSymbol[]> => {
+    const resp = await fetch("https://api.bybit.com/v2/public/symbols")
+
+    const responseObject = await resp.json()
+
+    // @ts-ignore
+    const symbols = responseObject.result
+
+    const exchangeSymbols: IExchangeSymbol[] = []
+
+    for (const symbol of symbols) {
+
+        if (symbol.status === "Trading" && (quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
+            exchangeSymbols.push(
+                new ExchangeSymbol("BYBIT", symbol.base_currency, symbol.quote_currency,
+                    `BYBIT:${symbol.alias}`)
+            )
+        }
+    }
+    return exchangeSymbols
+}
 
 const fetchKucoin = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
     const resp = await fetch("https://api.kucoin.com/api/v1/symbols")
@@ -289,6 +313,9 @@ export const fetchPairsForExchange = async (exchange: string, quoteAsset: string
             break;
         case OKEX:
             symbolArray = await fetchOkex(quoteAsset)
+            break;
+        case BYBIT:
+            symbolArray = await fetchByBit(quoteAsset)
             break;
         default:
             console.error("No exchange exists: ", exchange)

@@ -1,6 +1,4 @@
-*We are working on a service that would completely automate this tool!*
-
-*Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
+👋 *NOTE: We have a service to completely automate this tool(nothing to install!) Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
 
 # Add TradingView Alerts Tool
 
@@ -331,7 +329,7 @@ This works in the same way as for 3Commas, but Alertatron using a different form
 Consider one of the following:
 
 1) Increase awareness on GitHub: Click the ⭐ at the top of the page!
-![Star this project](../../Documents/github_star_animation.gif)
+![Star this project]((.README_images/github_star_animation.gif))
 
 2) Become a _FREE_ beta tester (limited time) of our eventual commercial service:    
 

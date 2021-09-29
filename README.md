@@ -329,7 +329,8 @@ This works in the same way as for 3Commas, but Alertatron using a different form
 Consider one of the following:
 
 1) Increase awareness on GitHub: Click the ⭐ at the top of the page!
-![Star this project]((.README_images/github_star_animation.gif))
+
+![Star this project](.README_images/github_star_animation.gif)
 
 2) Become a _FREE_ beta tester (limited time) of our eventual commercial service:    
 

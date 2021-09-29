@@ -1,6 +1,6 @@
 *We are working on a service that would completely automate this tool!*
 
-*Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link)*
+*Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
 
 # Add TradingView Alerts Tool
 
@@ -331,15 +331,15 @@ This works in the same way as for 3Commas, but Alertatron using a different form
 Consider one of the following:
 
 1) Increase awareness on GitHub: Click the ⭐ at the top of the page!
+![Star this project](../../Documents/github_star_animation.gif)
 
+2) Become a _FREE_ beta tester (limited time) of our eventual commercial service:    
 
-2) Donate something to the following ethereum address (see [past donations on etherscan](https://etherscan.io/address/0x37f79c0bAC4068a56E36694c5F5d8853F54022cb)):
-
-
-    0x37f79c0bAC4068a56E36694c5F5d8853F54022cb
-
-3) Consider our paid service (when it launches!)
-   
-* Add yourself at [https://www.tradingview-alerts-manager.com/](https://www.tradingview-alerts-manager.com/)
-
+* **Graphical Interface:** Nothing to install - alerts added by our secure, private servers
+* **Multiple Alerts Per Symbol:** separate buy & sell alerts
+* **Faster Alert Management:** intelligently keeps/updates/adds/removes alerts
+* **Flexible Configuration Assignment:** Use 24h exchange data(volume,tradecount) to enable/disable alerts
+* **Automation:** Configure and sychronize alerts on a schedule, fetch new exchange tokens 
+ 
+_**Create a free account at [https://alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_bottom)**_
 

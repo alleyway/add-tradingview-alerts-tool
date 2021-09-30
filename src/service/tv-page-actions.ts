@@ -199,7 +199,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 break;
             }
         }
-        if (!found) throw new DropdownError(conditionToMatch, foundOptions,  name)
+        if (!found) throw new DropdownError(conditionToMatch, foundOptions)
 
     }
 

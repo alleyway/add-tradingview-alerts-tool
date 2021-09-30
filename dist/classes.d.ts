@@ -11,7 +11,8 @@ export declare class NoInputFoundError extends Error {
 }
 export declare class DropdownError extends Error {
     _configName: string;
+    _pageUrl: string;
     _needle: string;
     _haystack: string[];
-    constructor(needle: string, haystack: string[], configName: string);
+    constructor(needle: string, haystack: string[]);
 }

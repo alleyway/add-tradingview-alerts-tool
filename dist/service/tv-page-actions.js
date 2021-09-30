@@ -162,7 +162,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             }
         }
         if (!found)
-            throw new DropdownError(conditionToMatch, foundOptions, name);
+            throw new DropdownError(conditionToMatch, foundOptions);
     };
     const performActualEntry = async (key) => {
         const conditionOrInputValue = String(condition[key]);

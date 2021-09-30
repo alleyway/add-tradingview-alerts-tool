@@ -12,12 +12,11 @@ export class NoInputFoundError extends Error {
     }
 }
 export class DropdownError extends Error {
-    constructor(needle, haystack, configName) {
+    constructor(needle, haystack) {
         super(`Unable to partial match '${needle}' in dropdown of following options:\n${haystack.join("\n")}`);
         Object.setPrototypeOf(this, DropdownError.prototype);
         this._needle = needle;
         this._haystack = haystack;
-        this._configName = configName;
     }
 }
 //# sourceMappingURL=classes.js.map

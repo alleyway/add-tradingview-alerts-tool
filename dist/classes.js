@@ -18,5 +18,11 @@ export class DropdownError extends Error {
         this._needle = needle;
         this._haystack = haystack;
     }
+    set configName(value) {
+        this._configName = value;
+    }
+    set pageUrl(value) {
+        this._pageUrl = value;
+    }
 }
 //# sourceMappingURL=classes.js.map

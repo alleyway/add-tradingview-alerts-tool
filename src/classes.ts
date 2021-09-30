@@ -23,8 +23,8 @@ export class NoInputFoundError extends Error {
 }
 
 export class DropdownError extends Error {
-    _configName: string;
-    _pageUrl: string;
+    public _configName: string;
+    public _pageUrl: string;
     _needle: string;
     _haystack: string[];
 
@@ -35,4 +35,12 @@ export class DropdownError extends Error {
         this._haystack = haystack;
     }
 
+
+    set configName(value: string) {
+        this._configName = value;
+    }
+
+    set pageUrl(value: string) {
+        this._pageUrl = value;
+    }
 }

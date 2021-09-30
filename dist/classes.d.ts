@@ -15,4 +15,6 @@ export declare class DropdownError extends Error {
     _needle: string;
     _haystack: string[];
     constructor(needle: string, haystack: string[]);
+    set configName(value: string);
+    set pageUrl(value: string);
 }

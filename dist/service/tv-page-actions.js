@@ -148,6 +148,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     const selectFromDropDown = async (conditionToMatch) => {
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`);
         const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
+        await page.waitForXPath(selector, { timeout: 8000 });
         const elements = await page.$x(selector);
         if (elements.length == 0) {
             await takeScreenshot(page, "zero_dropdown_options");

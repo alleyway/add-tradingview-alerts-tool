@@ -152,7 +152,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         let found = false;
         let foundOptions = [];
         for (const el of elements) {
-            const optionText = await page.evaluate(element => element.innerText, el);
+            let optionText = await page.evaluate(element => element.innerText, el);
+            optionText = optionText.replace(/[\u200B]/g, ''); // this is to remove invisible "zero width" characters like for the following:
+            // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
             foundOptions.push(optionText);
             if (isMatch(conditionToMatch, optionText)) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);

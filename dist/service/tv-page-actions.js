@@ -149,6 +149,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`);
         const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
         const elements = await page.$x(selector);
+        if (elements.length == 0) {
+            await takeScreenshot(page, "zero_dropdown_options");
+        }
         let found = false;
         let foundOptions = [];
         for (const el of elements) {
@@ -169,7 +172,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     const performActualEntry = async (key) => {
         const conditionOrInputValue = String(condition[key]);
         log.trace(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`);
-        await waitForTimeout(.7);
+        await waitForTimeout(.8);
         if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
             try {
                 log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow(key)}`);
@@ -177,9 +180,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 // must be a dropdown...
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`);
                 targetElement.click();
-                await waitForTimeout(.5, "let dropdown populate");
+                await waitForTimeout(.9, "let dropdown populate");
                 await selectFromDropDown(conditionOrInputValue);
-                await waitForTimeout(.5, "let dropdown populate");
+                await waitForTimeout(.4, "after selecting from dropdown");
             }
             catch (e) {
                 if (e.constructor.name === "TimeoutError") {

@@ -146,10 +146,6 @@ export const logout = async (page) => {
         });
     })
 
-    page.on('dialog', async dialog => {
-        await dialog.accept();
-    });
-
     await page.reload({
         waitUntil: 'networkidle2'
     });

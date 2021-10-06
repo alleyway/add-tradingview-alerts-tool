@@ -116,9 +116,6 @@ export const logout = async (page) => {
             log.info(`Logged out of TradingView`);
         });
     });
-    page.on('dialog', async (dialog) => {
-        await dialog.accept();
-    });
     await page.reload({
         waitUntil: 'networkidle2'
     });

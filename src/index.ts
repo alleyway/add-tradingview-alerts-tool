@@ -2,6 +2,7 @@ import {
     clickContinueIfWarning,
     takeScreenshot,
     configureInterval,
+    convertIntervalForTradingView,
     configureSingleAlertSettings,
     clickSubmit,
     addAlert,
@@ -35,6 +36,7 @@ export {
     atatVersion,
     log,
     isEnvEnabled,
-    DropdownError
+    DropdownError,
+    convertIntervalForTradingView
 }
 

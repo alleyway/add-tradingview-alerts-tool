@@ -2,6 +2,7 @@ import { ISingleAlertSettings } from "../interfaces.js";
 export declare const fetchFirstXPath: (page: any, selector: string, timeout?: number, screenshotOnFail?: boolean) => Promise<any>;
 export declare const takeScreenshot: (page: any, name?: string) => Promise<void>;
 export declare const minimizeFooterChartPanel: (page: any) => Promise<void>;
+export declare const convertIntervalForTradingView: (interval: string) => string;
 export declare const configureInterval: (interval: string, page: any) => Promise<void>;
 export declare const login: (page: any, username: any, pass: any) => Promise<void>;
 export declare const logout: (page: any) => Promise<void>;

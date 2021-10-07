@@ -44,13 +44,17 @@ export const minimizeFooterChartPanel = async (page) => {
     }
 }
 
+export const convertIntervalForTradingView  = (interval: string) => {
+    return interval.split("").filter((val) => val !== "m").join("")
+}
+
 
 export const configureInterval = async (interval: string, page) => {
     log.trace(`set ${kleur.blue("interval")}: ${kleur.yellow(interval)}`)
     await page.keyboard.press(",")
     await waitForTimeout(.5, "after pressing interval shortcut key");
     try {
-        interval.split("").filter((val) => val !== "m").map((char) => page.keyboard.press(char))
+        convertIntervalForTradingView(interval).split("").map((char) => page.keyboard.press(char))
     } catch (e) {
         throw Error("configuration: interval specified incorrectly, should be something like '5m' or '1h' - see documentation")
     }

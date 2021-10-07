@@ -200,7 +200,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
                 el.click()
-                break;
+                return;
             }
         }
         if (!found) throw new DropdownError(conditionToMatch, foundOptions)

@@ -161,7 +161,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 el.click();
-                break;
+                return;
             }
         }
         if (!found)

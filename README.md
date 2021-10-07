@@ -337,7 +337,7 @@ Consider one of the following:
 * **Graphical Interface:** Nothing to install - alerts added by our secure, private servers
 * **Multiple Alerts Per Symbol:** separate buy & sell alerts
 * **Faster Alert Management:** intelligently keeps/updates/adds/removes alerts
-* **Flexible Configuration Assignment:** Use 24h exchange data(volume,tradecount) to enable/disable alerts
+* **Flexible Alert Template Assignment:** Use 24h exchange data(volume,tradecount) to enable/disable alerts
 * **Automation:** Configure and sychronize alerts on a schedule, fetch new exchange tokens 
  
 _**Create a free account at [https://alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_bottom)**_

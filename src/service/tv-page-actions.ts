@@ -193,10 +193,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         if (elements.length == 0) {
             await takeScreenshot(page, "zero_dropdown_options")
         }
-
-
-        const matchingOptions = {}
-
+        let found = false
         let foundOptions = []
         for (const el of elements) {
             let optionText = await page.evaluate(element => element.innerText, el);
@@ -204,21 +201,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
             foundOptions.push(optionText)
             if (isMatch(conditionToMatch, optionText)) {
-                log.trace(`Matched: ${kleur.yellow(optionText)}`)
-                matchingOptions[optionText] = el
+                log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
+                found = true
+                el.click()
                 return;
             }
         }
-
-        let foundTextArray = Object.keys(matchingOptions).sort(
-            (a,b) => {return b.length - a.length}); // put shortest text first so exact matches happen first
-
-        //nothing found
-        if (foundTextArray.length == 0) throw new DropdownError(conditionToMatch, foundOptions)
-
-        const bestMatch = foundTextArray[0]
-        log.trace(`Clicking: ${kleur.green(bestMatch)}`)
-        matchingOptions[bestMatch].click()
+        if (!found) throw new DropdownError(conditionToMatch, foundOptions)
 
     }
 

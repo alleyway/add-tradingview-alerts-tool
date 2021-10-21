@@ -306,11 +306,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         for (const el of elements) {
             let optionText = await page.evaluate(element => element.dataset.title, el);
             foundOptions.push(optionText)
-            if (optionText === option) {
+            if (optionText === option && !found) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
                 el.click()
-                return;
             }
         }
         if (!found) throw new SelectionError(option, foundOptions)

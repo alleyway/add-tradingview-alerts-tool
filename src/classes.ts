@@ -22,15 +22,15 @@ export class NoInputFoundError extends Error {
     }
 }
 
-export class DropdownError extends Error {
+export class SelectionError extends Error {
     public _configName: string;
     public _pageUrl: string;
     _needle: string;
     _haystack: string[];
 
     constructor(needle: string, haystack: string[]) {
-        super(`Unable to partial match '${needle}' in dropdown of following options:\n${haystack.join("\n")}`)
-        Object.setPrototypeOf(this, DropdownError.prototype);
+        super(`Unable to partial match '${needle}' from the following options:\n${haystack.join("\n")}`)
+        Object.setPrototypeOf(this, SelectionError.prototype);
         this._needle = needle;
         this._haystack = haystack;
     }

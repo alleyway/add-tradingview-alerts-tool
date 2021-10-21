@@ -11,10 +11,10 @@ export class NoInputFoundError extends Error {
         super(message);
     }
 }
-export class DropdownError extends Error {
+export class SelectionError extends Error {
     constructor(needle, haystack) {
-        super(`Unable to partial match '${needle}' in dropdown of following options:\n${haystack.join("\n")}`);
-        Object.setPrototypeOf(this, DropdownError.prototype);
+        super(`Unable to partial match '${needle}' from the following options:\n${haystack.join("\n")}`);
+        Object.setPrototypeOf(this, SelectionError.prototype);
         this._needle = needle;
         this._haystack = haystack;
     }

@@ -1,7 +1,7 @@
 import { clickContinueIfWarning, takeScreenshot, configureInterval, convertIntervalForTradingView, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchFirstXPath } from "./service/tv-page-actions.js";
-import { DropdownError } from "./classes.js";
+import { SelectionError } from "./classes.js";
 import { fetchPairsForExchange } from "./service/exchange-service.js";
 import { waitForTimeout, atatVersion, isEnvEnabled } from "./service/common-service.js";
 import log from "./service/log.js";
-export { fetchFirstXPath, clickContinueIfWarning, takeScreenshot, configureInterval, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchPairsForExchange, waitForTimeout, atatVersion, log, isEnvEnabled, DropdownError, convertIntervalForTradingView };
+export { fetchFirstXPath, clickContinueIfWarning, takeScreenshot, configureInterval, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchPairsForExchange, waitForTimeout, atatVersion, log, isEnvEnabled, SelectionError, convertIntervalForTradingView };
 //# sourceMappingURL=index.js.map

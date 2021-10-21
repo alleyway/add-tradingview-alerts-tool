@@ -9,7 +9,7 @@ export declare class ExchangeSymbol implements IExchangeSymbol {
 export declare class NoInputFoundError extends Error {
     constructor(message: string);
 }
-export declare class DropdownError extends Error {
+export declare class SelectionError extends Error {
     _configName: string;
     _pageUrl: string;
     _needle: string;

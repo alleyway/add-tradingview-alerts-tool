@@ -2,7 +2,7 @@ import {ISingleAlertSettings} from "../interfaces.js";
 import {waitForTimeout, isEnvEnabled} from "./common-service.js";
 import log from "./log.js"
 import kleur from "kleur";
-import {NoInputFoundError, DropdownError} from "../classes.js";
+import {NoInputFoundError, SelectionError} from "../classes.js";
 import RegexParser from "regex-parser"
 
 // data-dialog-name="gopro"
@@ -207,7 +207,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 return;
             }
         }
-        if (!found) throw new DropdownError(conditionToMatch, foundOptions)
+        if (!found) throw new SelectionError(conditionToMatch, foundOptions)
 
     }
 
@@ -294,10 +294,27 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     await waitForTimeout(.4);
 
     if (!!option) {
-        log.trace(`Selecting option: ${kleur.blue(option)}`)
-        const optionButton = await fetchFirstXPath(page, `//*[text()='${option}']`)
-        await waitForTimeout(.3);
-        await page.evaluate((el) => el.click(), optionButton)
+        log.trace(`Looking for option: ${kleur.blue(option)}`)
+
+        const selector = "//*[@class='js-fire-rate-row']//div[@data-title]"
+
+        await page.waitForXPath(selector, {timeout: 8000})
+        const elements = await page.$x(selector)
+
+        let found = false
+        let foundOptions = []
+        for (const el of elements) {
+            let optionText = await page.evaluate(element => element.dataset.title, el);
+            foundOptions.push(optionText)
+            if (optionText === option) {
+                log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
+                found = true
+                el.click()
+                return;
+            }
+        }
+        if (!found) throw new SelectionError(option, foundOptions)
+
     }
 
     // alert actions

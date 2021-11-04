@@ -310,6 +310,15 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
                 el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
+                el.click()
             }
         }
         if (!found) throw new SelectionError(option, foundOptions)

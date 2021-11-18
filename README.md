@@ -1,4 +1,7 @@
-👋 *NOTE: We have a service to completely automate this tool(nothing to install!) Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
+
+⚠️ *WARNING: Running command line software on your computer is risky! Although this software has no known malicious code in it - it does rely on __3rd-party libraries which can be vulnerable to hacking__. As of late 2021, 3rd-party hacks have been on the rise - use at your own risk.*
+
+👋 *NOTE: We have a service that automates this tool on secured, virtual servers. Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
 
 # Add TradingView Alerts Tool
 

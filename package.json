@@ -42,7 +42,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.9.5-beta.0",
+  "version": "1.9.5-beta.1",
   "devDependencies": {
     "@release-it/bumper": "^3.0.1",
     "husky": "^7.0.4",

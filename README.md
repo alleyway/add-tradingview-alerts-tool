@@ -10,7 +10,10 @@
 [![npm version](https://badge.fury.io/js/@alleyway%2Fadd-tradingview-alerts-tool.svg)](https://www.npmjs.com/package/@alleyway/add-tradingview-alerts-tool)
 
 
-[![npm version](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/pipeline.svg)](https://gitlab.com/mlake900/add-tradingview-alerts-tool/-/pipelines)
+[![build status](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/pipeline.svg)](https://gitlab.com/mlake900/add-tradingview-alerts-tool/-/pipelines)
+
+[![code coverage](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/coverage.svg)](https://gitlab.com/mlake900/add-tradingview-alerts-tool/-/pipelines)
+
 
 
 ## Why This Project Exists

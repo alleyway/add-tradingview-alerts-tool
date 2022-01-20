@@ -103,14 +103,14 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 
 This command downloads all USDT trading pairs for Binance: 
 ```yaml 
-    ./atat fetch-pairs binance usdt
+    ./atat fetch-symbols binance usdt
     
     # Creates binance_usdt_pairs.csv    
 ```
 
 This command downloads all trading pairs for BinanceUS:
 ```yaml
-    ./atat fetch-pairs binanceus all
+    ./atat fetch-symbols binanceus all
 
     # Creates binanceus_all_pairs.csv
 ```
@@ -120,7 +120,7 @@ This command downloads all trading pairs for BinanceUS:
 In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contracts by specifying "perp" 
 
 ```yaml
-    ./atat fetch-pairs ftx perp
+    ./atat fetch-symbols ftx perp
 
     # Creates ftx_perp_pairs.csv
 ```
@@ -129,7 +129,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Coinbase
 
 ```yaml
-    ./atat fetch-pairs coinbase usd
+    ./atat fetch-symbols coinbase usd
 
     # Creates coinbase_usd_pairs.csv
 ```
@@ -138,7 +138,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Bittrex
 
 ```yaml
-    ./atat fetch-pairs bittrex btc
+    ./atat fetch-symbols bittrex btc
 
     # Creates bittrex_btc_pairs.csv
 ```
@@ -146,7 +146,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From Kraken
 
 ```yaml
-    ./atat fetch-pairs kraken usd
+    ./atat fetch-symbols kraken usd
 
     # Creates kraken_usd_pairs.csv
 ```
@@ -154,7 +154,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From KuCoin
 
 ```yaml
-    ./atat fetch-pairs kucoin usdt
+    ./atat fetch-symbols kucoin usdt
 
     # Creates kucoin_usd_pairs.csv
 ```
@@ -162,7 +162,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From OKEx
 
 ```yaml
-    ./atat fetch-pairs okex usdt
+    ./atat fetch-symbols okex usdt
 
     # Creates okex_usd_pairs.csv
 ```
@@ -170,7 +170,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 #### Download Trading Pairs From ByBit
 
 ```yaml
-    ./atat fetch-pairs bybit all
+    ./atat fetch-symbols bybit all
 
     # Creates bybit_all_pairs.csv
 ```
@@ -259,7 +259,7 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 
 | Abstract                                                                                                        | Concretely                                                                                                                                                                                |
 |-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-pairs binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
+| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
 | TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                     |
 | 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
 | A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                         |

@@ -6,10 +6,10 @@ case `uname` in
 esac
 
 if [ -x "$basedir/node" ]; then
-  "$basedir/node"  "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" "$@"
+  "$basedir/node" "--experimental-specifier-resolution=node" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" "$@"
   ret=$?
 else
-  node  "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" "$@"
+  node "--experimental-specifier-resolution=node" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" "$@"
   ret=$?
 fi
 exit $ret

@@ -30,4 +30,4 @@ build_and_test:
     - echo always-auth=true >> .npmrc
     #- cat .npmrc
     # we only release master from the development machine manually
-    - [[ ${CI_COMMIT_BRANCH} != "master" ]] && npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId="${CI_COMMIT_SHORT_SHA}"
+    - "[[ ${CI_COMMIT_BRANCH} != 'master' ]] && npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId='${CI_COMMIT_SHORT_SHA}'"

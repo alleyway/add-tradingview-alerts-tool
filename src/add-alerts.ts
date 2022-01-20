@@ -1,5 +1,5 @@
 import csv from 'csv-parser'
-import fs from "fs"
+import fs, {exists, access, accessSync} from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout} from "./index";
@@ -9,6 +9,8 @@ import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
 import {logBaseDelay} from "./service/common-service";
 import stripBomStream from "strip-bom-stream";
+import path from "path"
+import {mkdir} from "fs/promises";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any>((resolve, reject) => {
@@ -101,6 +103,16 @@ const addAlertsMain = async (configFileName) => {
     }
 
     const {alert: alertConfig} = config
+
+    const userDataDir = path.join(process.cwd(), "user_data") // where chrome will store it's stuff
+
+
+    try {
+        accessSync(userDataDir, fs.constants.W_OK)
+    } catch {
+        log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`)
+        await mkdir(userDataDir)
+    }
 
     const browser = await puppeteer.launch({
         headless: headless, userDataDir: "./user_data",

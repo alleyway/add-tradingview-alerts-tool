@@ -12,6 +12,7 @@ import {sourcesAvailable} from "./service/exchange-service";
 const program = new Command();
 
 program
+    .name("atat")
     .version(atatVersion)
     .option('-l, --loglevel <level>', 'log level (1-5), default 3')
     .option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000')
@@ -45,18 +46,25 @@ const initialize = () => {
 }
 
 
-program.command('fetch-pairs <exchange> [quote]')
+program.command('fetch-pairs [exchange] [quote]', {hidden:true})
     .description('DEPRECATED! use "fetch-symbols" instead')
+    .action((exchange, quote) => {
+        log.error(`fetch-pairs is now ${kleur.red("DEPRECATED")}. Use 'fetch-symbols' instead`)
+    })
 
+const extendedHelp = `    
+    Where ${kleur.yellow("<source>")} is one of the following:
+    
+    ${kleur.green(sourcesAvailable.map((val)=> val.toUpperCase()).join(kleur.gray(", ")))}
+    
+    Optionally, you may filter results to a particular ${kleur.yellow("<quoteAsset>")} such as BTC, ETH, USDT, BUSD, etc.
 
-program.command('fetch-symbols <source> [quoteAsset]')
-    .description('fetch trading symbols for an exchange').addHelpText("after", `
-    
-    Where <source> is one of the following:
-    ${sourcesAvailable.join(", ")}
-    
-    And <quoteAsset> represents the quote asset (eg. BTC, ETH, USDT, BNB)     
+    example: ${kleur.dim("atat fetch-symbols COINBASE ETH")}     
+         
     `
+
+program.command('fetch-symbols <source> [quoteAsset]').showHelpAfterError(extendedHelp)
+    .description('fetch trading symbols for an exchange').addHelpText("after", extendedHelp
 )
     .action(async (source, quoteAsset) => {
         initialize()

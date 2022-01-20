@@ -5,7 +5,13 @@
 
 # Add TradingView Alerts Tool
 
-**Automatically adds custom alerts to TradingView in bulk**
+**Automatically add custom alerts to TradingView in bulk**
+
+[![npm version](https://badge.fury.io/js/@alleyway%2Fadd-tradingview-alerts-tool.svg)](https://www.npmjs.com/package/@alleyway/add-tradingview-alerts-tool)
+
+
+[![npm version](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/pipeline.svg)](https://gitlab.com/mlake900/add-tradingview-alerts-tool/-/pipelines)
+
 
 ## Why This Project Exists
 Trading platforms (such as [3Commas](https://3commas.io/) and [Alertatron](https://alertatron.com/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 

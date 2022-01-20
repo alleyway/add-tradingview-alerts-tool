@@ -10,3 +10,4 @@ config.yml
 responses/
 tradingview-alerts-home
 create-tradingview-alerts-home/dist
+coverage

@@ -16,6 +16,7 @@ module.exports = {
     collectCoverageFrom: [
         "src/**/*.ts"
     ],
+    collectCoverage: true,
     transform: {},
     extensionsToTreatAsEsm: [".ts"],
     coverageThreshold: {

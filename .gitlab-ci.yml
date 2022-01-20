@@ -52,7 +52,6 @@ test:
   script:
     - chmod 755 ./dist/cli.js
     - npm run atat fetch-symbols binance eth
-    - npm run atat fetch-symbols ftx perp
     - npm run atat fetch-symbols binanceus usdt
     - npm run atat fetch-symbols bittrex btc
     - npm run atat fetch-symbols binancefutures usdt

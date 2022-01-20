@@ -18,7 +18,7 @@ build_and_test:
     - npm install npm -g
     - npm ci
     - npm run build
-    - npm run test
+    - npm run test:ci
     - npm run atat fetch-symbols binance eth
     - npm run atat fetch-symbols ftx perp
     - npm run atat fetch-symbols binanceus usdt

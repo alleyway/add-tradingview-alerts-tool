@@ -1,8 +1,6 @@
 import log from "./log";
 import kleur from "kleur";
-import { readFile } from "fs/promises";
-// @ts-ignore
-const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
+import manifest from "../manifest.json";
 let BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;
 export const initBaseDelay = (ms = 1000) => {
     BASE_DELAY = ms;

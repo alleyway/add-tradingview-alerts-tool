@@ -40,6 +40,8 @@ test:
     - build
   cache:
     paths:
+      - node_modules/
+      - dist/
       - coverage/
   artifacts:
     paths:

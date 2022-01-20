@@ -51,7 +51,7 @@ Edit your config.yml file (if you're passing signals for automated trading such 
 
 ```yaml
 files:
-  input: binance_usdt_pairs.csv
+  input: binance_usdt_symbols.csv
   exclude: blacklist.csv
 tradingview:
   # The chart which has the indicator you'd like to use
@@ -105,24 +105,22 @@ This command downloads all USDT trading pairs for Binance:
 ```yaml 
     ./atat fetch-symbols binance usdt
     
-    # Creates binance_usdt_pairs.csv    
+    # Creates binance_usdt_symbols.csv    
 ```
 
 This command downloads all trading pairs for BinanceUS:
 ```yaml
     ./atat fetch-symbols binanceus all
 
-    # Creates binanceus_all_pairs.csv
+    # Creates binanceus_all_symbols.csv
 ```
 
 #### Download Trading Pairs From FTX
 
-In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contracts by specifying "perp" 
-
 ```yaml
-    ./atat fetch-symbols ftx perp
+    ./atat fetch-symbols ftx
 
-    # Creates ftx_perp_pairs.csv
+    # Creates ftx_perp_symbols.csv
 ```
 
 
@@ -131,7 +129,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols coinbase usd
 
-    # Creates coinbase_usd_pairs.csv
+    # Creates coinbase_usd_symbols.csv
 ```
 
 
@@ -140,7 +138,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols bittrex btc
 
-    # Creates bittrex_btc_pairs.csv
+    # Creates bittrex_btc_symbols.csv
 ```
 
 #### Download Trading Pairs From Kraken
@@ -148,7 +146,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols kraken usd
 
-    # Creates kraken_usd_pairs.csv
+    # Creates kraken_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From KuCoin
@@ -156,7 +154,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols kucoin usdt
 
-    # Creates kucoin_usd_pairs.csv
+    # Creates kucoin_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From OKEx
@@ -164,7 +162,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols okex usdt
 
-    # Creates okex_usd_pairs.csv
+    # Creates okex_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From ByBit
@@ -172,7 +170,7 @@ In addition to fetching all/btc/usd/usdt/etc, you may also fetch perpetual contr
 ```yaml
     ./atat fetch-symbols bybit all
 
-    # Creates bybit_all_pairs.csv
+    # Creates bybit_all_symbols.csv
 ```
 
 
@@ -259,7 +257,7 @@ A configured TradingView Indicator that works for assets quoted in BTC may not b
 
 | Abstract                                                                                                        | Concretely                                                                                                                                                                                |
 |-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_pairs.csv                                                                                                                          |
+| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_symbols.csv                                                                                                                          |
 | TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                     |
 | 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
 | A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                         |
@@ -271,9 +269,7 @@ NOTE: running "./atat add-alerts" will default to config.yml unless you specify 
 
 There are some scenarios where you may want some pairs to use different indicators or the same indicator with different settings (must be added to the chart for each setting - this script CANNOT adjust indicator settings yet)  
 
-
-
-![tradingview indicators](.README_images/multiple indicators.png)
+![multiple indicators](.README_images/multiple_indicators.png)
 
 Then you could add an arbitrary column to your .csv - here we use "DSMAsetting"
 

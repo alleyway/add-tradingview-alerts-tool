@@ -38,7 +38,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "1.9.5-beta.2",
+  "version": "1.9.5-beta.3",
   "dependencies": {
     "@fast-csv/format": "^4.3.5",
     "@fast-csv/parse": "^4.3.6",

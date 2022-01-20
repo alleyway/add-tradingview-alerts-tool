@@ -76,12 +76,16 @@ deploy_npm:
   stage: deploy
   dependencies:
     - test
+  cache:
+    paths:
+      - node_modules/
   script:
     - echo "//registry.npmjs.org/:_authToken=${NPM_PUBLISH_KEY}" >> .npmrc
     - echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
     - echo always-auth=true >> .npmrc
     #- cat .npmrc
     # we only release master from the development machine manually
-    - "[[ ${CI_COMMIT_BRANCH} != 'master' ]] && npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId='${CI_COMMIT_SHORT_SHA}'"
+    #- "[[ ${CI_COMMIT_BRANCH} != 'master' ]] &&
+    - "npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId='${CI_COMMIT_SHORT_SHA}'"
   only:
     - develop

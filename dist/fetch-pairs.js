@@ -1,17 +1,17 @@
 import fs from "fs";
 import * as csv from "fast-csv";
-import { fetchPairsForExchange } from "./service/exchange-service.js";
-const fetchPairsMain = async (exchange, quote) => {
+import { fetchSymbolsForSource } from "./service/exchange-service.js";
+const fetchSymbolsMain = async (exchange, quote) => {
     const formattedExchange = exchange.toLowerCase();
-    const exchangeSymbols = await fetchPairsForExchange(formattedExchange, quote);
+    const exchangeSymbols = await fetchSymbolsForSource(formattedExchange, quote);
     if (!exchangeSymbols || exchangeSymbols.length == 0) {
         console.error("No symbols fetched!");
         process.exit(1);
     }
-    const outputPath = `${formattedExchange}_${quote}_pairs.csv`;
+    const outputPath = `${formattedExchange}_${quote}_symbols.csv`;
     const outStream = fs.createWriteStream(outputPath);
     const csvStream = csv.format({ headers: true });
-    let numPairs = 0;
+    let numSymbols = 0;
     csvStream.pipe(outStream)
         .on('end', () => {
         process.exit();
@@ -23,10 +23,10 @@ const fetchPairsMain = async (exchange, quote) => {
             quote: csvSymbol.quoteAsset,
             name: ""
         });
-        numPairs += 1;
+        numSymbols += 1;
     }
-    console.log(`Wrote ${numPairs} rows to: ${outputPath}`);
+    console.log(`Wrote ${numSymbols} rows to: ${outputPath}`);
     csvStream.end();
 };
-export default fetchPairsMain;
+export default fetchSymbolsMain;
 //# sourceMappingURL=fetch-pairs.js.map

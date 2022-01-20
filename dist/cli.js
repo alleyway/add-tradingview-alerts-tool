@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import 'source-map-support/register.js';
 import { Command } from 'commander';
-import fetchPairsMain from "./fetch-pairs.js";
+import fetchSymbolsMain from "./fetch-pairs.js";
 import log from "./service/log.js";
 import addAlertsMain from "./add-alerts.js";
 import { initBaseDelay, atatVersion } from "./service/common-service.js";
 import kleur from "kleur";
 import updateNotifier from "./update-notifier.js";
-import { exchangesAvailable } from "./service/exchange-service.js";
+import { sourcesAvailable } from "./service/exchange-service.js";
 const program = new Command();
 program
     .version(atatVersion)
@@ -38,19 +38,19 @@ const initialize = () => {
     log.info(`ATAT Version: ${kleur.yellow(atatVersion)} | Node Version: ${kleur.yellow(process.version)}`);
 };
 program.command('fetch-pairs <exchange> [quote]')
-    .description('fetch trading pairs for exchange').addHelpText("after", `
+    .description('DEPRECATED! use "fetch-symbols" instead');
+program.command('fetch-symbols <source> [quoteAsset]')
+    .description('fetch trading symbols for an exchange').addHelpText("after", `
     
-    Where <exchange> is one of the following:
-    ${exchangesAvailable.join(", ")}
+    Where <source> is one of the following:
+    ${sourcesAvailable.join(", ")}
     
-    And <quote> represents the quote asset (eg. BTC, ETH, USDT, BNB)
-    
-    Note: use "ftx perp" to get all ftx perpetual contracts 
+    And <quoteAsset> represents the quote asset (eg. BTC, ETH, USDT, BNB)     
     `)
-    .action(async (exchange, quote) => {
+    .action(async (source, quoteAsset) => {
     initialize();
     try {
-        await fetchPairsMain(exchange, quote || "all");
+        await fetchSymbolsMain(source, quoteAsset || "all");
     }
     catch (e) {
         log.error(e);

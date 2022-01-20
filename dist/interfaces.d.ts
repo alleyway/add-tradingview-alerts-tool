@@ -21,7 +21,7 @@ export interface ISingleAlertSettings {
     name?: string;
     message?: string;
 }
-export interface IExchangeSymbol {
+export interface ISourceSymbol {
     id: string;
     exchange: string;
     quoteAsset: string;

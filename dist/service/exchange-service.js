@@ -10,7 +10,7 @@ const KRAKEN = "kraken";
 const KUCOIN = "kucoin";
 const OKEX = "okex";
 const BYBIT = "bybit";
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX, BYBIT];
+export const sourcesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX, BYBIT];
 const CONST_ALL = "all";
 const fetchByBit = async (quoteAsset) => {
     const resp = await fetch("https://api.bybit.com/v2/public/symbols");
@@ -175,9 +175,9 @@ const fetchOkex = async (quoteAsset) => {
     }
     return exchangeSymbols;
 };
-export const fetchPairsForExchange = async (exchange, quoteAsset = CONST_ALL) => {
+export const fetchSymbolsForSource = async (source, quoteAsset = CONST_ALL) => {
     let symbolArray;
-    switch (exchange) {
+    switch (source) {
         case BINANCEFUTURES:
             symbolArray = await fetchBinanceFutures(quoteAsset);
             break;
@@ -209,7 +209,7 @@ export const fetchPairsForExchange = async (exchange, quoteAsset = CONST_ALL) =>
             symbolArray = await fetchByBit(quoteAsset);
             break;
         default:
-            console.error("No exchange exists: ", exchange);
+            console.error("No source exists: ", source);
             break;
     }
     return symbolArray;

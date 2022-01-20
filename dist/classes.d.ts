@@ -1,5 +1,5 @@
-import { IExchangeSymbol } from "./interfaces";
-export declare class ExchangeSymbol implements IExchangeSymbol {
+import { ISourceSymbol } from "./interfaces";
+export declare class ExchangeSymbol implements ISourceSymbol {
     id: string;
     exchange: string;
     quoteAsset: string;

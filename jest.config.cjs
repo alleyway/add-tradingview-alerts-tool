@@ -6,6 +6,7 @@ module.exports = {
         __PROD__: false
     },
     testEnvironment: "node",
+    testTimeout: 30000,
     preset: "ts-jest",
     verbose: true, // report individual test
     bail: false, // enable to stop test when an error occur,
@@ -13,19 +14,20 @@ module.exports = {
     moduleDirectories: ["node_modules", "src", "test"],
     testMatch: ["**/src/**/*.test.ts?(x)"],
     testPathIgnorePatterns: ["node_modules/", "dist/", ".json"],
+    coverageReporters: ["html", "text", "text-summary", "cobertura"],
     collectCoverageFrom: [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "!**/node_modules/**"
     ],
-    collectCoverage: true,
     transform: {},
     extensionsToTreatAsEsm: [".ts"],
     coverageThreshold: {
         // coverage strategy
         global: {
-            branches: 80,
-            functions: 80,
-            lines: 50,
-            statements: -10
+            branches: 20,
+            functions: 20,
+            lines: 21,
+            statements: 22
         }
     }
 }

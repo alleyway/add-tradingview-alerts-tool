@@ -6,7 +6,7 @@ import log from "./service/log";
 import addAlertsMain from "./add-alerts";
 import {initBaseDelay, atatVersion} from "./service/common-service";
 import kleur from "kleur";
-import updateNotifier from "./update-notifier";
+import {updateNotifier} from "./update-notifier";
 import {sourcesAvailable} from "./service/exchange-service";
 
 const program = new Command();

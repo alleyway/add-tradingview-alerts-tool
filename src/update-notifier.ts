@@ -32,7 +32,7 @@ const updateTimeout = async (duration) => {
         return false
 }
 
-const updateNotifier =  async (version, spec = 'latest') => {
+export const updateNotifier =  async (version, spec = 'latest') => {
     // never check for updates in CI, when updating npm already, or opted out
 
     // if (!npm.config.get('update-notifier') || isGlobalNpmUpdate(npm))
@@ -107,5 +107,3 @@ const updateNotifier =  async (version, spec = 'latest') => {
 
     return messagec
 }
-
-export default updateNotifier

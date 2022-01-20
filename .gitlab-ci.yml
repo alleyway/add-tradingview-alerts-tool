@@ -50,6 +50,7 @@ test:
         - junit.xml
       cobertura: coverage/cobertura-coverage.xml
   script:
+    - chmod 755 ./dist/cli.js
     - npm run atat fetch-symbols binance eth
     - npm run atat fetch-symbols ftx perp
     - npm run atat fetch-symbols binanceus usdt
@@ -72,7 +73,7 @@ pages:
   only:
       - master
 
-npm_package:
+deploy_npm:
   stage: deploy
   dependencies:
     - test

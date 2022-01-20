@@ -1,7 +1,7 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node
 import 'source-map-support/register';
 import { Command } from 'commander';
-import fetchSymbolsMain from "./fetch-symbols";
+import { fetchSymbolsMain } from "./fetch-symbols";
 import log from "./service/log";
 import addAlertsMain from "./add-alerts";
 import { initBaseDelay, atatVersion } from "./service/common-service";
@@ -50,7 +50,7 @@ program.command('fetch-symbols <source> [quoteAsset]')
     .action(async (source, quoteAsset) => {
     initialize();
     try {
-        await fetchSymbolsMain(source, quoteAsset || "all");
+        await fetchSymbolsMain(source, quoteAsset);
     }
     catch (e) {
         log.error(e);

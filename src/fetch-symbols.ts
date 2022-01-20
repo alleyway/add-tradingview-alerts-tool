@@ -3,7 +3,7 @@ import * as csv from "fast-csv";
 import {fetchSymbolsForSource} from "./service/exchange-service";
 
 
-const fetchSymbolsMain = async (source, quote) => {
+export const fetchSymbolsMain = async (source, quote) => {
 
     const formattedExchange = source.toLowerCase()
 
@@ -18,7 +18,7 @@ const fetchSymbolsMain = async (source, quote) => {
         process.exit(1)
     }
 
-    const outputPath = `${formattedExchange}_${quote}_symbols.csv`;
+    const outputPath = `${formattedExchange}${quote? "_" + quote : ""}_symbols.csv`;
     const outStream = fs.createWriteStream(outputPath)
 
     const csvStream = csv.format({headers: true});
@@ -42,5 +42,3 @@ const fetchSymbolsMain = async (source, quote) => {
     console.log(`Wrote ${numSymbols} rows to: ${outputPath}`)
     csvStream.end()
 }
-
-export default fetchSymbolsMain

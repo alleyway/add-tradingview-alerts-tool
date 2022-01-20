@@ -4,7 +4,7 @@
     "strict": false,
     "target": "ES2020",
     "moduleResolution": "node",
-    "module": "ES2020",
+    "module": "esnext",
     "declaration": true,
     "downlevelIteration": true,
     "noUnusedLocals": false,
@@ -15,16 +15,18 @@
     "esModuleInterop": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "types": ["node"],
+    "types": ["node", "jest"],
     "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": [
-    "src",
-    "test",
+    "src/**/*.ts",
     "src/manifest.json"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "coverage",
+    "doc"
   ]
 }

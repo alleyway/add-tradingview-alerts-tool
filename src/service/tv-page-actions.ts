@@ -1,8 +1,8 @@
-import {ISingleAlertSettings} from "../interfaces.js";
-import {waitForTimeout, isEnvEnabled} from "./common-service.js";
-import log from "./log.js"
+import {ISingleAlertSettings} from "../interfaces";
+import {waitForTimeout, isEnvEnabled} from "./common-service";
+import log from "./log"
 import kleur from "kleur";
-import {NoInputFoundError, SelectionError} from "../classes.js";
+import {NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
 
 // data-dialog-name="gopro"

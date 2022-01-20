@@ -26,9 +26,15 @@ export interface ISingleAlertSettings {
     message?: string
 }
 
-export interface IExchangeSymbol {
-    id: string,
-    exchange: string,
-    quoteAsset: string,
-    baseAsset: string
+
+// mostly following pine script docs for this
+export interface IBaseSymbol {
+    source: string,     // BINANCEFUTURES   or      FTX
+    id: string,         // BINANCE:BTCUSDT  or      FTX:BTC0325   // tradingview symbol
+    prefix: string,     // BINANCE          or      FTX
+    ticker: string,     // BTCUSDT          or      BTC0325
+    quoteAsset: string, // USDT             or      USD
+    baseAsset: string,  // BTC              or      BTC0325
+    root?: string,      // BTC              or      BTC          //underlying asset for futures
+    // type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund"
 }

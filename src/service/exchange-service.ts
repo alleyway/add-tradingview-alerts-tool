@@ -1,6 +1,8 @@
-import {IExchangeSymbol} from "../interfaces.js";
-import fetch from "node-fetch"
-import {ExchangeSymbol} from "../classes.js";
+import {IBaseSymbol} from "../interfaces";
+import {BaseSymbol} from "../classes";
+import axios, {AxiosRequestConfig} from "axios";
+import log from "./log";
+import kleur from "kleur";
 
 const BINANCEFUTURES = "binancefutures"
 const BINANCE = "binance"
@@ -12,313 +14,273 @@ const KRAKEN = "kraken"
 const KUCOIN = "kucoin"
 const OKEX = "okex"
 const BYBIT = "bybit"
+// const BYBIT_SPOT = "bybit_spot"
 
-export const exchangesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX, BYBIT]
+export const sourcesAvailable = [BINANCEFUTURES, BINANCE, BINANCEUS, BITTREX, COINBASE, FTX, KRAKEN, KUCOIN, OKEX, BYBIT]
 
 const CONST_ALL = "all"
 
-
-const fetchByBit = async(quoteAsset: string): Promise<IExchangeSymbol[]> => {
-    const resp = await fetch("https://api.bybit.com/v2/public/symbols")
-
-    const responseObject = await resp.json()
-
-    // @ts-ignore
-    const symbols = responseObject.result
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    for (const symbol of symbols) {
-
-        if (symbol.status === "Trading" && (quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
-            exchangeSymbols.push(
-                new ExchangeSymbol("BYBIT", symbol.base_currency, symbol.quote_currency,
-                    `BYBIT:${symbol.alias}`)
-            )
-        }
-    }
-    return exchangeSymbols
+const logJson = (obj, name: string = "") => {
+    log.trace(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`)
 }
 
-const fetchKucoin = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
-    const resp = await fetch("https://api.kucoin.com/api/v1/symbols")
 
-    const responseObject = await resp.json()
+const fetchAndTransform = async (url, responsePath, transformer: (any) => IBaseSymbol) => {
 
-    // @ts-ignore
-    const symbolArray = responseObject.data
+    const responseObject = await fetch(url)
 
-    const exchangeSymbols: IExchangeSymbol[] = []
+    const resultsArray = responsePath ? responseObject.data[responsePath] : responseObject.data
 
-    for (const symObj of symbolArray) { // key = "AAVEAUD"
-        /*
-            {
-              "symbol": "REQ-ETH",
-              "name": "REQ-ETH",
-              "baseCurrency": "REQ",
-              "quoteCurrency": "ETH",
-              "feeCurrency": "ETH",
-              "market": "ALTS",
-              "baseMinSize": "1",
-              "quoteMinSize": "0.0001",
-              "baseMaxSize": "10000000000",
-              "quoteMaxSize": "99999999",
-              "baseIncrement": "0.0001",
-              "quoteIncrement": "0.0000001",
-              "priceIncrement": "0.0000001",
-              "priceLimitRate": "0.1",
-              "isMarginEnabled": false,
-              "enableTrading": true
-            },
-         */
-        const symbolBase = symObj.baseCurrency
-        const symbolQuote = symObj.quoteCurrency
+    const baseSymbols: IBaseSymbol[] = []
 
-        if (symObj.enableTrading && (quoteAsset === CONST_ALL || symbolQuote === quoteAsset.toUpperCase())) {
-            exchangeSymbols.push(
-                new ExchangeSymbol("KUCOIN", symbolBase, symbolQuote)
-            )
-        }
+    log.info(`found ${resultsArray.length} results from the API`)
+
+    for (const obj of resultsArray) {
+
+        const baseSymbol: IBaseSymbol = transformer(obj)
+        if (baseSymbol) baseSymbols.push(baseSymbol)
     }
-    return exchangeSymbols
+
+    log.info(`returning ${baseSymbols.length} results symbols parsed`)
+
+    return baseSymbols
 }
 
-const fetchKraken = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+const fetch = (url: string) => {
+
+    const options: AxiosRequestConfig = {
+        method: "GET",
+        url: url
+    };
+
+    return axios(options)
+}
+
+export const fetchByBit = async (): Promise<IBaseSymbol[]> => {
+
+    // Inverse, usdt perp, and inverse futures all share same endpoint
+    // https://bybit-exchange.github.io/docs/inverse/#t-querysymbol
+
+    const transformer = (obj) => {
+
+        if (obj.status === "Trading") {
+            return new BaseSymbol("BYBIT", obj.base_currency, obj.quote_currency, `BYBIT:${obj.alias}`)
+        } else {
+            //logJson(obj, "ByBit Discarded:")
+            return null
+        }
+    }
+
+    return fetchAndTransform("https://api.bybit.com/v2/public/symbols", "result", transformer)
+}
+
+export const fetchByBitSpot = async (): Promise<IBaseSymbol[]> => {
+
+    // Inverse, usdt perp, and inverse futures all share same endpoint
+    // https://bybit-exchange.github.io/docs/inverse/#t-querysymbol
+
+    const transformer = (obj) => {
+        return new BaseSymbol("BYBIT", obj.baseCurrency, obj.quoteCurrency, `BYBIT:${obj.alias}`)
+    }
+
+    return fetchAndTransform("https://api.bybit.com/spot/v1/symbols", "result", transformer)
+}
+
+export const fetchKucoin = async (): Promise<IBaseSymbol[]> => {
+
+    const transformer = (obj) => {
+        if (obj.enableTrading) {
+            return new BaseSymbol("KUCOIN", obj.baseCurrency, obj.quoteCurrency)
+        } else {
+            //logJson(obj, "Kucoin Discarded:")
+            return null
+        }
+    }
+    return fetchAndTransform("https://api.kucoin.com/api/v1/symbols", "data", transformer)
+}
+
+export const fetchKraken = async (): Promise<IBaseSymbol[]> => {
+
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
 
-    const responseObject = await resp.json()
+    const responseObject = await resp.data
 
     // @ts-ignore
     const symbolsObject = responseObject.result
 
-    const exchangeSymbols: IExchangeSymbol[] = []
+    const baseSymbols: IBaseSymbol[] = []
 
-    for (const key of Object.keys(symbolsObject)) { // key = "AAVEAUD"
+    const keys = Object.keys(symbolsObject);
+    log.info(`found ${keys.length} results from the API`)
 
-        const symbolObj = symbolsObject[key]
+    for (const key of keys) { // key = "AAVEAUD"
+        const obj = symbolsObject[key]
+        const [symbolBase, symbolQuote] = obj.wsname.split("\/") // "AAVE\/AUD"
+        baseSymbols.push(
+            new BaseSymbol("KRAKEN", symbolBase, symbolQuote)
+        )
+    }
 
-        if (symbolObj.wsname) {
-            const [symbolBase, symbolQuote] = symbolObj.wsname.split("\/") // "AAVE\/AUD"
+    log.info(`returning ${baseSymbols.length} results symbols parsed`)
 
-            if ((quoteAsset === CONST_ALL || symbolQuote === quoteAsset.toUpperCase())) {
-                exchangeSymbols.push(
-                    new ExchangeSymbol("KRAKEN", symbolBase, symbolQuote)
-                )
+    return baseSymbols
+}
+
+export const fetchBittrex = async (): Promise<IBaseSymbol[]> => {
+
+    const transformer = (obj) => {
+        if (obj.IsActive) {
+            return new BaseSymbol("BITTREX", obj.MarketCurrency, obj.BaseCurrency)
+        } else {
+            //logJson(obj, "Bittrex Discarded:")
+            return null
+        }
+    }
+    return fetchAndTransform("https://api.bittrex.com/api/v1.1/public/getmarkets", "result", transformer)
+}
+
+export const fetchCoinbase = async (): Promise<IBaseSymbol[]> => {
+
+    const transformer = (obj) => {
+        if (!obj.trading_disabled && obj.status == "online") {
+            return new BaseSymbol("COINBASE", obj.base_currency, obj.quote_currency)
+
+        } else {
+            //logJson(obj, "Coinbase Discarded:")
+            return null
+        }
+    }
+    return fetchAndTransform("https://api.pro.coinbase.com/products", null, transformer)
+
+}
+
+export const fetchFtx = async (): Promise<IBaseSymbol[]> => {
+
+    const transformer = (obj) => {
+        if (obj.enabled) {
+            if (obj.type === "spot") {
+
+                // {
+                //     "name": "1INCH/USD",
+                //     "enabled": true,
+                //     "postOnly": false,
+                //     "priceIncrement": 0.0001,
+                //     "sizeIncrement": 1.0,
+                //     "minProvideSize": 1.0,
+                //     "last": 2.3708,
+                //     "bid": 2.3688,
+                //     "ask": 2.371,
+                //     "price": 2.3708,
+                //     "type": "spot",
+                //     "baseCurrency": "1INCH",
+                //     "quoteCurrency": "USD",
+                //     "underlying": null,
+                //     "restricted": false,
+                //     "highLeverageFeeExempt": true,
+                //     "change1h": -0.005912197576418299,
+                //     "change24h": -0.013728263582660787,
+                //     "changeBod": 0.018997679016590732,
+                //     "quoteVolume24h": 2622864.2558,
+                //     "volumeUsd24h": 2622864.2558
+                // },
+
+                return new BaseSymbol("FTX", obj.baseCurrency, obj.quoteCurrency)
+            } else {
+                return null
             }
         } else {
-            // some results are strange things like "ETHCAD.d"
+
+            //TODO: handle FUTURES, stocks?
+
+            return null
         }
     }
-    return exchangeSymbols
+    return fetchAndTransform("https://ftx.com/api/markets", "result", transformer)
+
 }
 
-const fetchBittrex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
-    const resp = await fetch("https://api.bittrex.com/api/v1.1/public/getmarkets")
-
-    const responseObject = await resp.json()
-
-    // @ts-ignore
-    const symbols = responseObject.result
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    for (const symbol of symbols) {
-
-        if (symbol.IsActive && (quoteAsset === CONST_ALL || symbol.BaseCurrency === quoteAsset.toUpperCase())) {
-            exchangeSymbols.push(
-                new ExchangeSymbol("BITTREX", symbol.MarketCurrency, symbol.BaseCurrency)
-            )
+export const fetchBinanceFutures = async (): Promise<IBaseSymbol[]> => {
+    const transformer = (obj) => {
+        if (obj.status === "TRADING") {
+            return new BaseSymbol("BINANCEFUTURES", obj.baseAsset, obj.quoteAsset,
+                `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`)
+        } else {
+            // logJson(obj, "Binance Futures Discarded:")
+            return null
         }
     }
-    return exchangeSymbols
+    return fetchAndTransform("https://fapi.binance.com/fapi/v1/exchangeInfo", "symbols", transformer)
 }
 
-const fetchCoinbase = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
-    const resp = await fetch("https://api.pro.coinbase.com/products")
-
-    const responseObject = await resp.json()
-
-    const symbols = responseObject
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    // @ts-ignore
-    for (const symbol of symbols) {
-
-        if (!symbol.trading_disabled && symbol.status == "online" &&
-            (quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
-
-            exchangeSymbols.push(
-                new ExchangeSymbol("COINBASE", symbol.base_currency, symbol.quote_currency)
-            )
-        }
-    }
-    return exchangeSymbols
-}
-
-
-const fetchFtx = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
-
-    const resp = await fetch("https://ftx.com/api/markets")
-
-    const responseObject = await resp.json()
-
-    // @ts-ignore
-    const symbols = responseObject.result
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    for (const symbol of symbols) {
-        if (symbol.enabled &&
-            (quoteAsset === CONST_ALL || symbol.quoteCurrency === quoteAsset.toUpperCase())
-            && symbol.quoteCurrency && symbol.baseCurrency
-        ) {
-
-            exchangeSymbols.push(
-                new ExchangeSymbol("FTX", symbol.baseCurrency, symbol.quoteCurrency)
-            )
-
-        } else if (quoteAsset.toUpperCase() == "PERP" && symbol.enabled && symbol.name.endsWith("PERP")) {
-
-            exchangeSymbols.push(
-                {
-                    exchange: "FTX",
-                    id: `FTX:${symbol.underlying}PERP`,
-                    baseAsset: symbol.baseCurrency || symbol.underlying,
-                    quoteAsset: symbol.quoteCurrency || "USD",
-                }
-            )
-        }
-    }
-
-    return exchangeSymbols
-}
-
-const fetchBinanceFutures = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
-
-    const url = "https://fapi.binance.com/fapi/v1/exchangeInfo";
-
-    const resp = await fetch(url)
-
-    const responseObject = await resp.json()
-
-    // @ts-ignore
-    const {symbols} = responseObject
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    const exchange = "BINANCE"
-
-    for (const symbol of symbols) {
-        if (symbol.status === "TRADING" && (quoteAsset === CONST_ALL || symbol.quoteAsset === quoteAsset.toUpperCase())) {
-            exchangeSymbols.push(
-                new ExchangeSymbol(exchange, symbol.baseAsset, symbol.quoteAsset,
-                    `${exchange.toUpperCase()}:${symbol.baseAsset}${symbol.quoteAsset}PERP`)
-            )
-        }
-    }
-
-    return exchangeSymbols
-}
-
-const fetchBinance = async (isUs: boolean, quoteAsset: string): Promise<IExchangeSymbol[]> => {
-
-    const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
-
-    const resp = await fetch(url)
-
-    const responseObject = await resp.json()
-
-    // @ts-ignore
-    const {symbols} = responseObject
-
-    const exchangeSymbols: IExchangeSymbol[] = []
+export const fetchBinance = async (isUs: boolean): Promise<IBaseSymbol[]> => {
 
     const exchange = isUs ? "BINANCEUS" : "BINANCE"
 
-    for (const symbol of symbols) {
-        if (symbol.status === "TRADING" && (quoteAsset === CONST_ALL || symbol.quoteAsset === quoteAsset.toUpperCase())) {
+    const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
 
-            exchangeSymbols.push(
-                new ExchangeSymbol(exchange, symbol.baseAsset, symbol.quoteAsset)
-            )
-
+    const transformer = (obj) => {
+        if (obj.status === "TRADING") {
+            return new BaseSymbol(exchange, obj.baseAsset, obj.quoteAsset)
+        } else {
+            // logJson(obj, `${exchange} Discarded`)
+            return null
         }
     }
-
-    return exchangeSymbols
+    return fetchAndTransform(url, "symbols", transformer)
 }
 
 
-const fetchOkex = async (quoteAsset: string): Promise<IExchangeSymbol[]> => {
+export const fetchOkex = async (): Promise<IBaseSymbol[]> => {
 
-    const url = "https://www.okex.com/api/spot/v3/instruments"
-
-    const resp = await fetch(url)
-
-    const responseObject = await resp.json()
-
-    const symbols = responseObject
-
-    const exchangeSymbols: IExchangeSymbol[] = []
-
-    const exchange = "OKEX"
-
-    // @ts-ignore
-    for (const symbol of symbols) {
-        if ((quoteAsset === CONST_ALL || symbol.quote_currency === quoteAsset.toUpperCase())) {
-
-            exchangeSymbols.push(
-                new ExchangeSymbol(exchange, symbol.base_currency, symbol.quote_currency)
-            )
-
-        }
+    const transformer = (obj) => {
+        return new BaseSymbol("OKEX", obj.base_currency, obj.quote_currency)
     }
-
-    return exchangeSymbols
+    return fetchAndTransform("https://www.okex.com/api/spot/v3/instruments", null, transformer)
 }
 
 
+export const fetchSymbolsForSource = async (source: string): Promise<IBaseSymbol[]> => {
 
+    let symbolArray: IBaseSymbol[];
 
-
-export const fetchPairsForExchange = async (exchange: string, quoteAsset: string = CONST_ALL): Promise<IExchangeSymbol[]> => {
-
-    let symbolArray: IExchangeSymbol[];
-
-    switch (exchange) {
+    switch (source) {
         case BINANCEFUTURES:
-            symbolArray = await fetchBinanceFutures(quoteAsset)
+            symbolArray = await fetchBinanceFutures()
             break;
         case BINANCE:
-            symbolArray = await fetchBinance(false, quoteAsset)
+            symbolArray = await fetchBinance(false)
             break;
         case BINANCEUS:
-            symbolArray = await fetchBinance(true, quoteAsset)
+            symbolArray = await fetchBinance(true)
             break;
         case FTX:
-            symbolArray = await fetchFtx(quoteAsset)
+            symbolArray = await fetchFtx()
             break;
         case COINBASE:
-            symbolArray = await fetchCoinbase(quoteAsset)
+            symbolArray = await fetchCoinbase()
             break;
         case BITTREX:
-            symbolArray = await fetchBittrex(quoteAsset)
+            symbolArray = await fetchBittrex()
             break;
         case KRAKEN:
-            symbolArray = await fetchKraken(quoteAsset)
+            symbolArray = await fetchKraken()
             break;
         case KUCOIN:
-            symbolArray = await fetchKucoin(quoteAsset)
+            symbolArray = await fetchKucoin()
             break;
         case OKEX:
-            symbolArray = await fetchOkex(quoteAsset)
+            symbolArray = await fetchOkex()
             break;
         case BYBIT:
-            symbolArray = await fetchByBit(quoteAsset)
+            symbolArray = await fetchByBit()
             break;
+
+        //let's not add until ByBit spot is available in tradingview
+        // case BYBIT_SPOT:
+        //     symbolArray = await fetchByBitSpot()
+        //     break;
         default:
-            console.error("No exchange exists: ", exchange)
+            console.error("No source exists: ", source)
             break;
     }
     return symbolArray

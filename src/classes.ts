@@ -1,17 +1,28 @@
-import {IExchangeSymbol} from "./interfaces";
+import {IBaseSymbol} from "./interfaces";
 
-export class ExchangeSymbol implements IExchangeSymbol {
+export class BaseSymbol implements IBaseSymbol {
 
+    source: string;
     id: string;
-    exchange: string;
-    quoteAsset: string;
+    prefix: string;
+    ticker: string;
     baseAsset: string;
+    quoteAsset: string;
+    //type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund";
 
-    constructor(exchange: string, baseAsset: string, quoteAsset: string, id?: string) {
-        this.id = id || `${exchange.toUpperCase()}:${baseAsset}${quoteAsset}`
-        this.exchange = exchange;
+    constructor(
+        source: string,
+        baseAsset: string,
+        quoteAsset: string,
+        id?: string) {
+        this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`
+        const [prefix, ticker] = this.id.split(":")
+        this.prefix = prefix
+        this.ticker = ticker
+        this.source = source;
         this.quoteAsset = quoteAsset;
         this.baseAsset = baseAsset;
+        // this.type = "crypto"
     }
 }
 

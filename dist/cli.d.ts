@@ -1,2 +1,2 @@
-#!/usr/bin/env node
-import 'source-map-support/register.js';
+#!/usr/bin/env node --experimental-specifier-resolution=node
+import 'source-map-support/register';

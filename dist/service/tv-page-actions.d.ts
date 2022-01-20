@@ -1,4 +1,4 @@
-import { ISingleAlertSettings } from "../interfaces.js";
+import { ISingleAlertSettings } from "../interfaces";
 export declare const fetchFirstXPath: (page: any, selector: string, timeout?: number, screenshotOnFail?: boolean) => Promise<any>;
 export declare const takeScreenshot: (page: any, name?: string) => Promise<void>;
 export declare const minimizeFooterChartPanel: (page: any) => Promise<void>;

@@ -1,9 +1,14 @@
-export class ExchangeSymbol {
-    constructor(exchange, baseAsset, quoteAsset, id) {
-        this.id = id || `${exchange.toUpperCase()}:${baseAsset}${quoteAsset}`;
-        this.exchange = exchange;
+export class BaseSymbol {
+    //type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund";
+    constructor(source, baseAsset, quoteAsset, id) {
+        this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`;
+        const [prefix, ticker] = this.id.split(":");
+        this.prefix = prefix;
+        this.ticker = ticker;
+        this.source = source;
         this.quoteAsset = quoteAsset;
         this.baseAsset = baseAsset;
+        // this.type = "crypto"
     }
 }
 export class NoInputFoundError extends Error {

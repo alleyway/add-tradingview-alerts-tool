@@ -4,6 +4,7 @@ user_data/
 .env
 config.yml
 *_pairs.csv
+*_symbols.csv
 /config.*.yml
 /blacklist.csv
 responses/

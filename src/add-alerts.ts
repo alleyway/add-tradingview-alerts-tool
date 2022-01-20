@@ -2,12 +2,12 @@ import csv from 'csv-parser'
 import fs from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
-import {configureInterval, addAlert, waitForTimeout} from "./index.js";
-import {navigateToSymbol, login, minimizeFooterChartPanel} from "./service/tv-page-actions.js";
+import {configureInterval, addAlert, waitForTimeout} from "./index";
+import {navigateToSymbol, login, minimizeFooterChartPanel} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
-import log, {logLogInfo} from "./service/log.js"
+import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
-import {logBaseDelay} from "./service/common-service.js";
+import {logBaseDelay} from "./service/common-service";
 import stripBomStream from "strip-bom-stream";
 
 const readFilePromise = (filename: string) => {
@@ -23,7 +23,7 @@ const readFilePromise = (filename: string) => {
             readStream
                 .pipe(stripBomStream())
                 .pipe(csv({
-                    mapHeaders: ({ header, index }) => header.trim()
+                    mapHeaders: ({header, index}) => header.trim()
                 }))
                 .on('data', (data) => results.push(data))
                 .on('end', () => {
@@ -190,13 +190,13 @@ const addAlertsMain = async (configFileName) => {
             if (value) {
                 let val = String(value) // sometimes YAML config parameters are numbers
                 for (const column of Object.keys(row)) {
-                    val = val.replace(new RegExp(`{{${column}}}`,"g"), row[column])
+                    val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column])
                 }
 
                 const matches = val.match(/\{\{.*?\}\}/g)
 
-                if (matches){
-                    for (const match of matches){
+                if (matches) {
+                    for (const match of matches) {
                         log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`)
                     }
                 }

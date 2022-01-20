@@ -1,4 +1,4 @@
-import log from "./log.js";
+import log from "./log";
 import kleur from "kleur";
 import {readFile} from "fs/promises";
 

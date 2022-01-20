@@ -22,8 +22,11 @@ export interface ISingleAlertSettings {
     message?: string;
 }
 export interface IBaseSymbol {
+    source: string;
     id: string;
-    exchange: string;
+    prefix: string;
+    ticker: string;
     quoteAsset: string;
     baseAsset: string;
+    root?: string;
 }

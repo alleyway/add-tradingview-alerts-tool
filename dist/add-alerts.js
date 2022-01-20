@@ -2,11 +2,11 @@ import csv from 'csv-parser';
 import fs from "fs";
 import puppeteer from "puppeteer";
 import YAML from "yaml";
-import { configureInterval, addAlert, waitForTimeout } from "./index.js";
-import { navigateToSymbol, login, minimizeFooterChartPanel } from "./service/tv-page-actions.js";
-import log, { logLogInfo } from "./service/log.js";
+import { configureInterval, addAlert, waitForTimeout } from "./index";
+import { navigateToSymbol, login, minimizeFooterChartPanel } from "./service/tv-page-actions";
+import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
-import { logBaseDelay } from "./service/common-service.js";
+import { logBaseDelay } from "./service/common-service";
 import stripBomStream from "strip-bom-stream";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {

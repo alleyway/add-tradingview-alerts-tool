@@ -10,15 +10,15 @@ import {
     login,
     logout,
     fetchFirstXPath
-} from "./service/tv-page-actions.js"
-import {SelectionError} from "./classes.js";
-import {fetchPairsForExchange} from "./service/exchange-service.js"
-import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service.js"
-import log from "./service/log.js"
+} from "./service/tv-page-actions"
+import {SelectionError} from "./classes";
+import {fetchSymbolsForSource} from "./service/exchange-service"
+import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service"
+import log from "./service/log"
 
-import {IExchangeSymbol, ISingleAlertSettings } from "./interfaces.js"
+import {IBaseSymbol, ISingleAlertSettings} from "./interfaces"
 
-export type {IExchangeSymbol, ISingleAlertSettings}
+export type {IBaseSymbol, ISingleAlertSettings}
 
 export {
     fetchFirstXPath,
@@ -31,7 +31,7 @@ export {
     navigateToSymbol,
     login,
     logout,
-    fetchPairsForExchange,
+    fetchSymbolsForSource,
     waitForTimeout,
     atatVersion,
     log,

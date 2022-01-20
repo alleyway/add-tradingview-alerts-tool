@@ -1,3 +1,13 @@
-import { IBaseSymbol } from "../interfaces.js";
+import { IBaseSymbol } from "../interfaces";
 export declare const sourcesAvailable: string[];
-export declare const fetchSymbolsForSource: (source: string, quoteAsset?: string) => Promise<IBaseSymbol[]>;
+export declare const fetchByBit: () => Promise<IBaseSymbol[]>;
+export declare const fetchByBitSpot: () => Promise<IBaseSymbol[]>;
+export declare const fetchKucoin: () => Promise<IBaseSymbol[]>;
+export declare const fetchKraken: () => Promise<IBaseSymbol[]>;
+export declare const fetchBittrex: () => Promise<IBaseSymbol[]>;
+export declare const fetchCoinbase: () => Promise<IBaseSymbol[]>;
+export declare const fetchFtx: () => Promise<IBaseSymbol[]>;
+export declare const fetchBinanceFutures: () => Promise<IBaseSymbol[]>;
+export declare const fetchBinance: (isUs: boolean) => Promise<IBaseSymbol[]>;
+export declare const fetchOkex: () => Promise<IBaseSymbol[]>;
+export declare const fetchSymbolsForSource: (source: string) => Promise<IBaseSymbol[]>;

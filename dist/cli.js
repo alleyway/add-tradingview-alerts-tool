@@ -1,13 +1,13 @@
-#!/usr/bin/env node
-import 'source-map-support/register.js';
+#!/usr/bin/env node --experimental-specifier-resolution=node
+import 'source-map-support/register';
 import { Command } from 'commander';
-import fetchSymbolsMain from "./fetch-pairs.js";
-import log from "./service/log.js";
-import addAlertsMain from "./add-alerts.js";
-import { initBaseDelay, atatVersion } from "./service/common-service.js";
+import fetchSymbolsMain from "./fetch-symbols";
+import log from "./service/log";
+import addAlertsMain from "./add-alerts";
+import { initBaseDelay, atatVersion } from "./service/common-service";
 import kleur from "kleur";
-import updateNotifier from "./update-notifier.js";
-import { sourcesAvailable } from "./service/exchange-service.js";
+import updateNotifier from "./update-notifier";
+import { sourcesAvailable } from "./service/exchange-service";
 const program = new Command();
 program
     .version(atatVersion)

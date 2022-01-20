@@ -1,10 +1,12 @@
 import { IBaseSymbol } from "./interfaces";
-export declare class ExchangeSymbol implements IBaseSymbol {
+export declare class BaseSymbol implements IBaseSymbol {
+    source: string;
     id: string;
-    exchange: string;
-    quoteAsset: string;
+    prefix: string;
+    ticker: string;
     baseAsset: string;
-    constructor(exchange: string, baseAsset: string, quoteAsset: string, id?: string);
+    quoteAsset: string;
+    constructor(source: string, baseAsset: string, quoteAsset: string, id?: string);
 }
 export declare class NoInputFoundError extends Error {
     constructor(message: string);

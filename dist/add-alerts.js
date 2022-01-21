@@ -109,6 +109,7 @@ export const addAlertsMain = async (configFileName) => {
     else {
         page = (await browser.pages())[0];
         await waitForTimeout(5, "let page load and see if access is denied");
+        /* istanbul ignore next */
         accessDenied = await page.evaluate(() => {
             return document.title.includes("Denied");
         });

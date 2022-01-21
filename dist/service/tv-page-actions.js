@@ -80,6 +80,7 @@ const alertActionCorresponding = {
     webhook: "webhook-toggle",
 };
 const clickInputAndDelete = async (page, inputElement) => {
+    /* istanbul ignore next */
     await page.evaluate((el) => el.value = "", inputElement);
     // await inputElement.click({clickCount: 1})
     // await waitForTimeout(.2);
@@ -110,6 +111,7 @@ export const login = async (page, username, pass) => {
     await waitForTimeout(2);
 };
 export const logout = async (page) => {
+    /* istanbul ignore next */
     await page.evaluate(() => {
         fetch("/accounts/logout/", {
             method: "POST",
@@ -156,6 +158,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         let found = false;
         let foundOptions = [];
         for (const el of elements) {
+            /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.innerText, el);
             optionText = optionText.replace(/[\u200B]/g, ''); // this is to remove invisible "zero width" characters like for the following:
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
@@ -202,6 +205,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                                 throw (new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`));
                             log.trace(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`);
                             const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000);
+                            /* istanbul ignore next */
                             const readOnlyValue = await page.evaluate((el) => el.value, valueReadonlyInput);
                             if (readOnlyValue === conditionOrInputValue) {
                                 log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`);
@@ -250,6 +254,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         let found = false;
         let foundOptions = [];
         for (const el of elements) {
+            /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.dataset.title, el);
             foundOptions.push(optionText);
             if (optionText === option && !found) {
@@ -268,6 +273,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         if (!!actions && !!actions[configKey] !== undefined) {
             await waitForTimeout(.3);
             const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`);
+            /* istanbul ignore next */
             const isChecked = await page.evaluate(element => element.checked, el);
             if (configKey === "webhook") {
                 if (isChecked != actions.webhook.enabled) {

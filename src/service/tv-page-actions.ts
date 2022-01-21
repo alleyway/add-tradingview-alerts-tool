@@ -100,6 +100,7 @@ const alertActionCorresponding = {
 
 const clickInputAndDelete = async (page, inputElement) => {
 
+    /* istanbul ignore next */
     await page.evaluate((el) => el.value = "", inputElement)
 
     // await inputElement.click({clickCount: 1})
@@ -139,6 +140,7 @@ export const login = async (page, username, pass) => {
 
 export const logout = async (page) => {
 
+    /* istanbul ignore next */
     await page.evaluate(() => {
 
         fetch("/accounts/logout/", {
@@ -196,6 +198,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         let found = false
         let foundOptions = []
         for (const el of elements) {
+            /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.innerText, el);
             optionText = optionText.replace(/[\u200B]/g, ''); // this is to remove invisible "zero width" characters like for the following:
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
@@ -249,6 +252,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
                             const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000)
 
+                            /* istanbul ignore next */
                             const readOnlyValue = await page.evaluate((el) => el.value , valueReadonlyInput)
 
                             if (readOnlyValue === conditionOrInputValue) {
@@ -304,6 +308,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         let found = false
         let foundOptions = []
         for (const el of elements) {
+            /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.dataset.title, el);
             foundOptions.push(optionText)
             if (optionText === option && !found) {
@@ -325,6 +330,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         if (!!actions && !!actions[configKey] !== undefined) {
             await waitForTimeout(.3)
             const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`)
+            /* istanbul ignore next */
             const isChecked = await page.evaluate(element => element.checked, el)
 
             if (configKey === "webhook") {

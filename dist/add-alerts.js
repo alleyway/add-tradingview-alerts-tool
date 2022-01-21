@@ -2,7 +2,7 @@ import csv from 'csv-parser';
 import fs, { accessSync } from "fs";
 import puppeteer from "puppeteer";
 import YAML from "yaml";
-import { configureInterval, addAlert, waitForTimeout } from "./index";
+import { configureInterval, addAlert, waitForTimeout, isEnvEnabled } from "./index";
 import { navigateToSymbol, login, minimizeFooterChartPanel } from "./service/tv-page-actions";
 import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
@@ -36,7 +36,7 @@ const readFilePromise = (filename) => {
     });
 };
 const addAlertsMain = async (configFileName) => {
-    const headless = false;
+    const headless = isEnvEnabled(process.env.HEADLESS);
     logLogInfo();
     logBaseDelay();
     if (!fs.existsSync(configFileName)) {

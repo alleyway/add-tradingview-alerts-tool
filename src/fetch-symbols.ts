@@ -1,7 +1,16 @@
 import fs from "fs";
-import * as csv from "fast-csv";
 import {fetchSymbolsForSource} from "./service/exchange-service";
+import {FormatterOptionsArgs, writeToStream} from "fast-csv";
+import {Row} from "@fast-csv/format";
 
+
+const write = (stream: NodeJS.WritableStream, rows: Row[], options: FormatterOptionsArgs<Row, Row>): Promise<void> => {
+    return new Promise((res, rej) => {
+        writeToStream(stream, rows, options)
+            .on('error', (err: Error) => rej(err))
+            .on('finish', () => res());
+    });
+}
 
 export const fetchSymbolsMain = async (source: string, quote?: string) => {
 
@@ -18,27 +27,23 @@ export const fetchSymbolsMain = async (source: string, quote?: string) => {
         process.exit(1)
     }
 
-    const outputPath = `${formattedExchange}${quote? "_" + quote : ""}_symbols.csv`;
-    const outStream = fs.createWriteStream(outputPath)
 
-    const csvStream = csv.format({headers: true});
-
-    let numSymbols = 0
-
-    csvStream.pipe(outStream)
-        .on('end', () => {
-            process.exit()
-        });
-
-    for (const baseSymbol of baseSymbols) {
-        csvStream.write({
+    const rows = baseSymbols.map((baseSymbol) => {
+        return {
             symbol: baseSymbol.id,
             base: baseSymbol.baseAsset,
             quote: baseSymbol.quoteAsset,
             name: ""
-        })
-        numSymbols += 1
-    }
-    console.log(`Wrote ${numSymbols} rows to: ${outputPath}`)
-    csvStream.end()
+        }
+    })
+
+    const outputPath = `${formattedExchange}${quote? "_" + quote : ""}_symbols.csv`;
+    const outStream = fs.createWriteStream(outputPath)
+
+
+
+    await write(outStream, rows, {headers: true})
+
+
+    console.log(`Wrote ${rows.length} rows to: ${outputPath}`)
 }

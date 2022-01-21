@@ -1,7 +1,7 @@
 variables:
   FORCE_COLOR: '3'
 
-image: node:14.16.0-buster-slim
+image: alleywayapps/atat-ci-image:1.0.0
 
 stages:
   - build

@@ -10,9 +10,6 @@ describe('Add Alerts Test', () => {
 
     it('addAlerts(configFile)', async () => {
 
-
-        console.log("Headless" + process.env.HEADLESS)
-
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`)
         const csvContent =

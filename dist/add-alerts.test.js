@@ -5,7 +5,6 @@ import { addAlertsMain } from "./add-alerts";
 describe('Add Alerts Test', () => {
     jest.setTimeout(60000);
     it('addAlerts(configFile)', async () => {
-        console.log("Headless" + process.env.HEADLESS);
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
         const csvContent = `symbol,base,quote,name

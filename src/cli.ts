@@ -1,5 +1,4 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node
-import 'source-map-support/register'
 import {Command} from 'commander';
 import {fetchSymbolsMain} from "./fetch-symbols";
 import log from "./service/log";

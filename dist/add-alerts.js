@@ -91,7 +91,7 @@ const addAlertsMain = async (configFileName) => {
         await mkdir(userDataDir);
     }
     const browser = await puppeteer.launch({
-        headless: headless, userDataDir: "./user_data",
+        headless: headless, userDataDir,
         defaultViewport: null,
         args: headless ? null : [
             `--app=${config.tradingview.chartUrl}#signin`,

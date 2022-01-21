@@ -7,6 +7,9 @@
 [![npm version](https://badge.fury.io/js/@alleyway%2Fadd-tradingview-alerts-tool.svg)](https://www.npmjs.com/package/@alleyway/add-tradingview-alerts-tool)
 [![build status](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/pipeline.svg)](https://gitlab.com/mlake900/add-tradingview-alerts-tool/-/pipelines)
 [![code coverage](https://gitlab.com/mlake900/add-tradingview-alerts-tool/badges/master/coverage.svg)](https://mlake900.gitlab.io/add-tradingview-alerts-tool/)
+[![Npm package monthly downloads](https://badgen.net/npm/dm/@alleyway/add-tradingview-alerts-tool)](https://npmjs.com/package/@alleyway/add-tradingview-alerts-tool)
+
+
 
 ⚠️ *WARNING: Running command line software on your computer is risky! Although this software has no known malicious code in it - it does rely on __3rd-party libraries which can be vulnerable to hacking__. As of late 2021, 3rd-party hacks have been on the rise - use at your own risk.*
 

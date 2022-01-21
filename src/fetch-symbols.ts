@@ -3,7 +3,7 @@ import * as csv from "fast-csv";
 import {fetchSymbolsForSource} from "./service/exchange-service";
 
 
-export const fetchSymbolsMain = async (source, quote) => {
+export const fetchSymbolsMain = async (source: string, quote?: string) => {
 
     const formattedExchange = source.toLowerCase()
 

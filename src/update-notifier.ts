@@ -9,28 +9,7 @@
 import pacote from "pacote"
 import semver from "semver"
 import kleur from "kleur";
-import {writeFile, stat} from "fs/promises"
-import {resolve} from "path"
 
-// update check frequency
-const DAILY = 1000 * 60 * 60 * 24
-const WEEKLY = DAILY * 7
-
-const updateTimeout = async (duration) => {
-    const t = new Date(Date.now() - duration).getTime()
-    // don't put it in the _cacache folder, just in npm's cache
-    const f = resolve(process.cwd(), '../_update-notifier-last-checked')
-    // if we don't have a file, then definitely check it.
-    const st = await stat(f).catch(() => ({ mtime: t - 1 }))
-
-    if (t > st.mtime) {
-        // best effort, if this fails, it's ok.
-        // might be using /dev/null as the cache or something weird like that.
-        await writeFile(f, '').catch(() => {})
-        return true
-    } else
-        return false
-}
 
 export const updateNotifier =  async (version, spec = 'latest') => {
     // never check for updates in CI, when updating npm already, or opted out

@@ -1,5 +1,5 @@
 import csv from 'csv-parser'
-import fs, {exists, access, accessSync} from "fs"
+import fs, {accessSync} from "fs"
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout} from "./index";
@@ -115,7 +115,7 @@ const addAlertsMain = async (configFileName) => {
     }
 
     const browser = await puppeteer.launch({
-        headless: headless, userDataDir: "./user_data",
+        headless: headless, userDataDir,
         defaultViewport: null,
 
         args: headless ? null : [

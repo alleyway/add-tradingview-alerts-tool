@@ -1,4 +1,4 @@
-import csv from 'csv-parser';
+import * as csv from 'fast-csv';
 import fs, { accessSync } from "fs";
 import puppeteer from "puppeteer";
 import YAML from "yaml";
@@ -7,27 +7,24 @@ import { navigateToSymbol, login, minimizeFooterChartPanel } from "./service/tv-
 import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
 import { logBaseDelay } from "./service/common-service";
-import stripBomStream from "strip-bom-stream";
 import path from "path";
 import { mkdir } from "fs/promises";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
-        const results = [];
+        const rows = [];
         try {
             const readStream = fs.createReadStream(filename);
-            readStream.on("error", () => {
-                reject("unable to read csv");
-            });
             readStream
-                .pipe(stripBomStream())
-                .pipe(csv({
-                mapHeaders: ({ header, index }) => header.trim()
+                // .pipe(stripBomStream()) // was an error using this package something about module resolution
+                .pipe(csv.parse({
+                headers: (headerArray) => headerArray.map((header) => header.trim())
             }))
-                .on('data', (data) => results.push(data))
-                .on('end', () => {
-                resolve(results);
-            }).on('error', () => {
-                reject("Unable to read csv");
+                .on('data', (row) => rows.push(row))
+                .on('end', (rowCount) => {
+                log.info(`Parsed ${rowCount} rows`);
+                resolve(rows);
+            }).on('error', (e) => {
+                reject(`Unable to read csv: ${e.message}`);
             });
         }
         catch (e) {
@@ -35,7 +32,7 @@ const readFilePromise = (filename) => {
         }
     });
 };
-const addAlertsMain = async (configFileName) => {
+export const addAlertsMain = async (configFileName) => {
     const headless = isEnvEnabled(process.env.HEADLESS);
     logLogInfo();
     logBaseDelay();
@@ -92,10 +89,12 @@ const addAlertsMain = async (configFileName) => {
     }
     const browser = await puppeteer.launch({
         headless: headless, userDataDir,
-        defaultViewport: null,
-        args: headless ? null : [
+        defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
+        args: ['--no-sandbox',
+            '--disable-setuid-sandbox',
             `--app=${config.tradingview.chartUrl}#signin`,
-            // '--window-size=1440,670'
+            headless ? "--headless" : "",
+            '--window-size=1920,1080' // otherwise headless doesn't work
         ]
     });
     let page;
@@ -199,5 +198,4 @@ const addAlertsMain = async (configFileName) => {
     await waitForTimeout(3);
     await browser.close();
 };
-export default addAlertsMain;
 //# sourceMappingURL=add-alerts.js.map

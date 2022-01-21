@@ -40,12 +40,10 @@
   "license": "MIT",
   "version": "1.9.5-beta.3",
   "dependencies": {
-    "@fast-csv/format": "^4.3.5",
-    "@fast-csv/parse": "^4.3.6",
+    "dotenv": "^14.2.0",
     "axios": "^0.25.0",
     "commander": "^8.3.0",
     "consola": "^2.15.3",
-    "csv-parser": "^3.0.0",
     "fast-csv": "^4.3.6",
     "kleur": "^4.1.4",
     "pacote": "^12.0.2",
@@ -53,7 +51,6 @@
     "puppeteer": "^13.1.1",
     "regex-parser": "^2.2.11",
     "source-map-support": "^0.5.21",
-    "strip-bom-stream": "^5.0.0",
     "yaml": "^1.10.0"
   },
   "devDependencies": {

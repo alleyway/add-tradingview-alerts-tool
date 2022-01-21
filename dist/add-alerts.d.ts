@@ -1,2 +1,1 @@
-declare const addAlertsMain: (configFileName: any) => Promise<void>;
-export default addAlertsMain;
+export declare const addAlertsMain: (configFileName: any) => Promise<void>;

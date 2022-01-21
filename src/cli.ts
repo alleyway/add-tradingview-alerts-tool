@@ -3,7 +3,7 @@ import 'source-map-support/register'
 import {Command} from 'commander';
 import {fetchSymbolsMain} from "./fetch-symbols";
 import log from "./service/log";
-import addAlertsMain from "./add-alerts";
+import {addAlertsMain} from "./add-alerts";
 import {initBaseDelay, atatVersion} from "./service/common-service";
 import kleur from "kleur";
 import {updateNotifier} from "./update-notifier";
@@ -46,7 +46,7 @@ const initialize = () => {
 }
 
 
-program.command('fetch-pairs [exchange] [quote]', {hidden:true})
+program.command('fetch-pairs [exchange] [quote]', {hidden: true})
     .description('DEPRECATED! use "fetch-symbols" instead')
     .action((exchange, quote) => {
         log.error(`fetch-pairs is now ${kleur.red("DEPRECATED")}. Use 'fetch-symbols' instead`)
@@ -55,7 +55,7 @@ program.command('fetch-pairs [exchange] [quote]', {hidden:true})
 const extendedHelp = `    
     Where ${kleur.yellow("<source>")} is one of the following:
     
-    ${kleur.green(sourcesAvailable.map((val)=> val.toUpperCase()).join(kleur.gray(", ")))}
+    ${kleur.green(sourcesAvailable.map((val) => val.toUpperCase()).join(kleur.gray(", ")))}
     
     Optionally, you may filter results to a particular ${kleur.yellow("<quoteAsset>")} such as BTC, ETH, USDT, BUSD, etc.
 

@@ -52,6 +52,7 @@ test:
         - junit.xml
       cobertura: coverage/cobertura-coverage.xml
   script:
+    - echo "${ENV_FILE_CONTENTS}" >> .env
     - chmod 755 ./dist/cli.js
     - npm run atat fetch-symbols binance eth
     - npm run atat fetch-symbols binanceus usdt

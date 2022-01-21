@@ -19,6 +19,7 @@ module.exports = {
         "src/**/*.ts",
         "!**/node_modules/**"
     ],
+    setupFiles: ["dotenv/config"],
     transform: {},
     extensionsToTreatAsEsm: [".ts"],
     coverageThreshold: {

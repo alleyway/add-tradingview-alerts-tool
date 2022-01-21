@@ -1,10 +1,9 @@
 import fs from "fs";
 import {fetchSymbolsForSource} from "./service/exchange-service";
-import {FormatterOptionsArgs, writeToStream} from "fast-csv";
-import {Row} from "@fast-csv/format";
+import {FormatterOptionsArgs, writeToStream, FormatterRow} from "fast-csv";
 
 
-const write = (stream: NodeJS.WritableStream, rows: Row[], options: FormatterOptionsArgs<Row, Row>): Promise<void> => {
+const write = (stream: NodeJS.WritableStream, rows: FormatterRow[], options: FormatterOptionsArgs<FormatterRow, FormatterRow>): Promise<void> => {
     return new Promise((res, rej) => {
         writeToStream(stream, rows, options)
             .on('error', (err: Error) => rej(err))

@@ -3,7 +3,7 @@ import 'source-map-support/register';
 import { Command } from 'commander';
 import { fetchSymbolsMain } from "./fetch-symbols";
 import log from "./service/log";
-import addAlertsMain from "./add-alerts";
+import { addAlertsMain } from "./add-alerts";
 import { initBaseDelay, atatVersion } from "./service/common-service";
 import kleur from "kleur";
 import { updateNotifier } from "./update-notifier";

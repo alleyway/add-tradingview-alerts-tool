@@ -9,8 +9,8 @@
   "scripts": {
     "build": "npx tsc && mkdir -p dist/init && cp src/init/* dist/init/",
     "prepublishOnly": "npm run build",
-    "publish-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta'",
-    "publish-release": "npx release-it minor --no-git --verbose"
+    "release": "npx release-it minor --no-git --verbose",
+    "release-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta'"
   },
   "devDependencies": {
     "@release-it/bumper": "^3.0.1",

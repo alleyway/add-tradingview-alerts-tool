@@ -57,7 +57,7 @@ describe('Integrated Test of Exchanges', () => {
         expect(results.length).toBeGreaterThan(100);
     });
 
-    it('fetchBinance(false) // regular', async () => {
+    it('fetchBinance(false) //BINANCE', async () => {
         const results = await fetchBinance(false)
         expect(results.length).toBeGreaterThan(100);
     });

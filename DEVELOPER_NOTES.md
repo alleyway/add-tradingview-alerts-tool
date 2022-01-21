@@ -1,8 +1,4 @@
-
 ## Developer Notes
-
-Install [xpath generator](https://chrome.google.com/webstore/detail/xpath-generator/dphfifdfpfabhbkghlmnkkdghbmocfeb)
-
 
 ### Publishing
 
@@ -21,10 +17,10 @@ When release is made, ask user to return to stable:
     npm install @alleyway/add-tradingview-alerts-tool@latest
 
 #### Stable Release
-    npm run release
     ./deploy_master.sh
+    npm run release
 
 
 #### Stable Release (create-tradingview-alerts-home)
 
-    create-tradingview-alerts-home$ npm publish
+    create-tradingview-alerts-home $ npm run release

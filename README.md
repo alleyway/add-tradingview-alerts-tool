@@ -30,7 +30,7 @@ Using open source software designed for automated website testing, we can enter 
 Watch as this tool enters your TradingView alerts automatically.
 
 
-<img src="alert_tool_demo.gif" alt="demo video of tool" width="600"/>
+<img src=".README_images/alert_tool_demo.gif" alt="demo video of tool" width="600"/>
 
 ## Requirements
 
@@ -95,7 +95,7 @@ alert:
     }
 ```
 
-<img src="howto_conditions.png" alt="Fields corresponding to configuration" width="600"/>
+<img src=".README_images/howto_conditions.png" alt="Fields corresponding to configuration" width="600"/>
 
 
 ## Fetching Trading Pairs

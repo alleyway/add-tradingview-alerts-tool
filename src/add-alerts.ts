@@ -114,10 +114,10 @@ export const addAlertsMain = async (configFileName) => {
     const browser = await puppeteer.launch({
         headless: headless, userDataDir,
         defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
-
         args: ['--no-sandbox',
             '--disable-setuid-sandbox',
             headless ? "--headless" : "",
+            headless ? "" : `--app=${config.tradingview.chartUrl}#signin`,
             '--window-size=1920,1080' // otherwise headless doesn't work
         ]
     })

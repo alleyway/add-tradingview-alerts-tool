@@ -1,14 +1,14 @@
-export class BaseSymbol {
-    //type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund";
-    constructor(source, baseAsset, quoteAsset, id) {
+export class MasterSymbol {
+    constructor(raw, source, baseAsset, quoteAsset, id, classification) {
+        this.raw = raw;
         this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`;
         const [prefix, ticker] = this.id.split(":");
         this.prefix = prefix;
         this.ticker = ticker;
-        this.source = source;
+        this.source = source.toUpperCase();
         this.quoteAsset = quoteAsset;
         this.baseAsset = baseAsset;
-        // this.type = "crypto"
+        this.classification = classification || "spot";
     }
 }
 export class NoInputFoundError extends Error {

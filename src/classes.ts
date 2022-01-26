@@ -1,6 +1,6 @@
-import {IBaseSymbol} from "./interfaces";
+import {IBaseSymbol, ClassificationType} from "./interfaces";
 
-export class BaseSymbol implements IBaseSymbol {
+export class MasterSymbol implements IBaseSymbol {
 
     source: string;
     id: string;
@@ -8,21 +8,25 @@ export class BaseSymbol implements IBaseSymbol {
     ticker: string;
     baseAsset: string;
     quoteAsset: string;
-    //type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund";
+    classification: ClassificationType
+    raw: object;
 
     constructor(
+        raw: object,
         source: string,
         baseAsset: string,
         quoteAsset: string,
-        id?: string) {
+        id?: string,
+        classification?: ClassificationType) {
+        this.raw = raw
         this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`
         const [prefix, ticker] = this.id.split(":")
         this.prefix = prefix
         this.ticker = ticker
-        this.source = source;
+        this.source = source.toUpperCase();
         this.quoteAsset = quoteAsset;
         this.baseAsset = baseAsset;
-        // this.type = "crypto"
+        this.classification = classification || "spot"
     }
 }
 

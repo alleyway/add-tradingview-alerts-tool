@@ -33,7 +33,7 @@ export const waitForTimeout = (millsOrMultplier: number, message: string = ""): 
 }
 
 export const isEnvEnabled = (envVariable: string) => {
-    return (envVariable && (envVariable === "true" || Boolean(Number(envVariable))))
+    return (!!envVariable && (envVariable === "true" || Boolean(Number(envVariable))))
 }
 
 export const isDebug = () => {

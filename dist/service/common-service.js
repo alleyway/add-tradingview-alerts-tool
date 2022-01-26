@@ -25,7 +25,7 @@ export const waitForTimeout = (millsOrMultplier, message = "") => {
     });
 };
 export const isEnvEnabled = (envVariable) => {
-    return (envVariable && (envVariable === "true" || Boolean(Number(envVariable))));
+    return (!!envVariable && (envVariable === "true" || Boolean(Number(envVariable))));
 };
 export const isDebug = () => {
     return isEnvEnabled(process.env.DEBUG);

@@ -1,48 +1,78 @@
-import { fetchByBit, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchFtx, fetchBinanceFutures, fetchBinance, fetchOkex, fetchByBitSpot } from "./exchange-service";
+import { fetchByBitDerivatives, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchFtx, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap } from "./exchange-service";
+import fs from "fs";
+import path from "path";
+import { isEnvEnabled } from "./common-service";
 describe('Integrated Test of Exchanges', () => {
-    it('fetchByBit()', async () => {
-        const results = await fetchByBit();
-        expect(results.length).toBeGreaterThan(100);
+    const checkResults = (results, minNumberExpecting) => {
+        if (isEnvEnabled(process.env.TEST_SAVE_OUTPUT)) {
+            const resWithoutRaw = results.map((val) => { delete val.raw; return val; });
+            fs.writeFileSync(path.join(process.cwd(), "output", results[0].source + "_out.json"), JSON.stringify(resWithoutRaw, null, 2), { encoding: "utf-8" });
+        }
+        expect(results.length).toBeGreaterThan(minNumberExpecting);
+    };
+    it('fetchBitMex()', async () => {
+        const results = await fetchBitMex();
+        checkResults(results, 30);
+    });
+    it('fetchByBitDerivatives()', async () => {
+        const results = await fetchByBitDerivatives();
+        checkResults(results, 100);
     });
     it('fetchByBitSpot()', async () => {
         const results = await fetchByBitSpot();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
     it('fetchKucoin()', async () => {
         const results = await fetchKucoin();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
     it('fetchKraken()', async () => {
         const results = await fetchKraken();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
+    });
+    it('fetchKrakenFutures()', async () => {
+        const results = await fetchKrakenFutures();
+        checkResults(results, 4);
     });
     it('fetchBittrex()', async () => {
         const results = await fetchBittrex();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
     it('fetchCoinbase()', async () => {
         const results = await fetchCoinbase();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
     it('fetchFtx()', async () => {
         const results = await fetchFtx();
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
-    it('fetchBinanceFutures()', async () => {
-        const results = await fetchBinanceFutures();
-        expect(results.length).toBeGreaterThan(100);
+    it('fetchBinanceFuturesUsdM()', async () => {
+        const results = await fetchBinanceFuturesUsdM();
+        checkResults(results, 100);
+    });
+    it('fetchBinanceFuturesCoinM()', async () => {
+        const results = await fetchBinanceFuturesCoinM();
+        checkResults(results, 30);
     });
     it('fetchBinance(true) //BINANCEUS', async () => {
         const results = await fetchBinance(true);
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
     it('fetchBinance(false) //BINANCE', async () => {
         const results = await fetchBinance(false);
-        expect(results.length).toBeGreaterThan(100);
+        checkResults(results, 100);
     });
-    it('fetchOkex()', async () => {
-        const results = await fetchOkex();
-        expect(results.length).toBeGreaterThan(100);
+    it('fetchOkxSpt()', async () => {
+        const results = await fetchOkxSpot();
+        checkResults(results, 100);
     });
+    it('fetchOkxSwap()', async () => {
+        const results = await fetchOkxSwap();
+        checkResults(results, 50);
+    });
+    // it('fetchOkxFutures()', async () => {
+    //     const results = await fetchOkxFutures()
+    //     checkResults(results, 50)
+    // });
 });
 //# sourceMappingURL=exchange-service.test.js.map

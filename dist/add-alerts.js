@@ -93,6 +93,7 @@ export const addAlertsMain = async (configFileName) => {
         args: ['--no-sandbox',
             '--disable-setuid-sandbox',
             headless ? "--headless" : "",
+            headless ? "" : `--app=${config.tradingview.chartUrl}#signin`,
             '--window-size=1920,1080' // otherwise headless doesn't work
         ]
     });

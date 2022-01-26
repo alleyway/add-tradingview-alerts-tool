@@ -21,6 +21,7 @@ export interface ISingleAlertSettings {
     name?: string;
     message?: string;
 }
+export declare type ClassificationType = 'spot' | 'leveraged-token' | 'futures-perpetual' | 'futures-dated';
 export interface IBaseSymbol {
     source: string;
     id: string;
@@ -28,5 +29,5 @@ export interface IBaseSymbol {
     ticker: string;
     quoteAsset: string;
     baseAsset: string;
-    root?: string;
+    classification: ClassificationType;
 }

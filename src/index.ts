@@ -17,10 +17,12 @@ import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-servic
 import log from "./service/log"
 
 import {IBaseSymbol, ISingleAlertSettings} from "./interfaces"
+import {MasterSymbol} from "./classes";
 
-export type {IBaseSymbol, ISingleAlertSettings}
+export type {IBaseSymbol, ISingleAlertSettings, MasterSymbol}
 
 export {
+
     fetchFirstXPath,
     clickContinueIfWarning,
     takeScreenshot,

@@ -1,4 +1,5 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node
+import 'dotenv/config' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 import {Command} from 'commander';
 import {fetchSymbolsMain} from "./fetch-symbols";
 import log from "./service/log";

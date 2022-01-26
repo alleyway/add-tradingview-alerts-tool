@@ -1,12 +1,14 @@
-import { IBaseSymbol } from "./interfaces";
-export declare class BaseSymbol implements IBaseSymbol {
+import { IBaseSymbol, ClassificationType } from "./interfaces";
+export declare class MasterSymbol implements IBaseSymbol {
     source: string;
     id: string;
     prefix: string;
     ticker: string;
     baseAsset: string;
     quoteAsset: string;
-    constructor(source: string, baseAsset: string, quoteAsset: string, id?: string);
+    classification: ClassificationType;
+    raw: object;
+    constructor(raw: object, source: string, baseAsset: string, quoteAsset: string, id?: string, classification?: ClassificationType);
 }
 export declare class NoInputFoundError extends Error {
     constructor(message: string);

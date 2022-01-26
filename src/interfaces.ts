@@ -26,6 +26,8 @@ export interface ISingleAlertSettings {
     message?: string
 }
 
+export type ClassificationType = 'spot' | 'leveraged-token' | 'futures-perpetual' | 'futures-dated';
+
 
 // mostly following pine script docs for this
 export interface IBaseSymbol {
@@ -35,6 +37,5 @@ export interface IBaseSymbol {
     ticker: string,     // BTCUSDT          or      BTC0325
     quoteAsset: string, // USDT             or      USD
     baseAsset: string,  // BTC              or      BTC0325
-    root?: string,      // BTC              or      BTC          //underlying asset for futures
-    // type: "crypto" | "stock" | "futures" | "index" | "forex" | "fund"
+    classification: ClassificationType
 }

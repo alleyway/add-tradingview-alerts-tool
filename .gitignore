@@ -7,8 +7,9 @@ config.yml
 *_symbols.csv
 /config.*.yml
 /blacklist.csv
-responses/
+output/
 tradingview-alerts-home
 create-tradingview-alerts-home/dist
 coverage
 junit.xml
+protected_docs

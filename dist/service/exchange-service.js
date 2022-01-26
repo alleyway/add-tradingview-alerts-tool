@@ -281,10 +281,10 @@ export const fetchOkxSpot = async () => {
 export const fetchOkxSwap = async () => {
     const transformer = (obj) => {
         if (obj.ctType === "inverse") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.settleCcy}PERP`);
+            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.settleCcy}PERP`, "futures-perpetual");
         }
         else if (obj.ctType === "linear") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.ctValCcy}${obj.settleCcy}PERP`);
+            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.ctValCcy}${obj.settleCcy}PERP`, "futures-perpetual");
         }
         else {
             log.warn(`unable to parse ctType: ${obj.ctType}`);

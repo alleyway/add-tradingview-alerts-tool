@@ -113,9 +113,9 @@ This command downloads all USDT trading pairs for Binance:
 
 This command downloads all trading pairs for BinanceUS:
 ```yaml
-    ./atat fetch-symbols binanceus all
+    ./atat fetch-symbols binanceus
 
-    # Creates binanceus_all_symbols.csv
+    # Creates binanceus_symbols.csv
 ```
 
 #### Download Trading Pairs From FTX
@@ -123,7 +123,7 @@ This command downloads all trading pairs for BinanceUS:
 ```yaml
     ./atat fetch-symbols ftx
 
-    # Creates ftx_perp_symbols.csv
+    # Creates ftx_symbols.csv
 ```
 
 
@@ -160,20 +160,20 @@ This command downloads all trading pairs for BinanceUS:
     # Creates kucoin_usd_symbols.csv
 ```
 
-#### Download Trading Pairs From OKEx
+#### Download Trading Pairs From OKX (formerly OKEx)
 
 ```yaml
-    ./atat fetch-symbols okex usdt
+    ./atat fetch-symbols okx_spot usdt
 
-    # Creates okex_usd_symbols.csv
+    # Creates okx_spot_usdt_symbols.csv
 ```
 
 #### Download Trading Pairs From ByBit
 
 ```yaml
-    ./atat fetch-symbols bybit all
+    ./atat fetch-symbols bybit_derivatives
 
-    # Creates bybit_all_symbols.csv
+    # Creates bybit_derivatives_symbols.csv
 ```
 
 

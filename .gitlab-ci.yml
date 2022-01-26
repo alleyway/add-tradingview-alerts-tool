@@ -59,8 +59,9 @@ test:
     - npm run atat fetch-symbols binance eth
     - npm run atat fetch-symbols binanceus usdt
     - npm run atat fetch-symbols bittrex btc
-    - npm run atat fetch-symbols binancefutures usdt
-    - npm run atat fetch-symbols bybit
+    - npm run atat fetch-symbols binance_futures_coinm usdt
+    - npm run atat fetch-symbols binance_futures_usdm usdt
+    - npm run atat fetch-symbols bybit_derivatives
     - npm run test:ci
 
 pages:

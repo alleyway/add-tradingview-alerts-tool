@@ -16,10 +16,10 @@ import {fetchSymbolsForSource} from "./service/exchange-service"
 import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service"
 import log from "./service/log"
 
-import {IBaseSymbol, ISingleAlertSettings} from "./interfaces"
+import {IBaseSymbol, ISingleAlertSettings, ClassificationType} from "./interfaces"
 import {MasterSymbol} from "./classes";
 
-export type {IBaseSymbol, ISingleAlertSettings, MasterSymbol}
+export type {IBaseSymbol, ISingleAlertSettings, MasterSymbol, ClassificationType}
 
 export {
 

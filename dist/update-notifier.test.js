@@ -10,5 +10,10 @@ describe('Update Notifier Tests', () => {
         console.log(message);
         expect(message).toContain("version of atat available");
     });
+    it('updateNotifier() - ci', async () => {
+        const message = await updateNotifier("1.9.5-ci.111.0");
+        console.log(message);
+        expect(message).toContain("version of atat available");
+    });
 });
 //# sourceMappingURL=update-notifier.test.js.map

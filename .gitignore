@@ -13,3 +13,4 @@ create-tradingview-alerts-home/dist
 coverage
 junit.xml
 protected_docs
+.DS_Store

@@ -188,7 +188,7 @@ export const addAlertsMain = async (configFileName) => {
 
         for (const currentInterval of parsedIntervals) {
 
-            log.info(`Adding symbol: ${kleur.magenta(row.symbol)}  ( ${row.base} priced in ${row.quote} )`)
+            log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Base Asset: ${kleur.magenta(row.base)} Quote Asset: ${kleur.magenta(row.quote)}`)
 
             if (currentInterval !== "none") {
                 await configureInterval(currentInterval.trim(), page)

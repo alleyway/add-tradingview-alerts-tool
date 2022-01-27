@@ -1,5 +1,5 @@
 files:
-  input: binance_usdt_symbols.csv
+  input: coinbase_eth_symbols.csv
   exclude: blacklist.csv
 tradingview:
   # The chart which has the indicator you'd like to use

@@ -5,7 +5,7 @@ tradingview:
   # The chart which has the indicator you'd like to use
   chartUrl: https://www.tradingview.com/chart/XXXXXXXX/
   # (optional) set the chart interval before adding pairs, otherwise interval of last saved chart is used
-  # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M
+  # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M      # NOTE: '1h,4h' to add alerts across multiple intervals
   interval: 4h
   # Optionally supply login details or login manually once and restart script
   #username: JimmyJohnson

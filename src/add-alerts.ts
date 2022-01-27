@@ -175,11 +175,8 @@ export const addAlertsMain = async (configFileName) => {
 
     await minimizeFooterChartPanel(page) // otherwise pine script editor might capture focus
 
-    if (config.tradingview.interval) {
 
-        await configureInterval(config.tradingview.interval, page)
-        await waitForTimeout(3, "after changing the interval")
-    }
+    const parsedIntervals = config.tradingview?.interval?.toString().split(",") || ["none"]
 
 
     for (const row of symbolRows) {
@@ -189,67 +186,76 @@ export const addAlertsMain = async (configFileName) => {
             continue
         }
 
-        log.info(`Adding symbol: ${kleur.magenta(row.symbol)}  ( ${row.base} priced in ${row.quote} )`)
+        for (const currentInterval of parsedIntervals) {
 
-        await waitForTimeout(2, "let things settle from processing last alert")
+            log.info(`Adding symbol: ${kleur.magenta(row.symbol)}  ( ${row.base} priced in ${row.quote} )`)
 
-        await navigateToSymbol(page, row.symbol)
+            if (currentInterval !== "none") {
+                await configureInterval(currentInterval.trim(), page)
+                await waitForTimeout(3, "after changing the interval")
+            }
 
-        await waitForTimeout(2, "after navigating to ticker")
 
-        const makeReplacements = (value) => {
-            if (value) {
-                let val = String(value) // sometimes YAML config parameters are numbers
-                for (const column of Object.keys(row)) {
-                    val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column])
+            await waitForTimeout(2, "let things settle from processing last alert")
+
+            await navigateToSymbol(page, row.symbol)
+
+            await waitForTimeout(2, "after navigating to ticker")
+
+            const makeReplacements = (value) => {
+                if (value) {
+                    let val = String(value) // sometimes YAML config parameters are numbers
+                    for (const column of Object.keys(row)) {
+                        val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column])
+                    }
+
+                    const matches = val.match(/\{\{.*?\}\}/g)
+
+                    if (matches) {
+                        for (const match of matches) {
+                            log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`)
+                        }
+                    }
+
+                    return val
+                } else {
+                    return null
                 }
+            }
 
-                const matches = val.match(/\{\{.*?\}\}/g)
+            const singleAlertSettings: ISingleAlertSettings = {
+                name: makeReplacements(row.name || alertConfig.name),
+                message: makeReplacements(alertConfig.message),
+                condition: {
+                    primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
+                    primaryRight: makeReplacements(alertConfig.condition.primaryRight),
+                    secondary: makeReplacements(alertConfig.condition.secondary),
+                    tertiaryLeft: makeReplacements(alertConfig.condition.tertiaryLeft),
+                    tertiaryRight: makeReplacements(alertConfig.condition.tertiaryRight),
+                    quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
+                    quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
+                },
+                option: makeReplacements(alertConfig.option),
+            }
 
-                if (matches) {
-                    for (const match of matches) {
-                        log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`)
+            if (alertConfig.actions) {
+                singleAlertSettings.actions = {
+                    notifyOnApp: alertConfig.actions.notifyOnApp,
+                    showPopup: alertConfig.actions.showPopup,
+                    sendEmail: alertConfig.actions.sendEmail,
+                }
+                if (alertConfig.actions.webhook) {
+                    singleAlertSettings.actions.webhook = {
+                        enabled: alertConfig.actions.webhook.enabled,
+                        url: makeReplacements(alertConfig.actions.webhook.url)
                     }
                 }
 
-                return val
-            } else {
-                return null
-            }
-        }
-
-        const singleAlertSettings: ISingleAlertSettings = {
-            name: makeReplacements(row.name || alertConfig.name),
-            message: makeReplacements(alertConfig.message),
-            condition: {
-                primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
-                primaryRight: makeReplacements(alertConfig.condition.primaryRight),
-                secondary: makeReplacements(alertConfig.condition.secondary),
-                tertiaryLeft: makeReplacements(alertConfig.condition.tertiaryLeft),
-                tertiaryRight: makeReplacements(alertConfig.condition.tertiaryRight),
-                quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
-                quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
-            },
-            option: makeReplacements(alertConfig.option),
-        }
-
-        if (alertConfig.actions) {
-            singleAlertSettings.actions = {
-                notifyOnApp: alertConfig.actions.notifyOnApp,
-                showPopup: alertConfig.actions.showPopup,
-                sendEmail: alertConfig.actions.sendEmail,
-            }
-            if (alertConfig.actions.webhook) {
-                singleAlertSettings.actions.webhook = {
-                    enabled: alertConfig.actions.webhook.enabled,
-                    url: makeReplacements(alertConfig.actions.webhook.url)
-                }
             }
 
+
+            await addAlert(page, singleAlertSettings)
         }
-
-
-        await addAlert(page, singleAlertSettings)
     }
 
 

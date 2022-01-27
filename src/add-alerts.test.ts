@@ -37,6 +37,8 @@ COINBASE:BTCUSD,BTC,USDT, "my CI test name"
         config.tradingview.password = process.env.TEST_TRADINGVIEW_PASSWORD
         config.alert.actions.webhook.enabled = false
 
+        //config.tradingview.interval = "1h, 4h"
+
         // write it out again
         const TEST_CONFIG_PATH = "config.ci.yml";
         const configOutputString = YAML.stringify(config, {simpleKeys:true})

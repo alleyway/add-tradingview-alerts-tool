@@ -3,7 +3,7 @@ import * as fs from "fs";
 import path from "path";
 import { addAlertsMain } from "./add-alerts";
 describe('Add Alerts Test', () => {
-    jest.setTimeout(60000);
+    jest.setTimeout(120000);
     it('addAlerts(configFile)', async () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);

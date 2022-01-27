@@ -6,7 +6,7 @@ import {addAlertsMain} from "./add-alerts";
 
 describe('Add Alerts Test', () => {
 
-    jest.setTimeout(60000)
+    jest.setTimeout(120000)
 
     it('addAlerts(configFile)', async () => {
 

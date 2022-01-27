@@ -55,11 +55,11 @@ program.command('fetch-pairs [exchange] [quote]', {hidden: true})
 const extendedHelp = `    
     Where ${kleur.yellow("<source>")} is one of the following:
     
-    ${kleur.green(sourcesAvailable.map((val) => val.toUpperCase()).join(kleur.gray(", ")))}
+    ${kleur.green(sourcesAvailable.map((val) => val.toLowerCase()).join(kleur.gray("\n    ")))}
     
-    Optionally, you may filter results to a particular ${kleur.yellow("<quoteAsset>")} such as BTC, ETH, USDT, BUSD, etc.
+    Optionally, you may filter results to a particular ${kleur.yellow("<quoteAsset>")} such as btc, eth, usdt, busd, etc.
 
-    example: ${kleur.dim("atat fetch-symbols COINBASE ETH")}     
+    example: ${kleur.dim("atat fetch-symbols coinbase eth")}     
          
     `
 

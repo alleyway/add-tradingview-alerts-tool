@@ -319,8 +319,13 @@ export const fetchBinance = async (isUs: boolean): Promise<MasterSymbol[]> => {
     const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
 
     const transformer = (obj) => {
-        if (obj.status === "TRADING" && obj.isSpotTradingAllowed === true) {
-            return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset)
+        if (obj.status === "TRADING") {
+            if (obj.isSpotTradingAllowed === true) {
+                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset)
+            } else {
+                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset, null, "leveraged-token")
+            }
+
         } else {
             // logJson(obj, `${exchange} Discarded`)
             return null

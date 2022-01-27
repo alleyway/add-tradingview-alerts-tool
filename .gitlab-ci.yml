@@ -13,10 +13,6 @@ build:
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   #  tags:
   #    - macmini
-  only:
-    refs:
-      - develop
-      - master
   cache:
     paths:
       - node_modules/
@@ -94,4 +90,5 @@ deploy_npm:
     #- "[[ ${CI_COMMIT_BRANCH} != 'master' ]] &&
     - npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId='ci.${CI_PIPELINE_IID}'
   only:
-    - develop
+    refs:
+      - develop

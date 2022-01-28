@@ -4,6 +4,7 @@ import log from "./log";
 import kleur from "kleur";
 import fs from "fs";
 import path from "path";
+import { Classification } from "../interfaces";
 import { isEnvEnabled } from "./common-service";
 const BINANCE = "binance";
 const BINANCE_FUTURES_USDM = "binance_futures_usdm";
@@ -22,7 +23,7 @@ const OKX_FUTURES = "okx_futures"; //formerly OKEX
 const BYBIT_DERIVATIVES = "bybit_derivatives";
 const BYBIT_SPOT = "bybit_spot"; // not on TV yet
 const BITMEX = "bitmex"; // unable to do multiple pairs in 3commas
-export const sourcesAvailable = [
+export const SOURCES_AVAILABLE = [
     BINANCE,
     BINANCE_FUTURES_USDM,
     BINANCE_FUTURES_COINM,
@@ -43,7 +44,7 @@ const fetchAndTransform = async (url, responsePath, transformer) => {
     const responseObject = await fetch(url);
     const resultsArray = responsePath ? responseObject.data[responsePath] : responseObject.data;
     const masterSymbols = [];
-    log.info(`found ${resultsArray.length} results from the API`);
+    log.info(`${resultsArray.length} results returned from API`);
     let count = 0;
     for (const obj of resultsArray) {
         const masterSymbol = transformer(obj);
@@ -55,7 +56,7 @@ const fetchAndTransform = async (url, responsePath, transformer) => {
             count += 1;
         }
     }
-    log.info(`returning ${masterSymbols.length} results symbols parsed`);
+    log.info(`${masterSymbols.length} symbols parsed from results`);
     return masterSymbols;
 };
 const fetch = (url) => {
@@ -68,7 +69,7 @@ const fetch = (url) => {
 export const fetchBitMex = async () => {
     const transformer = (obj) => {
         if (obj.expiry === null) {
-            return new MasterSymbol(obj, BITMEX, obj.symbol, obj.quoteCurrency, `BITMEX:${obj.symbol}`, "futures-perpetual");
+            return new MasterSymbol(obj, BITMEX, obj.symbol, obj.quoteCurrency, `BITMEX:${obj.symbol}`, Classification.FUTURES_PERPETUAL);
         }
         else {
             return null;
@@ -81,9 +82,9 @@ export const fetchByBitDerivatives = async () => {
     // https://bybit-exchange.github.io/docs/inverse/#t-querysymbol
     const transformer = (obj) => {
         if (obj.status === "Trading") {
-            let classification = "futures-perpetual";
+            let classification = Classification.FUTURES_PERPETUAL;
             if (obj.alias.match(/\d{4}$/)) {
-                classification = "futures-dated";
+                classification = Classification.FUTURES_DATED;
             }
             return new MasterSymbol(obj, BYBIT_DERIVATIVES, obj.name, obj.quote_currency, `BYBIT:${obj.alias}`, classification);
         }
@@ -123,8 +124,8 @@ export const fetchKraken = async () => {
     log.info(`found ${keys.length} results from the API`);
     for (const key of keys) { // key = "AAVEAUD"
         const obj = symbolsObject[key];
-        const [baseAsset, quoteAsset] = obj.wsname.split("\/"); // "AAVE\/AUD"
-        masterSymbols.push(new MasterSymbol(obj, KRAKEN, baseAsset, quoteAsset));
+        const [instrument, quoteAsset] = obj.wsname.split("\/"); // "AAVE\/AUD"
+        masterSymbols.push(new MasterSymbol(obj, KRAKEN, instrument, quoteAsset));
     }
     log.info(`returning ${masterSymbols.length} results symbols parsed`);
     return masterSymbols;
@@ -156,7 +157,7 @@ export const fetchKrakenFutures = async () => {
             const [baseCurrency, quoteCurrency] = obj.pair.split(":");
             let classification = null;
             if (obj.tag === "perpetual") {
-                classification = "futures-perpetual";
+                classification = Classification.FUTURES_PERPETUAL;
                 return new MasterSymbol(obj, KRAKEN_FUTURES, obj.symbol, quoteCurrency, `KRAKEN:${baseCurrency}${quoteCurrency}PERP`, classification);
             }
             else {
@@ -174,7 +175,7 @@ export const fetchKrakenFutures = async () => {
 export const fetchBittrex = async () => {
     const transformer = (obj) => {
         if (obj.IsActive) {
-            const classification = (obj.MarketCurrencyLong.match(/X\s(?:Long|Short)\s/)) ? "leveraged-token" : "spot";
+            const classification = (obj.MarketCurrencyLong.match(/X\s(?:Long|Short)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT;
             return new MasterSymbol(obj, BITTREX, obj.MarketCurrency, obj.BaseCurrency, null, classification);
         }
         else {
@@ -198,25 +199,25 @@ export const fetchCoinbase = async () => {
 };
 export const fetchFtx = async () => {
     const levTokensTransformer = (obj) => {
-        return new MasterSymbol(obj, "FTX_LEV_TOKENS", obj.name, "USD", `FTX:${obj.underlying}`, "futures-dated");
+        return new MasterSymbol(obj, "FTX_LEV_TOKENS", obj.name, "USD", `FTX:${obj.underlying}`, Classification.FUTURES_DATED);
     };
     const levTokenSymbols = await fetchAndTransform("https://ftx.com/api/lt/tokens", "result", levTokensTransformer);
-    const levTokenNames = levTokenSymbols.map((ms) => ms.baseAsset);
+    const levTokenNames = levTokenSymbols.map((ms) => ms.instrument);
     const transformer = (obj) => {
         if (obj.enabled) {
             if (obj.type === "spot") {
-                const classification = levTokenNames.includes(obj.baseCurrency) ? "leveraged-token" : "spot";
+                const classification = levTokenNames.includes(obj.baseCurrency) ? Classification.LEVERAGED_TOKEN : Classification.SPOT;
                 return new MasterSymbol(obj, FTX, obj.baseCurrency, obj.quoteCurrency, null, classification);
             }
             else if (obj.type == "future") {
                 if (obj.tokenizedEquity)
                     return null; // eg. AAPL or AAPL-0326
                 if (obj.name.match(/-PERP$/)) {
-                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, "futures-perpetual");
+                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, Classification.SPOT);
                 }
                 else if (obj.name.match(/-\d{4}$/)) { //AVAX-0326
                     const [base, exp] = obj.name.split("-");
-                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${base}${exp}`, "futures-dated");
+                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${base}${exp}`, Classification.FUTURES_DATED);
                 }
                 else {
                     return null;
@@ -235,7 +236,7 @@ export const fetchFtx = async () => {
 export const fetchBinanceFuturesUsdM = async () => {
     const transformer = (obj) => {
         if (obj.status === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_USDM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, "futures-perpetual");
+            return new MasterSymbol(obj, BINANCE_FUTURES_USDM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, Classification.FUTURES_PERPETUAL);
         }
         else {
             // logJson(obj, "Binance Futures Discarded:")
@@ -248,7 +249,7 @@ export const fetchBinanceFuturesUsdM = async () => {
 export const fetchBinanceFuturesCoinM = async () => {
     const transformer = (obj) => {
         if (obj.contractStatus === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, "futures-perpetual");
+            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, Classification.FUTURES_PERPETUAL);
         }
         else {
             // logJson(obj, "Binance Futures Discarded:")
@@ -266,7 +267,7 @@ export const fetchBinance = async (isUs) => {
                 return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset);
             }
             else {
-                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset, null, "leveraged-token");
+                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset, null, Classification.LEVERAGED_TOKEN);
             }
         }
         else {
@@ -286,10 +287,10 @@ export const fetchOkxSpot = async () => {
 export const fetchOkxSwap = async () => {
     const transformer = (obj) => {
         if (obj.ctType === "inverse") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.settleCcy}PERP`, "futures-perpetual");
+            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.settleCcy}PERP`, Classification.FUTURES_PERPETUAL);
         }
         else if (obj.ctType === "linear") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.ctValCcy}${obj.settleCcy}PERP`, "futures-perpetual");
+            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.ctValCcy}${obj.settleCcy}PERP`, Classification.FUTURES_PERPETUAL);
         }
         else {
             log.warn(`unable to parse ctType: ${obj.ctType}`);
@@ -347,7 +348,7 @@ export const fetchSymbolsForSource = async (source) => {
             symbolArray = await fetchByBitDerivatives();
             break;
         default:
-            log.error(`Invalid source specified: ${kleur.yellow(source)} \n\n Choose one of the following:\n\n ${kleur.green(sourcesAvailable.join(", "))}`);
+            log.error(`Invalid source specified: ${kleur.yellow(source)} \n\n Choose one of the following:\n\n ${kleur.green(SOURCES_AVAILABLE.join(", "))}`);
             process.exit(1);
             return [];
     }

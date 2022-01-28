@@ -4,11 +4,11 @@ export declare class MasterSymbol implements IBaseSymbol {
     id: string;
     prefix: string;
     ticker: string;
-    baseAsset: string;
+    instrument: string;
     quoteAsset: string;
     classification: ClassificationType;
     raw: object;
-    constructor(raw: object, source: string, baseAsset: string, quoteAsset: string, id?: string, classification?: ClassificationType);
+    constructor(raw: object, source: string, instrument: string, quoteAsset: string, id?: string, classification?: ClassificationType);
 }
 export declare class NoInputFoundError extends Error {
     constructor(message: string);

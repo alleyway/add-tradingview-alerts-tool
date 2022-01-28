@@ -6,7 +6,7 @@ export class MasterSymbol implements IBaseSymbol {
     id: string;
     prefix: string;
     ticker: string;
-    baseAsset: string;
+    instrument: string;
     quoteAsset: string;
     classification: ClassificationType
     raw: object;
@@ -14,19 +14,19 @@ export class MasterSymbol implements IBaseSymbol {
     constructor(
         raw: object,
         source: string,
-        baseAsset: string,
+        instrument: string,
         quoteAsset: string,
         id?: string,
         classification?: ClassificationType) {
         this.raw = raw
-        this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`
+        this.id = id || `${source.toUpperCase()}:${instrument}${quoteAsset}`
         const [prefix, ticker] = this.id.split(":")
         this.prefix = prefix
         this.ticker = ticker
         this.source = source.toUpperCase();
         this.quoteAsset = quoteAsset;
-        this.baseAsset = baseAsset;
-        this.classification = classification || "spot"
+        this.instrument = instrument;
+        this.classification = classification || "SPOT"
     }
 }
 

@@ -1,6 +1,6 @@
 import {fetchSymbolsMain} from "./fetch-symbols";
-import {sourcesAvailable} from "./service/exchange-service";
-import * as fs from "fs";
+import {SOURCES_AVAILABLE} from "./service/exchange-service";
+import fs from "fs";
 import path from "path";
 
 
@@ -13,7 +13,7 @@ describe('Fetch Symbols Test', () => {
 
     it('fetchSymbolsMain()', async () => {
 
-        const testSource = sourcesAvailable[0];
+        const testSource = SOURCES_AVAILABLE[0];
         await fetchSymbolsMain(testSource)
 
         const filePath = path.join(process.cwd(),`${testSource}_symbols.csv` )

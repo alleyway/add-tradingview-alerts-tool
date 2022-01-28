@@ -1,5 +1,5 @@
 import YAML from "yaml";
-import * as fs from "fs";
+import fs from "fs";
 import path from "path";
 import { addAlertsMain } from "./add-alerts";
 describe('Add Alerts Test', () => {

@@ -36,5 +36,5 @@ alert:
          "bot_id": 999999,
          "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
          "delay_seconds": 0,
-         "pair": "{{quote}}_{{base}}"
+         "pair": "{{quote_asset}}_{{instrument}}"
     }

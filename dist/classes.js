@@ -1,14 +1,14 @@
 export class MasterSymbol {
-    constructor(raw, source, baseAsset, quoteAsset, id, classification) {
+    constructor(raw, source, instrument, quoteAsset, id, classification) {
         this.raw = raw;
-        this.id = id || `${source.toUpperCase()}:${baseAsset}${quoteAsset}`;
+        this.id = id || `${source.toUpperCase()}:${instrument}${quoteAsset}`;
         const [prefix, ticker] = this.id.split(":");
         this.prefix = prefix;
         this.ticker = ticker;
         this.source = source.toUpperCase();
         this.quoteAsset = quoteAsset;
-        this.baseAsset = baseAsset;
-        this.classification = classification || "spot";
+        this.instrument = instrument;
+        this.classification = classification || "SPOT";
     }
 }
 export class NoInputFoundError extends Error {

@@ -1,4 +1,4 @@
-import * as csv from 'fast-csv';
+import csv from 'fast-csv';
 import fs, { accessSync } from "fs";
 import puppeteer from "puppeteer";
 import YAML from "yaml";
@@ -74,8 +74,8 @@ export const addAlertsMain = async (configFileName) => {
         process.exit(1);
     }
     const firstRow = symbolRows[0];
-    if (!firstRow.symbol || !firstRow.base || !firstRow.quote) {
-        log.error(`Invalid input csv file format, first line should have at least the following headers(no spaces!): ${kleur.blue("symbol,base,quote")}`);
+    if (!firstRow.symbol) {
+        log.error(`Invalid input csv file format, first line should have at least the following headers(no spaces!): ${kleur.blue("symbol,instrument,quote_asset")}`);
         process.exit(1);
     }
     const { alert: alertConfig } = config;
@@ -143,7 +143,7 @@ export const addAlertsMain = async (configFileName) => {
             continue;
         }
         for (const currentInterval of parsedIntervals) {
-            log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Base Asset: ${kleur.magenta(row.base)} Quote Asset: ${kleur.magenta(row.quote)}`);
+            log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Instrument: ${kleur.magenta(row.instrument || row.base)} Quote Asset: ${kleur.magenta(row.quote_asset || row.quote)}`);
             if (currentInterval !== "none") {
                 await configureInterval(currentInterval.trim(), page);
                 await waitForTimeout(3, "after changing the interval");
@@ -170,7 +170,7 @@ export const addAlertsMain = async (configFileName) => {
                 }
             };
             const singleAlertSettings = {
-                name: makeReplacements(row.name || alertConfig.name),
+                name: makeReplacements(row.alert_name || row.name || alertConfig.name),
                 message: makeReplacements(alertConfig.message),
                 condition: {
                     primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),

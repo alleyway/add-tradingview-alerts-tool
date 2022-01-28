@@ -21,13 +21,19 @@ export interface ISingleAlertSettings {
     name?: string;
     message?: string;
 }
-export declare type ClassificationType = 'spot' | 'leveraged-token' | 'futures-perpetual' | 'futures-dated';
+export declare enum Classification {
+    SPOT = "SPOT",
+    LEVERAGED_TOKEN = "LEVERAGED_TOKEN",
+    FUTURES_PERPETUAL = "FUTURES_PERPETUAL",
+    FUTURES_DATED = "FUTURES_DATED"
+}
+export declare type ClassificationType = keyof typeof Classification;
 export interface IBaseSymbol {
     source: string;
     id: string;
     prefix: string;
     ticker: string;
     quoteAsset: string;
-    baseAsset: string;
+    instrument: string;
     classification: ClassificationType;
 }

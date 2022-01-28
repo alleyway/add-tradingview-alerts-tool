@@ -1,5 +1,5 @@
 import { MasterSymbol } from "../classes";
-export declare const sourcesAvailable: string[];
+export declare const SOURCES_AVAILABLE: string[];
 export declare const fetchBitMex: () => Promise<MasterSymbol[]>;
 export declare const fetchByBitDerivatives: () => Promise<MasterSymbol[]>;
 export declare const fetchByBitSpot: () => Promise<MasterSymbol[]>;

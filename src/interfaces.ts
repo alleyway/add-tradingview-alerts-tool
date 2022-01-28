@@ -26,7 +26,9 @@ export interface ISingleAlertSettings {
     message?: string
 }
 
-export type ClassificationType = 'spot' | 'leveraged-token' | 'futures-perpetual' | 'futures-dated';
+export enum Classification {SPOT = "SPOT" , LEVERAGED_TOKEN = 'LEVERAGED_TOKEN' , FUTURES_PERPETUAL = 'FUTURES_PERPETUAL' , FUTURES_DATED = 'FUTURES_DATED'}
+
+export type ClassificationType = keyof typeof Classification;
 
 
 // mostly following pine script docs for this
@@ -36,6 +38,6 @@ export interface IBaseSymbol {
     prefix: string,     // BINANCE          or      FTX
     ticker: string,     // BTCUSDT          or      BTC0325
     quoteAsset: string, // USDT             or      USD
-    baseAsset: string,  // BTC              or      BTC0325
+    instrument: string,  // BTC              or      BTC0325
     classification: ClassificationType
 }

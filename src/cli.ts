@@ -1,13 +1,14 @@
 #!/usr/bin/env node --experimental-specifier-resolution=node
 import 'dotenv/config' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
-import {Command} from 'commander';
+import {Command, Argument, Option} from 'commander';
 import {fetchSymbolsMain} from "./fetch-symbols";
 import log from "./service/log";
 import {addAlertsMain} from "./add-alerts";
 import {initBaseDelay, atatVersion} from "./service/common-service";
 import kleur from "kleur";
 import {updateNotifier} from "./update-notifier";
-import {sourcesAvailable} from "./service/exchange-service";
+import {SOURCES_AVAILABLE} from "./service/exchange-service";
+import {Classification} from "./interfaces";
 
 const program = new Command();
 
@@ -53,23 +54,32 @@ program.command('fetch-pairs [exchange] [quote]', {hidden: true})
     })
 
 const extendedHelp = `    
-    Where ${kleur.yellow("<source>")} is one of the following:
+Where ${kleur.yellow("<source>")} is one of the following:
     
-    ${kleur.green(sourcesAvailable.map((val) => val.toLowerCase()).join(kleur.gray("\n    ")))}
+    ${kleur.green(SOURCES_AVAILABLE.map((val) => val.toLowerCase()).join(kleur.gray("\n    ")))}
     
-    Optionally, you may filter results to a particular ${kleur.yellow("<quoteAsset>")} such as btc, eth, usdt, busd, etc.
+    Optionally, you may filter results to a particular ${kleur.yellow("<quote_asset>")} such as btc, eth, usdt, busd, etc.
 
-    example: ${kleur.dim("atat fetch-symbols coinbase eth")}     
+    example: ${kleur.dim("atat fetch-symbols coinbase -q eth")}     
          
     `
 
-program.command('fetch-symbols <source> [quoteAsset]').showHelpAfterError(extendedHelp)
-    .description('fetch trading symbols for an exchange').addHelpText("after", extendedHelp
+program.command('fetch-symbols')
+    .addArgument(new Argument('<source>', 'exchange').choices(SOURCES_AVAILABLE))
+    .addOption(new Option("-q, --quote-asset <quote-asset>", "only symbols matching quote asset (eg. 'usdt' or 'btc')"))
+    .addOption(new Option("-c, --classification <classification>", "only symbols matching classification").choices(Object.keys(Classification).map((s) => s.toLowerCase())))
+    // .showHelpAfterError(extendedHelp)
+    .description('fetch trading symbols from an exchange').addHelpText("after", extendedHelp
 )
-    .action(async (source, quoteAsset) => {
+    .action(async (source, options) => {
         initialize()
         try {
-            await fetchSymbolsMain(source, quoteAsset)
+            await fetchSymbolsMain(source, options.quoteAsset, options.classification)
+
+            if (!options.classification) {
+                log.info(kleur.gray("NOTE: If desired, you may filter by classification, see command help for details"))
+            }
+
         } catch (e) {
             log.error(e)
             await checkForUpdate(false)

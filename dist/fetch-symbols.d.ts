@@ -1,1 +1,1 @@
-export declare const fetchSymbolsMain: (source: string, quote?: string) => Promise<void>;
+export declare const fetchSymbolsMain: (source: string, quoteAssetFilter?: string, classificationFilter?: string) => Promise<void>;

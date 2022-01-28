@@ -1,22 +1,22 @@
 import YAML from "yaml";
-import fs from "fs";
 import path from "path";
 import { addAlertsMain } from "./add-alerts";
+import { readFileSync, writeFileSync, copyFileSync } from "fs";
 describe('Add Alerts Test', () => {
     jest.setTimeout(120000);
     it('addAlerts(configFile)', async () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
-        const csvContent = `symbol,base,quote,name
+        const csvContent = `symbol,instrument,quote_asset,alert_name
 COINBASE:BTCUSD,BTC,USDT, "my CI test name"
 `;
-        fs.writeFileSync(ciSymbolsCsvPath, csvContent, { encoding: "utf-8" });
+        writeFileSync(ciSymbolsCsvPath, csvContent, { encoding: "utf-8" });
         // copy blacklist file
         const templateBlacklistPath = path.join(process.cwd(), "create-tradingview-alerts-home", "src", "init", "blacklist.csv");
-        fs.copyFileSync(templateBlacklistPath, "blacklist.csv");
+        copyFileSync(templateBlacklistPath, "blacklist.csv");
         // read template config file
         const templateConfigPath = path.join(process.cwd(), "create-tradingview-alerts-home", "src", "init", "config.init.yml");
-        const configString = await fs.readFileSync(templateConfigPath, { encoding: "utf-8" });
+        const configString = readFileSync(templateConfigPath, { encoding: "utf-8" });
         const config = YAML.parse(configString);
         // modify it to our needs
         config.files.input = ciSymbolsCsvPath;
@@ -28,7 +28,7 @@ COINBASE:BTCUSD,BTC,USDT, "my CI test name"
         // write it out again
         const TEST_CONFIG_PATH = "config.ci.yml";
         const configOutputString = YAML.stringify(config, { simpleKeys: true });
-        fs.writeFileSync(TEST_CONFIG_PATH, configOutputString, { encoding: "utf-8" });
+        writeFileSync(TEST_CONFIG_PATH, configOutputString, { encoding: "utf-8" });
         // launch browser and add alerts
         await addAlertsMain(TEST_CONFIG_PATH);
     });

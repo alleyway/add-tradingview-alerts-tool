@@ -1,5 +1,5 @@
-import csv from 'fast-csv';
-import fs, { accessSync } from "fs";
+import * as csv from 'fast-csv';
+import { readFileSync, createReadStream, accessSync, existsSync, constants } from "fs";
 import puppeteer from "puppeteer";
 import YAML from "yaml";
 import { configureInterval, addAlert, waitForTimeout, isEnvEnabled } from "./index";
@@ -13,7 +13,7 @@ const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
         const rows = [];
         try {
-            const readStream = fs.createReadStream(filename);
+            const readStream = createReadStream(filename);
             readStream
                 // .pipe(stripBomStream()) // was an error using this package something about module resolution
                 .pipe(csv.parse({
@@ -36,13 +36,13 @@ export const addAlertsMain = async (configFileName) => {
     const headless = isEnvEnabled(process.env.HEADLESS);
     logLogInfo();
     logBaseDelay();
-    if (!fs.existsSync(configFileName)) {
+    if (!existsSync(configFileName)) {
         log.error(`Unable to find config file: ${configFileName}`);
         process.exit(1);
     }
     log.info("Using config file: ", kleur.yellow(configFileName));
     log.info("Press Ctrl-C to stop this script");
-    const configString = await fs.readFileSync(configFileName, { encoding: "utf-8" });
+    const configString = readFileSync(configFileName, { encoding: "utf-8" });
     const config = YAML.parse(configString);
     if (config.tradingview.chartUrl === "https://www.tradingview.com/chart/XXXXXXXX/") {
         log.fatal("oops! Looks like you need to set your chartUrl in the config file!");
@@ -81,7 +81,7 @@ export const addAlertsMain = async (configFileName) => {
     const { alert: alertConfig } = config;
     const userDataDir = path.join(process.cwd(), "user_data"); // where chrome will store it's stuff
     try {
-        accessSync(userDataDir, fs.constants.W_OK);
+        accessSync(userDataDir, constants.W_OK);
     }
     catch {
         log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`);

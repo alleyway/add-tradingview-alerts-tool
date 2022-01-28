@@ -16,7 +16,6 @@ program
     .name("atat")
     .version(atatVersion)
     .option('-l, --loglevel <level>', 'log level (1-5), default 3')
-    .option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000')
 
 
 const checkForUpdate = async (verbose: boolean) => {
@@ -91,6 +90,7 @@ program.command('fetch-symbols')
 
 program.command('add-alerts [config]')
     .description('add alerts')
+    .addOption(new Option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000'))
     .action(async (config) => {
         initialize()
         try {

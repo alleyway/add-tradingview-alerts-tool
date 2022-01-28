@@ -82,16 +82,16 @@ alert:
     webhook:
       enabled: true
       url: "https://3commas.io/trade_signal/trading_view"
-  # alert name is optional - can override in csv if desired and use {{symbol|base|quote}}
-  # name: MI dev3 for {{base}} {{quote}}
-  # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
+  # alert name is optional - can override in csv if desired and use {{symbol|instrument|quote_asset}}
+  # name: MI dev3 for {{instrument}} {{quote_asset}}
+  # indentation matters! {{quote_asset}} and {{instrument}} are swapped out for quote asset(eg. USDT) and the base token or instrument (eg. 'BTC')
   message: >
     {
         "message_type": "bot",
         "bot_id": 999999,
         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
         "delay_seconds": 0,
-        "pair": "{{quote}}_{{base}}"
+        "pair": "{{quote_asset}}_{{instrument}}"
     }
 ```
 
@@ -106,7 +106,7 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 
 This command downloads all USDT trading pairs for Binance: 
 ```yaml 
-    ./atat fetch-symbols binance usdt
+    ./atat fetch-symbols binance -q usdt
     
     # Creates binance_usdt_symbols.csv    
 ```
@@ -120,17 +120,19 @@ This command downloads all trading pairs for BinanceUS:
 
 #### Download Trading Pairs From FTX
 
-```yaml
-    ./atat fetch-symbols ftx
+You can also use the `--classification` flag to only grab symbols of a certain type (options available are  "spot", "leveraged_token", "futures_perpetual", "futures_dated") 
 
-    # Creates ftx_symbols.csv
+```yaml
+    ./atat fetch-symbols ftx --classification leveraged_token
+
+    # Creates ftx_leveraged_token_symbols.csv
 ```
 
 
 #### Download Trading Pairs From Coinbase
 
 ```yaml
-    ./atat fetch-symbols coinbase usd
+    ./atat fetch-symbols coinbase -q usd
 
     # Creates coinbase_usd_symbols.csv
 ```
@@ -139,7 +141,7 @@ This command downloads all trading pairs for BinanceUS:
 #### Download Trading Pairs From Bittrex
 
 ```yaml
-    ./atat fetch-symbols bittrex btc
+    ./atat fetch-symbols bittrex -q btc
 
     # Creates bittrex_btc_symbols.csv
 ```
@@ -147,7 +149,7 @@ This command downloads all trading pairs for BinanceUS:
 #### Download Trading Pairs From Kraken
 
 ```yaml
-    ./atat fetch-symbols kraken usd
+    ./atat fetch-symbols kraken -q usd
 
     # Creates kraken_usd_symbols.csv
 ```
@@ -155,7 +157,7 @@ This command downloads all trading pairs for BinanceUS:
 #### Download Trading Pairs From KuCoin
 
 ```yaml
-    ./atat fetch-symbols kucoin usdt
+    ./atat fetch-symbols kucoin -q usdt
 
     # Creates kucoin_usd_symbols.csv
 ```
@@ -163,7 +165,7 @@ This command downloads all trading pairs for BinanceUS:
 #### Download Trading Pairs From OKX (formerly OKEx)
 
 ```yaml
-    ./atat fetch-symbols okx_spot usdt
+    ./atat fetch-symbols okx_spot -q usdt
 
     # Creates okx_spot_usdt_symbols.csv
 ```
@@ -258,12 +260,12 @@ alert:
 
 A configured TradingView Indicator that works for assets quoted in BTC may not be appropriate for USD pairs, therefore, you'll want to segment your setup as follows:
 
-| Abstract                                                                                                        | Concretely                                                                                                                                                                                |
-|-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_symbols.csv                                                                                                                          |
-| TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                     |
-| 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote}}_{{base}}"<br>} |
-| A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                         |
+| Abstract                                                                                                        | Concretely                                                                                                                                                                                            |
+|-----------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| List of pairs quoted only in BTC                                                                                | Run "./atat fetch-symbols binance btc"<br>input: binance_usdt_symbols.csv                                                                                                                             |
+| TradingView chart layout with an indicator tailored specific to BTC (eg. set 6% for deviation on MTF deviation) | chartUrl: https://www.tradingview.com/chart/WS5uK1l5/                                                                                                                                                 |
+| 3commas trading bot to handle only BTC                                                                          | {<br>    "message_type": "bot",<br>    "bot_id": 999999,<br>    "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",<br>    "delay_seconds": 0,<br>    "pair": "{{quote_asset}}_{{instrument}}"<br>} |
+| A dedicated configuration file for the above                                                                    | ./atat add-alerts config.btc.yml                                                                                                                                                                      |
 
 NOTE: running "./atat add-alerts" will default to config.yml unless you specify one (eg. "./atat add-alerts config.btc.yml")
 
@@ -277,7 +279,7 @@ There are some scenarios where you may want some pairs to use different indicato
 Then you could add an arbitrary column to your .csv - here we use "DSMAsetting"
 
 ```
-symbol,quote,base,DSMAsetting
+symbol,quote_asset,instrument,DSMAsetting
 BINANCE:1INCHUSDT,USDT,1INCH,40
 BINANCE:AAVEUSDT,USDT,AAVE,20
 BINANCE:ACMUSDT,USDT,ACM,40
@@ -308,14 +310,14 @@ So you can use a JSON array for the message:
         "bot_id": 999999,
         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
         "delay_seconds": 0,
-        "pair": "{{quote}}_{{base}}"
+        "pair": "{{quote_asset}}_{{instrument}}"
     },
     {
         "message_type": "bot",
         "bot_id": 999999,
         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
         "delay_seconds": 0,
-        "pair": "{{quote}}_{{base}}"
+        "pair": "{{quote_asset}}_{{instrument}}"
     }]
 ```
 
@@ -325,7 +327,7 @@ This works in the same way as for 3Commas, but Alertatron using a different form
 
 ```yaml
   message: >
-    binanceKeys({{quote}}_{{base}}) {
+    binanceKeys({{quote_asset}}_{{instrument}}) {
         market(side=buy, amount=50%);
         stopOrder(side=sell, amount=100%p, offset=2%);
         limit(side=sell, amount=100%p, offset=3%);

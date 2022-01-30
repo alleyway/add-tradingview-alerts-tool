@@ -41,7 +41,7 @@
   "version": "2.1.0",
   "dependencies": {
     "axios": "^0.25.0",
-    "commander": "^8.3.0",
+    "commander": "^9.0.0",
     "consola": "^2.15.3",
     "dotenv": "^14.3.2",
     "fast-csv": "^4.3.6",

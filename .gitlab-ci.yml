@@ -52,12 +52,6 @@ test:
   script:
     - echo "${ENV_FILE_CONTENTS}" >> .env
     - chmod 755 ./dist/cli.js
-    - npm run atat fetch-symbols binance eth
-    - npm run atat fetch-symbols binanceus usdt
-    - npm run atat fetch-symbols bittrex btc
-    - npm run atat fetch-symbols binance_futures_coinm
-    - npm run atat fetch-symbols binance_futures_usdm usdt
-    - npm run atat fetch-symbols bybit_derivatives
     - npm run test:ci
 
 pages:

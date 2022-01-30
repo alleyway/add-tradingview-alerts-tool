@@ -33,8 +33,7 @@ export const fetchSymbolsMain = async (source, quoteAssetFilter, classificationF
         baseSymbols = baseSymbols.filter((sym) => sym.classification.toLowerCase() === classificationFilter.toLowerCase());
     }
     if (!baseSymbols || baseSymbols.length == 0) {
-        log.error("No symbols fetched or match filters!");
-        process.exit(1);
+        throw new Error("No symbols fetched or match filters!");
     }
     const rows = baseSymbols.map((baseSymbol) => {
         return {

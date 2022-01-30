@@ -17,7 +17,8 @@ module.exports = {
     coverageReporters: ["html", "text", "text-summary", "cobertura"],
     collectCoverageFrom: [
         "src/**/*.ts",
-        "!**/node_modules/**"
+        "!**/node_modules/**",
+        "!src/cli.ts"
     ],
     setupFiles: ["dotenv/config"],
     transform: {},

@@ -13,7 +13,7 @@ module.exports = {
     detectOpenHandles: false,
     moduleDirectories: ["node_modules", "src", "test"],
     testMatch: ["**/src/**/*.test.ts?(x)"],
-    testPathIgnorePatterns: ["node_modules/", "dist/", ".json"],
+    testPathIgnorePatterns: ["node_modules/", "dist/", ".json", "create-tradingview-alerts-home"],
     coverageReporters: ["html", "text", "text-summary", "cobertura"],
     collectCoverageFrom: [
         "src/**/*.ts",

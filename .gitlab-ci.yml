@@ -11,7 +11,9 @@ stages:
 
 build_image:
   stage: build
-  image: "docker:20.10.12-dind"
+  services:
+    - docker:dind
+  image: docker
   rules:
     - if: $CI_COMMIT_REF_NAME == "develop"
       changes:

@@ -14,6 +14,8 @@ build_image:
   services:
     - docker:dind
   image: docker
+  tags:
+    - docker
   rules:
     - if: $CI_COMMIT_REF_NAME == "develop"
       changes:

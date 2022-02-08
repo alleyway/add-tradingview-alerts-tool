@@ -45,7 +45,7 @@ build:
       - dist/
   script:
     - node -v
-    - npm install npm -g
+    - npm --version
     - npm ci
     - npm run build
 

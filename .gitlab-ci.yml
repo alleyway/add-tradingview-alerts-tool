@@ -1,7 +1,7 @@
 variables:
   FORCE_COLOR: '3'
 
-image: alleywayapps/atat-ci-image:1.0.0
+image: alleywayapps/atat-ci-image:v327
 
 stages:
   - build

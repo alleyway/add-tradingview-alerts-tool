@@ -9,8 +9,8 @@ FROM node:16.13.1-buster-slim
 
 WORKDIR /usr/app
 
-RUN  && npm install npm@8.4.1 -g \
-     apt-get update \
+RUN  npm install npm@8.4.1 -g \
+     && apt-get update \
      && apt-get install -y wget gnupg ca-certificates procps libxss1 \
      # We install Chrome to get all the OS level dependencies, but Chrome itself
      # is not actually used as it's packaged in the node puppeteer library.

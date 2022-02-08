@@ -8,6 +8,21 @@ stages:
   - test
   - deploy
 
+
+build_image:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "develop"
+      changes:
+        - Dockerfile
+  script:
+    - docker info
+    - docker build -t alleywayapps/atat-ci-image .
+    - docker image tag alleywayapps/atat-ci-image alleywayapps/atat-ci-image:latest
+    - docker image tag alleywayapps/atat-ci-image alleywayapps/atat-ci-image:v${CI_PIPELINE_IID}
+    - echo "${DOCKER_AUTH_TOKEN}" | docker login --username alleywayapps --password-stdin
+    - docker push --all-tags alleywayapps/atat-ci-image
+
 build:
   stage: build
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/

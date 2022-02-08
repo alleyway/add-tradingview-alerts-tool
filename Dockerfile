@@ -1,7 +1,7 @@
 # A minimal Docker image with Node and Puppeteer
 # Take care that this is deployed publicly
 # https://hub.docker.com/repository/docker/alleywayapps/atat-ci-image
-# 20220121
+# 20220208
 # Initially based upon:
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 #

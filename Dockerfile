@@ -9,7 +9,8 @@ FROM node:16.13.1-buster-slim
 
 WORKDIR /usr/app
 
-RUN  apt-get update \
+RUN  && npm install npm@8.4.1 -g \
+     apt-get update \
      && apt-get install -y wget gnupg ca-certificates procps libxss1 \
      # We install Chrome to get all the OS level dependencies, but Chrome itself
      # is not actually used as it's packaged in the node puppeteer library.
@@ -22,7 +23,6 @@ RUN  apt-get update \
 #     && apt-get install -y git \
      && apt-get install -y google-chrome-stable \
 #     && apt-get install -y traceroute \
-     && rm -rf /var/lib/apt/lists/* \
+     && rm -rf /var/lib/apt/lists/*
 #     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
-     && npm install npm@8.4.1 -g

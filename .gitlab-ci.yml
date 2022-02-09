@@ -23,7 +23,6 @@ build_image:
   script:
     - docker info
     - docker build -t alleywayapps/atat-ci-image .
-    - docker image tag alleywayapps/atat-ci-image alleywayapps/atat-ci-image:latest
     - docker image tag alleywayapps/atat-ci-image alleywayapps/atat-ci-image:v${CI_PIPELINE_IID}
     - echo "${DOCKER_AUTH_TOKEN}" | docker login --username alleywayapps --password-stdin
     - docker push --all-tags alleywayapps/atat-ci-image

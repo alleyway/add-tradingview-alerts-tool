@@ -264,7 +264,7 @@ export const fetchFtx = async (): Promise<MasterSymbol[]> => {
                 if (obj.tokenizedEquity) return null // eg. AAPL or AAPL-0326
 
                 if (obj.name.match(/-PERP$/)) {
-                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, Classification.SPOT)
+                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, Classification.FUTURES_PERPETUAL)
 
                 } else if (obj.name.match(/-\d{4}$/)) { //AVAX-0326
                     const [base, exp] = obj.name.split("-")

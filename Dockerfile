@@ -42,7 +42,8 @@ RUN apt-get update && apt-get install -y \
     libxrender1 \
     libxss1 \
     libxtst6 \
-    xdg-utils
+    xdg-utils \
+    fonts-wqy-zenhei
 
 RUN  npm install npm@8.4.1 -g \
      && apt-get install -y wget gnupg ca-certificates procps dumb-init \

@@ -68,7 +68,7 @@ test:
     reports:
       junit:
         - junit.xml
-      cobertura: coverage/cobertura-coverage.xml
+#      cobertura: coverage/cobertura-coverage.xml
   script:
     - echo "${ENV_FILE_CONTENTS}" >> .env
     - chmod 755 ./dist/cli.js

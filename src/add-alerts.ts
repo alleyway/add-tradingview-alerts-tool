@@ -175,16 +175,36 @@ export const addAlertsMain = async (configFileName) => {
 
     await minimizeFooterChartPanel(page) // otherwise pine script editor might capture focus
 
-
-    const parsedIntervals = config.tradingview?.interval?.toString().split(",") || ["none"]
-
-
     for (const row of symbolRows) {
+
+        const makeReplacements = (value) => {
+            if (value) {
+                let val = String(value) // sometimes YAML config parameters are numbers
+                for (const column of Object.keys(row)) {
+                    val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column])
+                }
+
+                const matches = val.match(/\{\{.*?\}\}/g)
+
+                if (matches) {
+                    for (const match of matches) {
+                        log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`)
+                    }
+                }
+
+                return val
+            } else {
+                return null
+            }
+        }
 
         if (isBlacklisted(row.symbol)) {
             log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol))
             continue
         }
+
+        const replacedIntervals = makeReplacements(config.tradingview?.interval)
+        const parsedIntervals = replacedIntervals.toString().split(",") || ["none"];
 
         for (const currentInterval of parsedIntervals) {
             log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Instrument: ${kleur.magenta(row.instrument || row.base)} Quote Asset: ${kleur.magenta(row.quote_asset || row.quote)}`)
@@ -200,26 +220,7 @@ export const addAlertsMain = async (configFileName) => {
 
             await waitForTimeout(2, "after navigating to ticker")
 
-            const makeReplacements = (value) => {
-                if (value) {
-                    let val = String(value) // sometimes YAML config parameters are numbers
-                    for (const column of Object.keys(row)) {
-                        val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column])
-                    }
 
-                    const matches = val.match(/\{\{.*?\}\}/g)
-
-                    if (matches) {
-                        for (const match of matches) {
-                            log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`)
-                        }
-                    }
-
-                    return val
-                } else {
-                    return null
-                }
-            }
 
             const singleAlertSettings: ISingleAlertSettings = {
                 name: makeReplacements(row.alert_name || row.name || alertConfig.name), // TODO: deprecate "name" one day

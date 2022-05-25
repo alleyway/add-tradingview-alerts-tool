@@ -7,7 +7,7 @@ describe('Fetch Symbols Test', () => {
         console.log("current working directory: " + process.cwd());
     });
     it('fetchSymbolsMain()', async () => {
-        const testSource = SOURCES_AVAILABLE[6];
+        const testSource = SOURCES_AVAILABLE[0];
         await fetchSymbolsMain(testSource);
         const filePath = path.join(process.cwd(), `${testSource}_symbols.csv`);
         console.log("reading file path: " + filePath);

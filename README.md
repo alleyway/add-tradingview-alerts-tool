@@ -36,13 +36,13 @@ Watch as this tool enters your TradingView alerts automatically.
 
 MacOS/Windows/Linux
 
-[Install NodeJS](https://nodejs.org/en/) (minimum version: 14.15.0)
+[Install NodeJS](https://nodejs.org/en/) (recommended: 16.x)
 
 ## Installation
 
 Open Terminal/PowerShell and run the following:
 
-    # make sure you're running at least node version 14.15.0
+    # make sure you're running at least node version 16
     node -v 
 
     # create your tradingview-alerts-home directory and/or upgrade version

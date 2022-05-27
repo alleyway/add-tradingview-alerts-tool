@@ -2,6 +2,7 @@ import YAML from "yaml";
 import path from "path";
 import { addAlertsMain } from "./add-alerts";
 import { readFileSync, writeFileSync, copyFileSync } from "fs";
+import { jest } from '@jest/globals';
 describe('Add Alerts Test', () => {
     jest.setTimeout(120000);
     it('addAlerts(configFile)', async () => {

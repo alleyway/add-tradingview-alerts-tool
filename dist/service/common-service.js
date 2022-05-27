@@ -1,6 +1,14 @@
 import log from "./log";
 import kleur from "kleur";
 import { readFile } from "fs/promises";
+/*
+    There's an annoying thing here where the experimental module flag has some breaking changes
+    that require import assertions starting from node 16.14
+
+    so the solution is to have this file(only) transpiled by babel
+ */
+// import manifest from "../manifest.json" assert {"type": "json"}
+// import manifest from "../manifest.json"
 // @ts-ignore
 const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
 let BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;

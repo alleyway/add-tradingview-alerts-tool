@@ -2,6 +2,9 @@
 module.exports = {
     rootDir: "./",
     globals: {
+        'ts-jest': {
+            useESM: true,
+        },
         __DEV__: true,
         __PROD__: false
     },
@@ -21,8 +24,13 @@ module.exports = {
         "!src/cli.ts"
     ],
     setupFiles: ["dotenv/config"],
-    transform: {},
+    transform: {
+        "common-service\\.ts": "babel-jest",
+    },
     extensionsToTreatAsEsm: [".ts"],
+    // moduleNameMapper: {
+    //     '^(\\.{1,2}/.*)\\.js$': '$1',
+    // },
     coverageThreshold: {
         // coverage strategy
         global: {

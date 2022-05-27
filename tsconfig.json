@@ -16,7 +16,7 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "types": ["node", "jest"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "compileOnSave": true,
   "include": [

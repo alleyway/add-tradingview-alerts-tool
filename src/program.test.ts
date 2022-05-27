@@ -1,4 +1,5 @@
 import program from "./program"
+import {jest} from '@jest/globals'
 
 describe('CLI Program Tests', () => {
 

@@ -223,6 +223,7 @@ export const fetchBittrex = async (): Promise<MasterSymbol[]> => {
             return new MasterSymbol(obj, BITTREX, obj.quoteCurrencySymbol, obj.baseCurrencySymbol, null, classification)
         } else {
             //logJson(obj, "Bittrex Discarded:")
+
             return null
         }
     }

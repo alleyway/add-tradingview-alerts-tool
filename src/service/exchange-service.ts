@@ -218,15 +218,15 @@ export const fetchKrakenFutures = async (): Promise<MasterSymbol[]> => {
 export const fetchBittrex = async (): Promise<MasterSymbol[]> => {
 
     const transformer = (obj) => {
-        if (obj.IsActive) {
-            const classification: ClassificationType = (obj.MarketCurrencyLong.match(/X\s(?:Long|Short)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT
-            return new MasterSymbol(obj, BITTREX, obj.MarketCurrency, obj.BaseCurrency, null, classification)
+        if (obj.status === "ONLINE") {
+            const classification: ClassificationType = (obj.baseCurrencySymbol.match(/X\s(?:BULL|BEAR)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT
+            return new MasterSymbol(obj, BITTREX, obj.quoteCurrencySymbol, obj.baseCurrencySymbol, null, classification)
         } else {
             //logJson(obj, "Bittrex Discarded:")
             return null
         }
     }
-    return fetchAndTransform("https://api.bittrex.com/api/v1.1/public/getmarkets", "result", transformer)
+    return fetchAndTransform("https://api.bittrex.com/v3/markets", null, transformer)
 }
 
 export const fetchCoinbase = async (): Promise<MasterSymbol[]> => {

@@ -6,7 +6,7 @@
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 #
 # can't use bullseye because it doesn't have libappindicator (unless installed manually)
-FROM node:16.15.0-buster-slim
+FROM node:16.15.1-buster-slim
 
 WORKDIR /usr/app
 
@@ -45,7 +45,7 @@ RUN apt-get update && apt-get install -y \
     xdg-utils \
     fonts-wqy-zenhei
 
-RUN  npm install npm@8.5.5 -g \
+RUN  npm install npm@8.12.1 -g \
      && apt-get install -y wget gnupg ca-certificates procps dumb-init \
      # We install Chrome to get all the OS level dependencies, but Chrome itself
      # is not actually used as it's packaged in the node puppeteer library.
@@ -62,7 +62,7 @@ RUN  npm install npm@8.5.5 -g \
 #     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
 # Install Puppeteer under /node_modules so it's available system-wide
-     && npm install -g puppeteer@14.1.1 --unsafe-perm=true
+     && npm install -g puppeteer@14.3.0 --unsafe-perm=true
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

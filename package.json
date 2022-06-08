@@ -41,14 +41,14 @@
   "version": "2.2.0",
   "dependencies": {
     "axios": "^0.27.2",
-    "commander": "^9.2.0",
+    "commander": "^9.3.0",
     "consola": "^2.15.3",
     "dotenv": "^16.0.1",
     "fast-csv": "^4.3.6",
     "kleur": "^4.1.4",
-    "pacote": "^13.5.0",
+    "pacote": "^13.6.0",
     "prompts": "^2.4.2",
-    "puppeteer": "^14.1.1",
+    "puppeteer": "^14.3.0",
     "regex-parser": "^2.2.11",
     "yaml": "^1.10.0"
   },

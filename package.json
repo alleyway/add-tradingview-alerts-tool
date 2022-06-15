@@ -48,7 +48,7 @@
     "kleur": "^4.1.4",
     "pacote": "^13.6.0",
     "prompts": "^2.4.2",
-    "puppeteer": "^14.3.0",
+    "puppeteer": "^14.4.0",
     "regex-parser": "^2.2.11",
     "yaml": "^1.10.0"
   },
@@ -56,14 +56,14 @@
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-typescript": "^7.17.12",
     "@release-it/bumper": "^4.0.0",
-    "@types/jest": "^27.5.1",
-    "@types/node": "^16.11.21",
+    "@types/jest": "^28.1.1",
+    "@types/node": "^16.11.41",
     "husky": "^8.0.1",
-    "jest": "^28.1.0",
+    "jest": "^28.1.1",
     "jest-junit": "^13.2.0",
     "release-it": "^15.0.0",
-    "ts-jest": "^28.0.3",
-    "typescript": "^4.7.2"
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7.3"
   },
   "private": false,
   "engines": {

@@ -9,7 +9,7 @@ describe('Add Alerts Test', () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
         const csvContent = `symbol,instrument,quote_asset,alert_name
-COINBASE:BTCUSD,BTC,USDT, "my CI test name"
+GLOBALPRIME:AUDUSD/0.70874+1/GLOBALPRIME:EURAUD*1.50676+1/GLOBALPRIME:GBPAUD*1.77447+GLOBALPRIME:AUDCHF/0.68181+GLOBALPRIME:AUDCAD/0.90837+GLOBALPRIME:AUDJPY/90.223+GLOBALPRIME:AUDNZD/1.09412,BTC,USDT, "my CI test name"
 `;
         writeFileSync(ciSymbolsCsvPath, csvContent, { encoding: "utf-8" });
         // copy blacklist file

@@ -261,8 +261,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 el.hover();
-                await waitForTimeout(.3);
+                await waitForTimeout(.4);
                 el.click();
+                await waitForTimeout(.3);
+                await page.evaluate(element => element.click(), el);
             }
         }
         if (!found)

@@ -125,6 +125,13 @@ export const addAlertsMain = async (configFileName) => {
     let page
     let accessDenied;
 
+    const styleOverride =  `
+            div[data-dialog-name="gopro"] {
+                display: none;
+                z-index: -1 !important;
+            }        
+        `;
+
     if (headless) {
         page = await browser.newPage();
 
@@ -133,12 +140,15 @@ export const addAlertsMain = async (configFileName) => {
             waitUntil: 'networkidle2'
         });
 
+        /* istanbul ignore next */
+        await page.addStyleTag({content: styleOverride})
 
         accessDenied = pageResponse.status() === 403
 
     } else {
         page = (await browser.pages())[0];
         await waitForTimeout(5, "let page load and see if access is denied")
+        await page.addStyleTag({content: styleOverride})
         /* istanbul ignore next */
         accessDenied = await page.evaluate(() => {
             return document.title.includes("Denied");
@@ -258,6 +268,6 @@ export const addAlertsMain = async (configFileName) => {
     }
 
 
-    await waitForTimeout(3)
+    await waitForTimeout(5, "waiting a little before closing")
     await browser.close()
 }

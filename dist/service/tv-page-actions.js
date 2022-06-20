@@ -262,11 +262,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 found = true;
                 el.hover();
                 await waitForTimeout(.4);
-                await page.evaluate(element => {
-                    if (element) {
-                        element.click();
-                    }
-                }, el);
+                el.click();
             }
         }
         if (!found)

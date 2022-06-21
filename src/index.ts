@@ -11,7 +11,7 @@ import {
     logout,
     fetchFirstXPath
 } from "./service/tv-page-actions"
-import {SelectionError} from "./classes";
+import {SelectionError, InvalidSymbolError} from "./classes";
 import {fetchSymbolsForSource} from "./service/exchange-service"
 import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service"
 import log from "./service/log"
@@ -39,6 +39,7 @@ export {
     log,
     isEnvEnabled,
     SelectionError,
+    InvalidSymbolError,
     convertIntervalForTradingView
 }
 

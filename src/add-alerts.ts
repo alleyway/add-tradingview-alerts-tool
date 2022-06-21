@@ -10,6 +10,7 @@ import kleur from "kleur";
 import {logBaseDelay} from "./service/common-service";
 import path from "path"
 import {mkdir} from "fs/promises";
+import {InvalidSymbolError} from "./classes";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any[]>((resolve, reject) => {
@@ -263,7 +264,15 @@ export const addAlertsMain = async (configFileName) => {
             }
 
 
-            await addAlert(page, singleAlertSettings)
+            try {
+                await addAlert(page, singleAlertSettings)
+            } catch (e) {
+                if (e instanceof InvalidSymbolError) {
+                    e.symbol = row.symbol
+                    await browser.close()
+                    throw e
+                }
+            }
         }
     }
 

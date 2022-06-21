@@ -30,4 +30,10 @@ export class SelectionError extends Error {
         this._pageUrl = value;
     }
 }
+export class InvalidSymbolError extends Error {
+    constructor() {
+        super(`Invalid Symbol`);
+        Object.setPrototypeOf(this, InvalidSymbolError.prototype);
+    }
+}
 //# sourceMappingURL=classes.js.map

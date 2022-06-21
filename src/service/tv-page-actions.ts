@@ -2,7 +2,7 @@ import {ISingleAlertSettings} from "../interfaces";
 import {waitForTimeout, isEnvEnabled} from "./common-service";
 import log from "./log"
 import kleur from "kleur";
-import {NoInputFoundError, SelectionError} from "../classes";
+import {InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
 
 // data-dialog-name="gopro"
@@ -412,7 +412,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     }
 
     if (invalidSymbolModal) {
-        throw Error("Invalid symbol")
+        throw new InvalidSymbolError()
     }
 
     await waitForTimeout(1, "after keyboard shortcut for new alert dialog");

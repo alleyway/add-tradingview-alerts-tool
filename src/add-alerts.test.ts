@@ -3,6 +3,7 @@ import path from "path";
 import {addAlertsMain} from "./add-alerts";
 import {readFileSync, writeFileSync, copyFileSync} from "fs";
 import {jest} from '@jest/globals'
+import {InvalidSymbolError} from "./classes";
 
 describe('Add Alerts Test', () => {
 
@@ -15,6 +16,7 @@ describe('Add Alerts Test', () => {
         const csvContent =
             `symbol,instrument,quote_asset,alert_name
 GLOBALPRIME:AUDUSD/0.70874+1/GLOBALPRIME:EURAUD*1.50676+1/GLOBALPRIME:GBPAUD*1.77447+GLOBALPRIME:AUDCHF/0.68181+GLOBALPRIME:AUDCAD/0.90837+GLOBALPRIME:AUDJPY/90.223+GLOBALPRIME:AUDNZD/1.09412,BTC,USDT, "my CI test name"
+ASDFTEST,ASDF,TEST, "creating invalid symbol"
 `
         writeFileSync(ciSymbolsCsvPath, csvContent, {encoding: "utf-8"});
 
@@ -47,7 +49,15 @@ GLOBALPRIME:AUDUSD/0.70874+1/GLOBALPRIME:EURAUD*1.50676+1/GLOBALPRIME:GBPAUD*1.7
 
         // launch browser and add alerts
 
-        await addAlertsMain(TEST_CONFIG_PATH)
+        try {
+            await addAlertsMain(TEST_CONFIG_PATH)
+        } catch (e) {
+            console.info("Catching invalid symbol")
+            if (e instanceof InvalidSymbolError) {
+                expect(e.symbol).toEqual("ASDFTEST")
+            }
+        }
+
 
 
 

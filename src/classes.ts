@@ -59,3 +59,11 @@ export class SelectionError extends Error {
         this._pageUrl = value;
     }
 }
+
+export class InvalidSymbolError extends Error {
+    public symbol: string;
+    constructor() {
+        super(`Invalid Symbol`)
+        Object.setPrototypeOf(this, InvalidSymbolError.prototype);
+    }
+}

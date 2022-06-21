@@ -22,3 +22,7 @@ export declare class SelectionError extends Error {
     set configName(value: string);
     set pageUrl(value: string);
 }
+export declare class InvalidSymbolError extends Error {
+    symbol: string;
+    constructor();
+}

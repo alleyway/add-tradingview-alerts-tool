@@ -130,6 +130,9 @@ export const navigateToSymbol = async (page, symbol) => {
     await waitForTimeout(.3);
     await page.keyboard.press('Escape');
     await waitForTimeout(.5);
+    await page.keyboard.type(`A`, { delay: 0.3 }); // just type a letter <- allows formulas to work, eg. 1/USD...
+    await page.keyboard.press('Backspace');
+    await waitForTimeout(.2);
     await page.keyboard.type(`${symbol}`, { delay: 0.3 });
     await waitForTimeout(.3);
     await page.keyboard.press('Enter');

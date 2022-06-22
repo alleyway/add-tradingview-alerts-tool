@@ -7,7 +7,7 @@ import {navigateToSymbol, login, minimizeFooterChartPanel} from "./service/tv-pa
 import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
-import {logBaseDelay} from "./service/common-service";
+import {logBaseDelay, styleOverride} from "./service/common-service";
 import path from "path"
 import {mkdir} from "fs/promises";
 import {InvalidSymbolError} from "./classes";
@@ -126,12 +126,6 @@ export const addAlertsMain = async (configFileName) => {
     let page
     let accessDenied;
 
-    const styleOverride =  `
-            div[data-dialog-name="gopro"] {
-                display: none;
-                z-index: -1 !important;
-            }        
-        `;
 
     if (headless) {
         page = await browser.newPage();

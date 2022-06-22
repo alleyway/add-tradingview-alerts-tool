@@ -52,3 +52,10 @@ export const isEnvEnabled = (envVariable: string) => {
 export const isDebug = () => {
     return isEnvEnabled(process.env.DEBUG)
 }
+
+export const styleOverride =  `
+            div[data-dialog-name="gopro"] {
+                display: none;
+                z-index: -1 !important;
+            }        
+        `;

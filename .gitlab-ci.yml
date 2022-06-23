@@ -2,7 +2,7 @@ variables:
   FORCE_COLOR: '3'
 
 #NOTE: to run locally and test an image try "gitlab-runner exec docker test"
-image: alleywayapps/atat-ci-image:v366
+image: alleywayapps/atat-ci-image:v384
 
 stages:
   - build
@@ -27,6 +27,7 @@ build_image:
     - docker image tag alleywayapps/atat-ci-image alleywayapps/atat-ci-image:v${CI_PIPELINE_IID}
     - echo "${DOCKER_AUTH_TOKEN}" | docker login --username alleywayapps --password-stdin
     - docker push --all-tags alleywayapps/atat-ci-image
+    - echo "GREAT! Now update ATAT's .gitlab-ci.yml file to use v${CI_PIPELINE_IID}"
 
 build:
   stage: build

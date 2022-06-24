@@ -317,14 +317,25 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             if (optionText === option && !found) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
-                el.hover()
                 await waitForTimeout(.4);
-                el.click()
+                await page.evaluate((text) => {
+                    const el = document.evaluate(`//*[@class='js-fire-rate-row']//div[@data-title='${text}']`,
+                        document,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue as HTMLElement
+                    el.click()
+
+                }, option)
                 await waitForTimeout(.4);
-                const selectedOption = await fetchFirstXPath(page, "//*[@class='js-fire-rate-row']//div[contains(@class,'i-active')]")
-                if (selectedOption.innerText !== option) {
-                    log.error(`expected selected option: ${option}, actually selected: ${selectedOption.innerText}`)
-                    throw Error("Option was not correctly selected...this may be a bug in the system")
+                const justClickedEl = await fetchFirstXPath(page, `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`)
+
+                const className = await page.evaluate(el => el.className, justClickedEl);
+
+                if (className.indexOf("i-active") < 0) {
+                    log.error("option element was clicked, but it's parent does not have the 'i-active' class assigned")
+                    throw Error("Unable to select option correctly...a bug in the system")
                 }
 
             }

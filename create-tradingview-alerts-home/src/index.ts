@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {readFile, writeFile, mkdir, access, chmod} from 'fs/promises';
+import {readFile, writeFile, mkdir, access, chmod, rm} from 'fs/promises';
 import path from "path"
 import prompts from "prompts";
 import kleur from "kleur";
@@ -84,6 +84,20 @@ const initializeMain = async () => {
         }
     }
 
+    const packageLockPath = path.join(dir, "package-lock.json")
+    if (await exists(packageLockPath)) {
+        console.info("Found package-lock.json...")
+        console.info("Deleting package-lock.json")
+        await rm(packageLockPath)
+    }
+
+    const nodeModulesPath = path.join(dir, "node_modules")
+    if (await exists(nodeModulesPath)) {
+        console.info("Found 'node_modules' directory")
+        console.info("Deleting 'node_modules' directory")
+        await rm(nodeModulesPath, {force: true, recursive: true})
+    }
+
     await copyFile("./init/HOWTO.txt", "HOWTO.txt")
     await copyFile("./init/blacklist.csv", "blacklist.csv")
     await copyFile("./init/config.init.yml", "config.yml")
@@ -98,8 +112,13 @@ const initializeMain = async () => {
 
     try {
         console.info(kleur.cyan("Installing dependencies"))
+        let command = "npm --loglevel=error"
 
-        execSync(`npm --loglevel=error --prefix '${response.dir === "new-dir" ? `./${TRADINGVIEW_ALERTS_HOME}` : "./"}' install`, {stdio: "inherit"})
+        if (response.dir === "new-dir"){
+            command += ` --prefix ./${TRADINGVIEW_ALERTS_HOME}`
+        }
+        command += " --no-package-lock update"
+        execSync(command, {stdio: "inherit"})
 
         console.log(`${kleur.green("Initialization complete!")} Edit the newly created ${kleur.yellow("config.yml")} file!`)
     } catch (e) {

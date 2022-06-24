@@ -320,6 +320,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 el.hover()
                 await waitForTimeout(.4);
                 el.click()
+                await waitForTimeout(.4);
+                const selectedOption = await fetchFirstXPath(page, "//*[@class='js-fire-rate-row']//div[contains(@class,'i-active')]")
+                if (selectedOption.innerText !== option) {
+                    log.error(`expected selected option: ${option}, actually selected: ${selectedOption.innerText}`)
+                    throw Error("Option was not correctly selected...this may be a bug in the system")
+                }
+
             }
         }
         if (!found) throw new SelectionError(option, foundOptions)

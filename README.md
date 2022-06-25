@@ -205,6 +205,11 @@ If the tool gets interrupted for some reason, you can remove the rows of already
 
 ## Troubleshooting
 
+* Windows users having issues executing because of a thing downloaded off the internet (contributed by a user)
+
+
+    powershell -executionpolicy ByPass -File .\atat.ps1 fetch-symbols binance -q usdt
+
 * Moving too fast for your connection speed? Try adjusting the delay option (default is 1000) 
 
 

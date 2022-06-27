@@ -37,7 +37,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
         config.tradingview.chartUrl = process.env.TEST_TRADINGVIEW_CHART
         config.tradingview.username = process.env.TEST_TRADINGVIEW_USERNAME
         config.tradingview.password = process.env.TEST_TRADINGVIEW_PASSWORD
-        config.alert.actions.webhook.enabled = false
+        config.alert.actions.webhook.enabled = true
 
         //config.tradingview.interval = "1h, 4h"
 

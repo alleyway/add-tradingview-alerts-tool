@@ -264,12 +264,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 await waitForTimeout(.4);
+                /* istanbul ignore next */
                 await page.evaluate((text) => {
                     const el = document.evaluate(`//*[@class='js-fire-rate-row']//div[@data-title='${text}']`, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
                     el.click();
                 }, option);
                 await waitForTimeout(.4);
                 const justClickedEl = await fetchFirstXPath(page, `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`);
+                /* istanbul ignore next */
                 const className = await page.evaluate(el => el.className, justClickedEl);
                 if (className.indexOf("i-active") < 0) {
                     log.error("option element was clicked, but it's parent does not have the 'i-active' class assigned");
@@ -361,5 +363,6 @@ export const addAlert = async (page, singleAlertSettings) => {
     await clickSubmit(page);
     await waitForTimeout(2);
     await clickContinueIfWarning(page);
+    await waitForTimeout(2, "waiting a little after adding");
 };
 //# sourceMappingURL=tv-page-actions.js.map

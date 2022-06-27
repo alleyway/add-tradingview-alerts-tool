@@ -4,6 +4,7 @@ import log from "./log"
 import kleur from "kleur";
 import {InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
+import fs, {writeFileSync} from "fs";
 
 // data-dialog-name="gopro"
 
@@ -15,6 +16,8 @@ export const fetchFirstXPath = async (page, selector: string, timeout = 20000, s
         await page.waitForXPath(selector, {timeout})
     } catch (e) {
         if (screenshotOnFail) await takeScreenshot(page, "waitForXPathFailed")
+        const html = await page.content();
+
         throw(e)
     }
     const elements = await page.$x(selector)
@@ -24,11 +27,13 @@ export const fetchFirstXPath = async (page, selector: string, timeout = 20000, s
 
 export const takeScreenshot = async (page, name: string = "unnamed") => {
     if (screenshot) {
-        const screenshotPath = `screenshot_${new Date().getTime()}_${name}.png`
+        const screenshotPath = `screenshot_${new Date().getTime()}_${name}`
         log.trace(`saving screenshot: ${screenshotPath}`)
         await page.screenshot({
-            path: screenshotPath,
+            path: screenshotPath + ".png",
         });
+        const html = await page.content()
+        writeFileSync(screenshotPath + ".xml", html, {encoding: "utf-8"})
     }
 }
 

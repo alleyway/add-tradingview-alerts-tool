@@ -15,6 +15,8 @@
 
 👋 *NOTE: We have a service that automates this tool on secured, virtual servers. Become a beta tester at [alertzmanager.io](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)*
 
+[![Alertz Manager Banner](./alertzmanager_banner.svg)](https://alertzmanager.io/?utm_source=github&utm_medium=link&utm_campaign=github_link&utm_content=README_top)
+
 
 ## Why This Project Exists
 Trading platforms (such as [3Commas](https://3commas.io/) and [Alertatron](https://alertatron.com/)) allow automated trades based on **custom TradingView alerts** which can be pinged using webhook URLs to execute trades. 

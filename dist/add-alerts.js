@@ -106,6 +106,7 @@ export const addAlertsMain = async (configFileName) => {
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
             waitUntil: 'networkidle2'
         });
+        await waitForTimeout(5, "let page load and see if access is denied");
         /* istanbul ignore next */
         await page.addStyleTag({ content: styleOverride });
         accessDenied = pageResponse.status() === 403;
@@ -202,6 +203,7 @@ export const addAlertsMain = async (configFileName) => {
                 }
             }
             try {
+                await page.addStyleTag({ content: styleOverride });
                 await addAlert(page, singleAlertSettings);
             }
             catch (e) {

@@ -55,7 +55,7 @@ export const isDebug = () => {
 
 export const styleOverride =  `
             div[data-dialog-name="gopro"] {
-                display: none;
+                display: none !important;
                 z-index: -1 !important;
             }        
         `;

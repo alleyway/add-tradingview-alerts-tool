@@ -62,7 +62,7 @@ tradingview:
   # The chart which has the indicator you'd like to use
   chartUrl: https://www.tradingview.com/chart/WS5uK1l5/
   # (optional) set the chart interval before adding symbols, otherwise interval of last saved chart is used
-  # examples: 1s | 30s | 1m | 15m | 1h | 1D | 1M      # NOTE: '1h,4h' to add alerts across multiple intervals
+  # examples: 1s | 30s | 1m | 15m | 1H | 1D | 1W      # NOTE: '1H,4H' to add alerts across multiple intervals
   interval: 4h
   # Optionally supply login details or login manually once and restart script
   #username: 

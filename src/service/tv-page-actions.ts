@@ -5,6 +5,7 @@ import kleur from "kleur";
 import {InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
 import fs, {writeFileSync} from "fs";
+import {TimeoutError} from "puppeteer";
 
 // data-dialog-name="gopro"
 
@@ -337,7 +338,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         const selector = "//*[@class='js-fire-rate-row']//div[@data-title]"
 
-        await page.waitForXPath(selector, {timeout: 8000})
+        try {
+            await page.waitForXPath(selector, {timeout: 8000})
+        } catch (e) {
+            if (e instanceof TimeoutError) {
+                throw new Error(`No fire rate 'option' available, but one was specified in alert configuration: ${option}`)
+            } else {
+                throw e
+            }
+        }
+
         const elements = await page.$x(selector)
 
         let found = false

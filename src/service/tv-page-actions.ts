@@ -15,7 +15,7 @@ export const isXpathVisible = async (page, selector: string, screenShotOnFail = 
     log.trace("..isXpathVisible?")
     let element
     try {
-        element = await fetchFirstXPath(page, selector, 200, screenShotOnFail)
+        element = await fetchFirstXPath(page, selector, 500, screenShotOnFail)
     } catch (e) {
     }
     const visible = !!element

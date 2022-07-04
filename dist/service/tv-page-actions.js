@@ -10,7 +10,7 @@ export const isXpathVisible = async (page, selector, screenShotOnFail = false) =
     log.trace("..isXpathVisible?");
     let element;
     try {
-        element = await fetchFirstXPath(page, selector, 200, screenShotOnFail);
+        element = await fetchFirstXPath(page, selector, 500, screenShotOnFail);
     }
     catch (e) {
     }

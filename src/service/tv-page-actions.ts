@@ -10,6 +10,19 @@ import fs, {writeFileSync} from "fs";
 
 const screenshot = isEnvEnabled(process.env.SCREENSHOT)
 
+
+export const isXpathVisible = async (page, selector: string, screenShotOnFail = false) => {
+    log.trace("..isXpathVisible?")
+    let element
+    try {
+        element = await fetchFirstXPath(page, selector, 200, screenShotOnFail)
+    } catch (e) {
+    }
+    const visible = !!element
+    log.trace(`..isXpathVisible: ${visible}`)
+    return visible
+}
+
 export const fetchFirstXPath = async (page, selector: string, timeout = 20000, screenshotOnFail = true) => {
     log.trace(kleur.gray(`...selector: ${kleur.yellow(selector)}`))
     try {
@@ -49,7 +62,7 @@ export const minimizeFooterChartPanel = async (page) => {
     }
 }
 
-export const convertIntervalForTradingView  = (interval: string) => {
+export const convertIntervalForTradingView = (interval: string) => {
     return interval.split("").filter((val) => val !== "m").join("")
 }
 
@@ -165,15 +178,25 @@ export const logout = async (page) => {
 export const navigateToSymbol = async (page, symbol: string) => {
 
     await page.keyboard.press('Escape')
-    await waitForTimeout(.3);
+    await waitForTimeout(.5);
     await page.keyboard.press('Escape')
     await waitForTimeout(.5);
     await page.keyboard.type(`A`, {delay: 0.3}) // just type a letter <- allows formulas to work, eg. 1/USD...
     await page.keyboard.press('Backspace');
-    await waitForTimeout(.2);
+    await waitForTimeout(.3);
     await page.keyboard.type(`${symbol}`, {delay: 0.3})
     await waitForTimeout(.3);
     await page.keyboard.press('Enter')
+
+    await waitForTimeout(1.5);
+
+    // now see if it's invalid symbol, could be multi-chart so check active
+    if (await isXpathVisible(page, "//div[contains(@class,'chart-container') and contains(@class,' active')]//*/div[contains(@class, 'invalidSymbol') and not(contains(@class, 'js-hidden'))]")) {
+        log.error("navigated to an invalid symbol")
+        const invalidSymbolError = new InvalidSymbolError()
+        invalidSymbolError.symbol = symbol
+        throw invalidSymbolError
+    }
 }
 
 const isMatch = (needle: string, haystack: string) => {
@@ -261,7 +284,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                             const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000)
 
                             /* istanbul ignore next */
-                            const readOnlyValue = await page.evaluate((el) => el.value , valueReadonlyInput)
+                            const readOnlyValue = await page.evaluate((el) => el.value, valueReadonlyInput)
 
                             if (readOnlyValue === conditionOrInputValue) {
                                 log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`)
@@ -424,26 +447,45 @@ export const clickContinueIfWarning = async (page) => {
 
 
 export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) => {
-    log.trace("addAlert()...pressing shortcut key")
-    await page.keyboard.down('AltLeft')
-    await page.keyboard.press("a")
-    await page.keyboard.up('AltLeft')
+    log.trace("addAlert()")
 
-    await waitForTimeout(1, "after keyboard shortcut for new alert dialog");
+    const typeShortcutForAlertDialog = async () => {
+        log.trace("addAlert()...pressing shortcut key")
 
-    let invalidSymbolModal
-
-    try {
-        invalidSymbolModal = await fetchFirstXPath(page, "//*[text()=\"Can't create alert on invalid symbol\"]", 200, false)
-    } catch (e) {
-
+        await page.keyboard.press('Escape')
+        await waitForTimeout(.5);
+        await page.keyboard.press('Escape')
+        await waitForTimeout(.5);
+        await page.keyboard.down('AltLeft')
+        await page.keyboard.press("a")
+        await page.keyboard.up('AltLeft')
+        await waitForTimeout(.5, "after keyboard shortcut for new alert dialog");
     }
 
-    if (invalidSymbolModal) {
-        throw new InvalidSymbolError()
+    await typeShortcutForAlertDialog()
+
+
+
+    log.trace("..make sure we're showing the alert dialog")
+
+    const isNotShowingAlertDialog = async () => {
+        return !(await isXpathVisible(page, "//div[contains(@class, 'tv-alert-dialog')]"))
     }
 
-    await waitForTimeout(1, "after keyboard shortcut for new alert dialog");
+    if (await isNotShowingAlertDialog()) {
+        log.warn("NOT showing alert dialog! maybe invalid symbol?")
+        if (await isXpathVisible(page, "//*[text()=\"Can't create alert on invalid symbol\"]")) {
+            log.error("Looks like we tried to create alert on invalid symbol, throwing error")
+            throw new InvalidSymbolError()
+        }
+        log.trace("Attempting to show alert dialog again...")
+        await typeShortcutForAlertDialog()
+
+        if (await isNotShowingAlertDialog()) {
+            await takeScreenshot(page, "unable_to_bring_up_alert_dialog")
+            throw new Error("Unable to bring up alert dialog(system error)")
+        }
+    }
 
     await configureSingleAlertSettings(page, singleAlertSettings)
 

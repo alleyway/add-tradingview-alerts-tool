@@ -143,76 +143,76 @@ export const addAlertsMain = async (configFileName) => {
     };
     await minimizeFooterChartPanel(page); // otherwise pine script editor might capture focus
     for (const row of symbolRows) {
-        const makeReplacements = (value) => {
-            if (value) {
-                let val = String(value); // sometimes YAML config parameters are numbers
-                for (const column of Object.keys(row)) {
-                    val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column]);
+        try {
+            const makeReplacements = (value) => {
+                if (value) {
+                    let val = String(value); // sometimes YAML config parameters are numbers
+                    for (const column of Object.keys(row)) {
+                        val = val.replace(new RegExp(`{{${column}}}`, "g"), row[column]);
+                    }
+                    const matches = val.match(/\{\{.*?\}\}/g);
+                    if (matches) {
+                        for (const match of matches) {
+                            log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`);
+                        }
+                    }
+                    return val;
                 }
-                const matches = val.match(/\{\{.*?\}\}/g);
-                if (matches) {
-                    for (const match of matches) {
-                        log.warn(`No key in .csv matches '${match}' - but might be using TradingView token-replacement`);
+                else {
+                    return null;
+                }
+            };
+            if (isBlacklisted(row.symbol)) {
+                log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol));
+                continue;
+            }
+            const replacedIntervals = makeReplacements(config.tradingview?.interval);
+            const parsedIntervals = replacedIntervals.toString().split(",") || ["none"];
+            for (const currentInterval of parsedIntervals) {
+                log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Instrument: ${kleur.magenta(row.instrument || row.base)} Quote Asset: ${kleur.magenta(row.quote_asset || row.quote)}`);
+                if (currentInterval !== "none") {
+                    await configureInterval(currentInterval.trim(), page);
+                    await waitForTimeout(3, "after changing the interval");
+                }
+                await waitForTimeout(2, "let things settle from processing last alert");
+                await navigateToSymbol(page, row.symbol);
+                await waitForTimeout(2, "after navigating to ticker");
+                const singleAlertSettings = {
+                    name: makeReplacements(row.alert_name || row.name || alertConfig.name),
+                    message: makeReplacements(alertConfig.message),
+                    condition: {
+                        primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
+                        primaryRight: makeReplacements(alertConfig.condition.primaryRight),
+                        secondary: makeReplacements(alertConfig.condition.secondary),
+                        tertiaryLeft: makeReplacements(alertConfig.condition.tertiaryLeft),
+                        tertiaryRight: makeReplacements(alertConfig.condition.tertiaryRight),
+                        quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
+                        quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
+                    },
+                    option: makeReplacements(alertConfig.option),
+                };
+                if (alertConfig.actions) {
+                    singleAlertSettings.actions = {
+                        notifyOnApp: alertConfig.actions.notifyOnApp,
+                        showPopup: alertConfig.actions.showPopup,
+                        sendEmail: alertConfig.actions.sendEmail,
+                    };
+                    if (alertConfig.actions.webhook) {
+                        singleAlertSettings.actions.webhook = {
+                            enabled: alertConfig.actions.webhook.enabled,
+                            url: makeReplacements(alertConfig.actions.webhook.url)
+                        };
                     }
                 }
-                return val;
-            }
-            else {
-                return null;
-            }
-        };
-        if (isBlacklisted(row.symbol)) {
-            log.warn(`Not adding blacklisted symbol: `, kleur.yellow(row.symbol));
-            continue;
-        }
-        const replacedIntervals = makeReplacements(config.tradingview?.interval);
-        const parsedIntervals = replacedIntervals.toString().split(",") || ["none"];
-        for (const currentInterval of parsedIntervals) {
-            log.info(`Adding symbol: ${kleur.magenta(row.symbol)} | Instrument: ${kleur.magenta(row.instrument || row.base)} Quote Asset: ${kleur.magenta(row.quote_asset || row.quote)}`);
-            if (currentInterval !== "none") {
-                await configureInterval(currentInterval.trim(), page);
-                await waitForTimeout(3, "after changing the interval");
-            }
-            await waitForTimeout(2, "let things settle from processing last alert");
-            await navigateToSymbol(page, row.symbol);
-            await waitForTimeout(2, "after navigating to ticker");
-            const singleAlertSettings = {
-                name: makeReplacements(row.alert_name || row.name || alertConfig.name),
-                message: makeReplacements(alertConfig.message),
-                condition: {
-                    primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
-                    primaryRight: makeReplacements(alertConfig.condition.primaryRight),
-                    secondary: makeReplacements(alertConfig.condition.secondary),
-                    tertiaryLeft: makeReplacements(alertConfig.condition.tertiaryLeft),
-                    tertiaryRight: makeReplacements(alertConfig.condition.tertiaryRight),
-                    quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
-                    quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
-                },
-                option: makeReplacements(alertConfig.option),
-            };
-            if (alertConfig.actions) {
-                singleAlertSettings.actions = {
-                    notifyOnApp: alertConfig.actions.notifyOnApp,
-                    showPopup: alertConfig.actions.showPopup,
-                    sendEmail: alertConfig.actions.sendEmail,
-                };
-                if (alertConfig.actions.webhook) {
-                    singleAlertSettings.actions.webhook = {
-                        enabled: alertConfig.actions.webhook.enabled,
-                        url: makeReplacements(alertConfig.actions.webhook.url)
-                    };
-                }
-            }
-            try {
                 await page.addStyleTag({ content: styleOverride });
                 await addAlert(page, singleAlertSettings);
             }
-            catch (e) {
-                if (e instanceof InvalidSymbolError) {
-                    e.symbol = row.symbol;
-                    await browser.close();
-                    throw e;
-                }
+        }
+        catch (e) {
+            if (e instanceof InvalidSymbolError) {
+                e.symbol = row.symbol;
+                await browser.close();
+                throw e;
             }
         }
     }

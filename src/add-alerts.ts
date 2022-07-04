@@ -3,7 +3,7 @@ import {readFileSync, createReadStream, accessSync, existsSync, constants} from 
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout, isEnvEnabled} from "./index";
-import {navigateToSymbol, login, minimizeFooterChartPanel} from "./service/tv-page-actions";
+import {navigateToSymbol, login, minimizeFooterChartPanel, checkForInvalidSymbol} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
@@ -225,6 +225,7 @@ export const addAlertsMain = async (configFileName) => {
                 await waitForTimeout(2, "let things settle from processing last alert")
 
                 await navigateToSymbol(page, row.symbol)
+                await checkForInvalidSymbol(page, row.symbol)
 
                 await waitForTimeout(2, "after navigating to ticker")
 

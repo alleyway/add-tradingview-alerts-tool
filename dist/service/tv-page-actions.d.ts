@@ -7,6 +7,7 @@ export declare const convertIntervalForTradingView: (interval: string) => string
 export declare const configureInterval: (interval: string, page: any) => Promise<void>;
 export declare const login: (page: any, username: any, pass: any) => Promise<void>;
 export declare const logout: (page: any) => Promise<void>;
+export declare const checkForInvalidSymbol: (page: any, symbol: string) => Promise<void>;
 export declare const navigateToSymbol: (page: any, symbol: string) => Promise<void>;
 export declare const configureSingleAlertSettings: (page: any, singleAlertSettings: ISingleAlertSettings) => Promise<void>;
 export declare const clickSubmit: (page: any) => Promise<void>;

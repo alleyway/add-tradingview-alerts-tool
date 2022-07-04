@@ -175,6 +175,17 @@ export const logout = async (page) => {
     });
 }
 
+export const checkForInvalidSymbol = async (page, symbol: string)  => {
+    // this function could be used when navigating by typing or by the url using ?symbol=ASDF
+    // now see if it's invalid symbol, could be multi-chart so check active
+    if (await isXpathVisible(page, "//div[contains(@class,'chart-container') and contains(@class,' active')]//*/div[contains(@class, 'invalidSymbol') and not(contains(@class, 'js-hidden'))]")) {
+        log.error("currently showing an invalid symbol")
+        const invalidSymbolError = new InvalidSymbolError()
+        invalidSymbolError.symbol = symbol
+        throw invalidSymbolError
+    }
+}
+
 export const navigateToSymbol = async (page, symbol: string) => {
 
     await page.keyboard.press('Escape')
@@ -190,13 +201,6 @@ export const navigateToSymbol = async (page, symbol: string) => {
 
     await waitForTimeout(1.5);
 
-    // now see if it's invalid symbol, could be multi-chart so check active
-    if (await isXpathVisible(page, "//div[contains(@class,'chart-container') and contains(@class,' active')]//*/div[contains(@class, 'invalidSymbol') and not(contains(@class, 'js-hidden'))]")) {
-        log.error("navigated to an invalid symbol")
-        const invalidSymbolError = new InvalidSymbolError()
-        invalidSymbolError.symbol = symbol
-        throw invalidSymbolError
-    }
 }
 
 const isMatch = (needle: string, haystack: string) => {

@@ -9,7 +9,8 @@ import {
     navigateToSymbol,
     login,
     logout,
-    fetchFirstXPath
+    fetchFirstXPath,
+    checkForInvalidSymbol
 } from "./service/tv-page-actions"
 import {SelectionError, InvalidSymbolError} from "./classes";
 import {fetchSymbolsForSource} from "./service/exchange-service"
@@ -40,6 +41,7 @@ export {
     isEnvEnabled,
     SelectionError,
     InvalidSymbolError,
-    convertIntervalForTradingView
+    convertIntervalForTradingView,
+    checkForInvalidSymbol
 }
 

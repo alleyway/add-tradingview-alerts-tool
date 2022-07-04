@@ -4,7 +4,6 @@ import kleur from "kleur";
 import { InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes";
 import RegexParser from "regex-parser";
 import { writeFileSync } from "fs";
-import { TimeoutError } from "puppeteer";
 // data-dialog-name="gopro"
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);
 export const isXpathVisible = async (page, selector, screenShotOnFail = false) => {
@@ -284,7 +283,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             await page.waitForXPath(selector, { timeout: 8000 });
         }
         catch (e) {
-            if (e instanceof TimeoutError) {
+            if (e.constructor.name === "TimeoutError") {
                 throw new Error(`No fire rate 'option' available, but one was specified in alert configuration: ${option}`);
             }
             else {

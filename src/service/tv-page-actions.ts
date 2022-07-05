@@ -12,13 +12,9 @@ const screenshot = isEnvEnabled(process.env.SCREENSHOT)
 
 
 export const isXpathVisible = async (page, selector: string, screenShotOnFail = false) => {
-    log.trace("..isXpathVisible?")
-    let element
-    try {
-        element = await fetchFirstXPath(page, selector, 500, screenShotOnFail)
-    } catch (e) {
-    }
-    const visible = !!element
+    log.trace(kleur.gray(`...isXpathVisible?: ${kleur.yellow(selector)}`))
+    const elements = await page.$x(selector)
+    const visible = elements.length > 0
     log.trace(`..isXpathVisible: ${visible}`)
     return visible
 }

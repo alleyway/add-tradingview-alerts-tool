@@ -407,11 +407,17 @@ export const addAlert = async (page, singleAlertSettings) => {
             log.error("Looks like we tried to create alert on invalid symbol, throwing error");
             throw new InvalidSymbolError();
         }
-        log.trace("Attempting to show alert dialog again...");
-        await typeShortcutForAlertDialog();
-        if (await isNotShowingAlertDialog()) {
-            await takeScreenshot(page, "unable_to_bring_up_alert_dialog");
-            throw new Error("Unable to bring up alert dialog(system error)");
+        const MAX_TRIES = 3;
+        let retryCount = 1;
+        while ((await isNotShowingAlertDialog()) && retryCount <= MAX_TRIES + 1) {
+            if (retryCount == MAX_TRIES) {
+                await takeScreenshot(page, "unable_to_bring_up_alert_dialog");
+                throw new Error("Unable to bring up alert dialog (system error)");
+            }
+            log.trace("Attempting to show alert dialog again...");
+            await waitForTimeout(retryCount, "pausing a little");
+            await typeShortcutForAlertDialog();
+            retryCount += 1;
         }
     }
     await configureSingleAlertSettings(page, singleAlertSettings);

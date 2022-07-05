@@ -4,7 +4,7 @@ import log from "./log"
 import kleur from "kleur";
 import {InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
-import fs, {writeFileSync} from "fs";
+import {writeFileSync} from "fs";
 
 // data-dialog-name="gopro"
 
@@ -279,17 +279,23 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                             if (!readOnlyInputQueries[key]) throw (new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`))
                             log.trace(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`)
 
-                            const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000)
+                            try {
+                                const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000)
+                                /* istanbul ignore next */
+                                const readOnlyValue = await page.evaluate((el) => el.value, valueReadonlyInput)
 
-                            /* istanbul ignore next */
-                            const readOnlyValue = await page.evaluate((el) => el.value, valueReadonlyInput)
-
-                            if (readOnlyValue === conditionOrInputValue) {
-                                log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`)
-                            } else {
-                                throw new Error(`Read only input value for ${key} is ${readOnlyValue}, but expected ${conditionOrInputValue}`)
+                                if (readOnlyValue === conditionOrInputValue) {
+                                    log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`)
+                                } else {
+                                    throw new Error(`Read only input value for ${key} is ${readOnlyValue}, but expected ${conditionOrInputValue}`)
+                                }
+                            } catch (readOnlyInputError) {
+                                if (readOnlyInputError.constructor.name === "TimeoutError") {
+                                    throw new NoInputFoundError(`Unable to find any inputs for ${key} for configured value: ${conditionOrInputValue}`)
+                                } else {
+                                    throw readOnlyInputError
+                                }
                             }
-
 
                         } else {
                             throw inputError

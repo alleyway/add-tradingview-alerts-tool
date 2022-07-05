@@ -241,7 +241,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                             }
                             catch (readOnlyInputError) {
                                 if (readOnlyInputError.constructor.name === "TimeoutError") {
-                                    throw new NoInputFoundError(`Unable to find any inputs for ${key} for configured value: ${conditionOrInputValue}`);
+                                    throw new NoInputFoundError(`Unable to find any inputs for '${key}' for configured value: '${conditionOrInputValue}'`);
                                 }
                                 else {
                                     throw readOnlyInputError;

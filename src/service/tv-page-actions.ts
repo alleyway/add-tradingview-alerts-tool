@@ -25,8 +25,6 @@ export const fetchFirstXPath = async (page, selector: string, timeout = 20000, s
         await page.waitForXPath(selector, {timeout})
     } catch (e) {
         if (screenshotOnFail) await takeScreenshot(page, "waitForXPathFailed")
-        const html = await page.content();
-
         throw(e)
     }
     const elements = await page.$x(selector)

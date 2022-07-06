@@ -43,7 +43,8 @@ RUN apt-get update && apt-get install -y \
     libxss1 \
     libxtst6 \
     xdg-utils \
-    fonts-wqy-zenhei
+    fonts-wqy-zenhei \
+    fonts-noto-color-emoji
 
 RUN  npm install npm@8.13.2 -g \
      && apt-get install -y wget gnupg ca-certificates procps dumb-init \

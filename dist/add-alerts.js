@@ -1,14 +1,11 @@
 import * as csv from 'fast-csv';
-import { readFileSync, createReadStream, accessSync, existsSync, constants } from "fs";
-import puppeteer from "puppeteer";
+import { readFileSync, createReadStream, existsSync } from "fs";
 import YAML from "yaml";
 import { configureInterval, addAlert, waitForTimeout, isEnvEnabled } from "./index";
-import { navigateToSymbol, login, minimizeFooterChartPanel, checkForInvalidSymbol } from "./service/tv-page-actions";
+import { navigateToSymbol, login, minimizeFooterChartPanel, checkForInvalidSymbol, launchBrowser } from "./service/tv-page-actions";
 import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
 import { logBaseDelay, styleOverride } from "./service/common-service";
-import path from "path";
-import { mkdir } from "fs/promises";
 import { InvalidSymbolError } from "./classes";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
@@ -80,25 +77,7 @@ export const addAlertsMain = async (configFileName) => {
         process.exit(1);
     }
     const { alert: alertConfig } = config;
-    const userDataDir = path.join(process.cwd(), "user_data"); // where chrome will store it's stuff
-    try {
-        accessSync(userDataDir, constants.W_OK);
-    }
-    catch {
-        log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`);
-        await mkdir(userDataDir);
-    }
-    const browser = await puppeteer.launch({
-        headless: headless, userDataDir,
-        defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
-        args: ['--no-sandbox',
-            '--enable-experimental-web-platform-features',
-            '--disable-setuid-sandbox',
-            headless ? "--headless" : "",
-            headless ? "" : `--app=${config.tradingview.chartUrl}#signin`,
-            '--window-size=1920,1080' // otherwise headless doesn't work
-        ]
-    });
+    const browser = await launchBrowser(headless, `${config.tradingview.chartUrl}#signin`);
     let page;
     let accessDenied;
     if (headless) {

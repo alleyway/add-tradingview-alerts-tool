@@ -10,11 +10,13 @@ import {
     login,
     logout,
     fetchFirstXPath,
-    checkForInvalidSymbol
+    checkForInvalidSymbol,
+    launchBrowser,
+    isXpathVisible
 } from "./service/tv-page-actions"
 import {SelectionError, InvalidSymbolError} from "./classes";
 import {fetchSymbolsForSource} from "./service/exchange-service"
-import {waitForTimeout, atatVersion, isEnvEnabled} from "./service/common-service"
+import {waitForTimeout, atatVersion, isEnvEnabled, styleOverride} from "./service/common-service"
 import log from "./service/log"
 
 import {IBaseSymbol, ISingleAlertSettings, ClassificationType} from "./interfaces"
@@ -23,7 +25,7 @@ import {MasterSymbol} from "./classes";
 export type {IBaseSymbol, ISingleAlertSettings, MasterSymbol, ClassificationType}
 
 export {
-
+    launchBrowser,
     fetchFirstXPath,
     clickContinueIfWarning,
     takeScreenshot,
@@ -42,6 +44,8 @@ export {
     SelectionError,
     InvalidSymbolError,
     convertIntervalForTradingView,
-    checkForInvalidSymbol
+    checkForInvalidSymbol,
+    styleOverride,
+    isXpathVisible
 }
 

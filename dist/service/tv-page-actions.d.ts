@@ -1,10 +1,12 @@
 import { ISingleAlertSettings } from "../interfaces";
+import { Browser } from "puppeteer";
 export declare const isXpathVisible: (page: any, selector: string, screenShotOnFail?: boolean) => Promise<boolean>;
 export declare const fetchFirstXPath: (page: any, selector: string, timeout?: number, screenshotOnFail?: boolean) => Promise<any>;
 export declare const takeScreenshot: (page: any, name?: string) => Promise<void>;
 export declare const minimizeFooterChartPanel: (page: any) => Promise<void>;
 export declare const convertIntervalForTradingView: (interval: string) => string;
 export declare const configureInterval: (interval: string, page: any) => Promise<void>;
+export declare const launchBrowser: (headless: boolean, url?: string) => Promise<Browser>;
 export declare const login: (page: any, username: any, pass: any) => Promise<void>;
 export declare const logout: (page: any) => Promise<void>;
 export declare const checkForInvalidSymbol: (page: any, symbol: string) => Promise<void>;

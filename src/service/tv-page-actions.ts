@@ -4,7 +4,10 @@ import log from "./log"
 import kleur from "kleur";
 import {InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
-import {writeFileSync} from "fs";
+import {accessSync, constants, writeFileSync} from "fs";
+import puppeteer, {Browser} from "puppeteer";
+import path from "path";
+import {mkdir} from "fs/promises";
 
 // data-dialog-name="gopro"
 
@@ -114,13 +117,37 @@ const clickInputAndDelete = async (page, inputElement) => {
 
     /* istanbul ignore next */
     await page.evaluate((el) => el.value = "", inputElement)
+}
 
-    // await inputElement.click({clickCount: 1})
-    // await waitForTimeout(.2);
-    // await inputElement.click({clickCount: 3})
-    // await waitForTimeout(.2);
-    // await inputElement.press('Backspace');
-    // await waitForTimeout(.2);
+export const launchBrowser = async (headless: boolean, url?: string) : Promise<Browser> => {
+
+    const userDataDir = path.join(process.cwd(), "user_data") // where chrome will store it's stuff
+
+    try {
+        accessSync(userDataDir, constants.W_OK)
+    } catch {
+        log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`)
+        await mkdir(userDataDir)
+    }
+
+    return puppeteer.launch({
+        headless: headless, userDataDir,
+        defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
+        args: ['--no-sandbox',
+            '--enable-experimental-web-platform-features', // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            // '--single-process', // will cause it to die
+            '--disable-gpu',
+            headless ? "--headless" : "",
+            headless && !url ? "" : `--app=${url}`,
+            '--window-size=1920,1080', // otherwise headless doesn't work
+            // '--incognito'
+        ]
+    })
 }
 
 

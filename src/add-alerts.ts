@@ -3,7 +3,13 @@ import {readFileSync, createReadStream, accessSync, existsSync, constants} from 
 import puppeteer from "puppeteer"
 import YAML from "yaml"
 import {configureInterval, addAlert, waitForTimeout, isEnvEnabled} from "./index";
-import {navigateToSymbol, login, minimizeFooterChartPanel, checkForInvalidSymbol} from "./service/tv-page-actions";
+import {
+    navigateToSymbol,
+    login,
+    minimizeFooterChartPanel,
+    checkForInvalidSymbol,
+    launchBrowser
+} from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
@@ -102,27 +108,7 @@ export const addAlertsMain = async (configFileName) => {
 
     const {alert: alertConfig} = config
 
-    const userDataDir = path.join(process.cwd(), "user_data") // where chrome will store it's stuff
-
-
-    try {
-        accessSync(userDataDir, constants.W_OK)
-    } catch {
-        log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`)
-        await mkdir(userDataDir)
-    }
-
-    const browser = await puppeteer.launch({
-        headless: headless, userDataDir,
-        defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
-        args: ['--no-sandbox',
-            '--enable-experimental-web-platform-features',
-            '--disable-setuid-sandbox',
-            headless ? "--headless" : "",
-            headless ? "" : `--app=${config.tradingview.chartUrl}#signin`,
-            '--window-size=1920,1080' // otherwise headless doesn't work
-        ]
-    })
+    const browser = await launchBrowser(headless,`${config.tradingview.chartUrl}#signin`)
 
     let page
     let accessDenied;

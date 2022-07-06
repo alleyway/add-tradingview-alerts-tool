@@ -1,7 +1,7 @@
 import { waitForTimeout, isEnvEnabled } from "./common-service";
 import log from "./log";
 import kleur from "kleur";
-import { InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes";
+import { AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes";
 import RegexParser from "regex-parser";
 import { accessSync, constants, writeFileSync } from "fs";
 import puppeteer from "puppeteer";
@@ -437,7 +437,7 @@ export const addAlert = async (page, singleAlertSettings) => {
         while ((await isNotShowingAlertDialog()) && retryCount <= MAX_TRIES + 1) {
             if (retryCount == MAX_TRIES) {
                 await takeScreenshot(page, "unable_to_bring_up_alert_dialog");
-                throw new Error("Unable to bring up alert dialog (system error)");
+                throw new AddAlertInvocationError();
             }
             log.trace("Attempting to show alert dialog again...");
             await waitForTimeout(retryCount, "pausing a little");

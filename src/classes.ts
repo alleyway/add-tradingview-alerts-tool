@@ -67,3 +67,10 @@ export class InvalidSymbolError extends Error {
         Object.setPrototypeOf(this, InvalidSymbolError.prototype);
     }
 }
+
+export class AddAlertInvocationError extends Error {
+    constructor() {
+        super("Unable to bring up alert dialog (system error)")
+        Object.setPrototypeOf(this, AddAlertInvocationError.prototype);
+    }
+}

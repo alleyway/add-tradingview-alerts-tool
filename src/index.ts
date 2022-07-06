@@ -14,7 +14,7 @@ import {
     launchBrowser,
     isXpathVisible
 } from "./service/tv-page-actions"
-import {SelectionError, InvalidSymbolError} from "./classes";
+import {SelectionError, InvalidSymbolError, AddAlertInvocationError} from "./classes";
 import {fetchSymbolsForSource} from "./service/exchange-service"
 import {waitForTimeout, atatVersion, isEnvEnabled, styleOverride} from "./service/common-service"
 import log from "./service/log"
@@ -46,6 +46,7 @@ export {
     convertIntervalForTradingView,
     checkForInvalidSymbol,
     styleOverride,
-    isXpathVisible
+    isXpathVisible,
+    AddAlertInvocationError
 }
 

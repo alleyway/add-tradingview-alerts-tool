@@ -26,3 +26,6 @@ export declare class InvalidSymbolError extends Error {
     symbol: string;
     constructor();
 }
+export declare class AddAlertInvocationError extends Error {
+    constructor();
+}

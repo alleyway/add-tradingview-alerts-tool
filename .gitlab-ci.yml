@@ -65,7 +65,7 @@ test:
       - coverage/
       - screenshot*
     when: always
-    expire_in: 1 week
+    expire_in: 1 day
     reports:
       junit:
         - junit.xml

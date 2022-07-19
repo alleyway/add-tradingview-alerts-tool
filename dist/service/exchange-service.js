@@ -6,23 +6,23 @@ import fs from "fs";
 import path from "path";
 import { Classification } from "../interfaces";
 import { isEnvEnabled } from "./common-service";
-const BINANCE = "binance";
-const BINANCE_FUTURES_USDM = "binance_futures_usdm";
-const BINANCE_FUTURES_COINM = "binance_futures_coinm";
-const BINANCEUS = "binanceus";
-const BITTREX = "bittrex";
-const COINBASE = "coinbase";
-const FTX = "ftx";
-const KRAKEN = "kraken";
-const KRAKEN_FUTURES = "kraken_futures";
-const KUCOIN = "kucoin";
-const KUCOIN_FUTURES = "kucoin_futures"; // not on TV yet
-const OKX_SPOT = "okx_spot"; //formerly OKEX
-const OKX_SWAP = "okx_swap"; //formerly OKEX
-const OKX_FUTURES = "okx_futures"; //formerly OKEX
-const BYBIT_DERIVATIVES = "bybit_derivatives";
-const BYBIT_SPOT = "bybit_spot"; // not on TV yet
-const BITMEX = "bitmex"; // unable to do multiple pairs in 3commas
+export const BINANCE = "binance";
+export const BINANCE_FUTURES_USDM = "binance_futures_usdm";
+export const BINANCE_FUTURES_COINM = "binance_futures_coinm";
+export const BINANCEUS = "binanceus";
+export const BITTREX = "bittrex";
+export const COINBASE = "coinbase";
+export const FTX = "ftx";
+export const KRAKEN = "kraken";
+export const KRAKEN_FUTURES = "kraken_futures";
+export const KUCOIN = "kucoin";
+export const KUCOIN_FUTURES = "kucoin_futures"; // not on TV yet
+export const OKX_SPOT = "okx_spot"; //formerly OKEX
+export const OKX_SWAP = "okx_swap"; //formerly OKEX
+export const OKX_FUTURES = "okx_futures"; //formerly OKEX
+export const BYBIT_DERIVATIVES = "bybit_derivatives";
+export const BYBIT_SPOT = "bybit_spot"; // not on TV yet
+export const BITMEX = "bitmex"; // unable to do multiple pairs in 3commas
 export const SOURCES_AVAILABLE = [
     BINANCE,
     BINANCE_FUTURES_USDM,

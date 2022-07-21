@@ -1,8 +1,8 @@
 import * as csv from 'fast-csv';
-import { readFileSync, createReadStream, existsSync } from "fs";
+import { createReadStream, existsSync, readFileSync } from "fs";
 import YAML from "yaml";
-import { configureInterval, addAlert, waitForTimeout, isEnvEnabled } from "./index";
-import { navigateToSymbol, login, minimizeFooterChartPanel, checkForInvalidSymbol, launchBrowser } from "./service/tv-page-actions";
+import { addAlert, configureInterval, isEnvEnabled, waitForTimeout } from "./index";
+import { checkForInvalidSymbol, launchBrowser, login, minimizeFooterChartPanel, navigateToSymbol } from "./service/tv-page-actions";
 import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
 import { logBaseDelay, styleOverride } from "./service/common-service";
@@ -82,11 +82,11 @@ export const addAlertsMain = async (configFileName) => {
     let accessDenied;
     if (headless) {
         page = await browser.newPage();
-        log.trace(`Go to ${config.tradingview.chartUrl} and wait until networkidle2`);
+        log.trace(`Go to ${config.tradingview.chartUrl} and wait until domloaded`);
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
-            waitUntil: 'networkidle2'
+            waitUntil: 'domcontentloaded'
         });
-        await waitForTimeout(5, "let page load and see if access is denied");
+        await waitForTimeout(8, "let page load and see if access is denied");
         /* istanbul ignore next */
         await page.addStyleTag({ content: styleOverride });
         accessDenied = pageResponse.status() === 403;

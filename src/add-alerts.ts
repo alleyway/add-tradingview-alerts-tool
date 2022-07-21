@@ -1,22 +1,20 @@
 import * as csv from 'fast-csv';
-import {readFileSync, createReadStream, accessSync, existsSync, constants} from "fs"
-import puppeteer from "puppeteer"
+import {createReadStream, existsSync, readFileSync} from "fs"
 import YAML from "yaml"
-import {configureInterval, addAlert, waitForTimeout, isEnvEnabled} from "./index";
+import {addAlert, configureInterval, isEnvEnabled, waitForTimeout} from "./index";
 import {
-    navigateToSymbol,
+    checkForInvalidSymbol,
+    launchBrowser,
     login,
     minimizeFooterChartPanel,
-    checkForInvalidSymbol,
-    launchBrowser
+    navigateToSymbol
 } from "./service/tv-page-actions";
 import {ISingleAlertSettings} from "./interfaces";
 import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
 import {logBaseDelay, styleOverride} from "./service/common-service";
-import path from "path"
-import {mkdir} from "fs/promises";
 import {InvalidSymbolError} from "./classes";
+import {Browser, Page} from "puppeteer";
 
 const readFilePromise = (filename: string) => {
     return new Promise<any[]>((resolve, reject) => {
@@ -108,20 +106,20 @@ export const addAlertsMain = async (configFileName) => {
 
     const {alert: alertConfig} = config
 
-    const browser = await launchBrowser(headless,`${config.tradingview.chartUrl}#signin`)
+    const browser: Browser = await launchBrowser(headless, `${config.tradingview.chartUrl}#signin`)
 
-    let page
+    let page: Page;
     let accessDenied;
 
 
     if (headless) {
         page = await browser.newPage();
 
-        log.trace(`Go to ${config.tradingview.chartUrl} and wait until networkidle2`)
+        log.trace(`Go to ${config.tradingview.chartUrl} and wait until domloaded`)
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
-            waitUntil: 'networkidle2'
+            waitUntil: 'domcontentloaded'
         });
-        await waitForTimeout(5, "let page load and see if access is denied")
+        await waitForTimeout(8, "let page load and see if access is denied")
         /* istanbul ignore next */
         await page.addStyleTag({content: styleOverride})
 

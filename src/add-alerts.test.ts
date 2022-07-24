@@ -53,7 +53,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
             await addAlertsMain(TEST_CONFIG_PATH)
         } catch (e) {
             console.info("Test Catching what should be invalid symbol")
-            console.error(e.message)
+            console.info("error: " + e.message)
             if (e instanceof InvalidSymbolError) {
                 expect(e.symbol).toEqual("ASDFTEST")
             }

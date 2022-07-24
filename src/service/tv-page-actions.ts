@@ -449,12 +449,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 const moreOptionsEl = await fetchFirstXPath(page, "//span[contains(@class, 'toggle-text--less')]/..", 1000)
                 moreOptionsEl.evaluate(b => b.click());
 
-                if (isChecked != actions.playSound.enabled) {
+                if (isChecked != actions.playSound?.enabled) {
                     log.trace(`setting ${kleur.blue("play-sound")} input as checked`)
                     el.click()
                     await waitForTimeout(.3)
                 }
-                if (actions.playSound.enabled && actions.playSound.name && actions.playSound.duration ) {
+                if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration ) {
                     {
                         await waitForTimeout(.5)
 

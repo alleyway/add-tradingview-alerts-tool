@@ -9,7 +9,15 @@ import {
     minimizeFooterChartPanel,
     navigateToSymbol
 } from "./service/tv-page-actions";
-import {ISingleAlertSettings} from "./interfaces";
+import {
+    ISingleAlertSettings,
+    SoundName,
+    SoundDuration,
+    soundNames,
+    isSoundName,
+    isSoundDuration,
+    soundDurations
+} from "./interfaces";
 import log, {logLogInfo} from "./service/log"
 import kleur from "kleur";
 import {logBaseDelay, styleOverride} from "./service/common-service";
@@ -105,6 +113,20 @@ export const addAlertsMain = async (configFileName) => {
     }
 
     const {alert: alertConfig} = config
+
+    if (alertConfig.actions.playSound && alertConfig.actions.playSound.enabled) {
+
+        if (!isSoundName( alertConfig.actions.playSound.name)) {
+            log.error(`Configuration error. Invalid sound name: ${kleur.yellow(alertConfig.actions.playSound.name)}`)
+            throw new Error(`Sound must be one of: ${soundNames.join(" , ")}`)
+        }
+        if (!isSoundDuration( alertConfig.actions.playSound.duration)) {
+            log.error(`Configuration error. Invalid sound duration: ${kleur.yellow(alertConfig.actions.playSound.duration)}`)
+            throw new Error(`Sound Duration must be one of: ${soundDurations.join(" , ")}`)
+        }
+
+    }
+
 
     const browser: Browser = await launchBrowser(headless, `${config.tradingview.chartUrl}#signin`)
 
@@ -242,6 +264,14 @@ export const addAlertsMain = async (configFileName) => {
                         }
                     }
 
+                    if (alertConfig.actions.playSound) {
+                        singleAlertSettings.actions.playSound = {
+                            enabled: alertConfig.actions.playSound.enabled,
+                            name: alertConfig.actions.playSound.name,
+                            duration: alertConfig.actions.playSound.duration
+                        }
+                    }
+
                 }
 
 
@@ -251,6 +281,7 @@ export const addAlertsMain = async (configFileName) => {
             }
 
         } catch (e) {
+            log.error(e.message)
             if (e instanceof InvalidSymbolError) {
                 e.symbol = row.symbol
                 await browser.close()

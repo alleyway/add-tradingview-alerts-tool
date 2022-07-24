@@ -1,3 +1,16 @@
+
+export const soundNames = ["Thin" , "3 Notes Reverb" , "Alarm Clock" , "Beep-beep" , "Calling" , "Chirpy" , "Fault" , "Hand Bell"] as const
+export type SoundName =  typeof soundNames[number]
+export const isSoundName = (string: unknown): string is SoundName => {
+    return typeof string === 'string' && soundNames.includes(string as SoundName);
+}
+
+export const soundDurations = ["Once" , "5 seconds" , "10 seconds" , "30 seconds" , "Minute"] as const
+export type SoundDuration = typeof soundDurations[number]
+export const isSoundDuration = (string: unknown): string is SoundDuration => {
+    return typeof string === 'string' && soundDurations.includes(string as SoundDuration);
+}
+
 export interface ISingleAlertSettings {
     condition: {
         primaryLeft?: string,
@@ -19,6 +32,11 @@ export interface ISingleAlertSettings {
         webhook?: {
             enabled: boolean
             url: string
+        }
+        playSound?: {
+            enabled: boolean
+            name: SoundName
+            duration: SoundDuration
         }
     }
 

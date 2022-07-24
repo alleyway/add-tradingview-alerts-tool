@@ -3,6 +3,7 @@ import { createReadStream, existsSync, readFileSync } from "fs";
 import YAML from "yaml";
 import { addAlert, configureInterval, isEnvEnabled, waitForTimeout } from "./index";
 import { checkForInvalidSymbol, launchBrowser, login, minimizeFooterChartPanel, navigateToSymbol } from "./service/tv-page-actions";
+import { soundNames, isSoundName, isSoundDuration, soundDurations } from "./interfaces";
 import log, { logLogInfo } from "./service/log";
 import kleur from "kleur";
 import { logBaseDelay, styleOverride } from "./service/common-service";
@@ -77,6 +78,16 @@ export const addAlertsMain = async (configFileName) => {
         process.exit(1);
     }
     const { alert: alertConfig } = config;
+    if (alertConfig.actions.playSound && alertConfig.actions.playSound.enabled) {
+        if (!isSoundName(alertConfig.actions.playSound.name)) {
+            log.error(`Configuration error. Invalid sound name: ${kleur.yellow(alertConfig.actions.playSound.name)}`);
+            throw new Error(`Sound must be one of: ${soundNames.join(" , ")}`);
+        }
+        if (!isSoundDuration(alertConfig.actions.playSound.duration)) {
+            log.error(`Configuration error. Invalid sound duration: ${kleur.yellow(alertConfig.actions.playSound.duration)}`);
+            throw new Error(`Sound Duration must be one of: ${soundDurations.join(" , ")}`);
+        }
+    }
     const browser = await launchBrowser(headless, `${config.tradingview.chartUrl}#signin`);
     let page;
     let accessDenied;
@@ -183,12 +194,20 @@ export const addAlertsMain = async (configFileName) => {
                             url: makeReplacements(alertConfig.actions.webhook.url)
                         };
                     }
+                    if (alertConfig.actions.playSound) {
+                        singleAlertSettings.actions.playSound = {
+                            enabled: alertConfig.actions.playSound.enabled,
+                            name: alertConfig.actions.playSound.name,
+                            duration: alertConfig.actions.playSound.duration
+                        };
+                    }
                 }
                 await page.addStyleTag({ content: styleOverride });
                 await addAlert(page, singleAlertSettings);
             }
         }
         catch (e) {
+            log.error(e.message);
             if (e instanceof InvalidSymbolError) {
                 e.symbol = row.symbol;
                 await browser.close();

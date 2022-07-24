@@ -76,6 +76,10 @@ const dropdownXpathQueries = {
     tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
     quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
 };
+const dropdownSoundXpathQueries = {
+    name: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--left')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+    duration: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--right')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+};
 const inputXpathQueries = {
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[1]",
     tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[1]",
@@ -91,6 +95,7 @@ const alertActionCorresponding = {
     showPopup: "show-popup",
     sendEmail: "send-email",
     webhook: "webhook-toggle",
+    playSound: "play-sound"
 };
 const clickInputAndDelete = async (page, inputElement) => {
     /* istanbul ignore next */
@@ -369,6 +374,36 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                     await webhookUrlEl.type(String(actions.webhook.url));
                 }
             }
+            else if (configKey === "playSound") {
+                const moreOptionsEl = await fetchFirstXPath(page, "//span[contains(@class, 'toggle-text--less')]/..", 1000);
+                moreOptionsEl.evaluate(b => b.click());
+                if (isChecked != actions.playSound.enabled) {
+                    log.trace(`setting ${kleur.blue("play-sound")} input as checked`);
+                    el.click();
+                    await waitForTimeout(.3);
+                }
+                if (actions.playSound.enabled && actions.playSound.name && actions.playSound.duration) {
+                    {
+                        await waitForTimeout(.5);
+                        log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`);
+                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["name"], 3000);
+                        log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.name)}`);
+                        targetElement.evaluate((b) => b.click());
+                        await waitForTimeout(.3);
+                        await selectFromDropDown(actions.playSound.name);
+                    }
+                    {
+                        await waitForTimeout(.5);
+                        log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.duration")}`);
+                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["duration"], 3000);
+                        log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.duration)}`);
+                        targetElement.evaluate((b) => b.click());
+                        await waitForTimeout(.3);
+                        await selectFromDropDown(actions.playSound.duration);
+                    }
+                    await waitForTimeout(.5);
+                }
+            }
             else {
                 if (isChecked != actions[configKey]) {
                     log.trace(`setting ${kleur.blue(configKey)} as checked`);
@@ -394,14 +429,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
 export const clickSubmit = async (page) => {
     log.trace("clickSubmit()");
     const submitButton = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]/*/div[@data-name='submit']`);
-    submitButton.click();
+    submitButton.evaluate((b) => b.click());
 };
 // sometimes there's a warning of "this alert may trigger differently than expected"
 export const clickContinueIfWarning = async (page) => {
     try {
         log.trace("clickContinueIfWarning()");
         const continueAnywayButton = await fetchFirstXPath(page, `//button[@name='continue']`, 3000, false);
-        continueAnywayButton.click();
+        continueAnywayButton.evaluate((b) => b.click());
         await waitForTimeout(4, "waiting after clicking 'continue anyway' button");
     }
     catch (error) {

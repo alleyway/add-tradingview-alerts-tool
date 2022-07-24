@@ -26,7 +26,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
         config.tradingview.chartUrl = process.env.TEST_TRADINGVIEW_CHART;
         config.tradingview.username = process.env.TEST_TRADINGVIEW_USERNAME;
         config.tradingview.password = process.env.TEST_TRADINGVIEW_PASSWORD;
-        config.alert.actions.webhook.enabled = true;
+        config.alert.actions.webhook.enabled = false;
         //config.tradingview.interval = "1h, 4h"
         // write it out again
         const TEST_CONFIG_PATH = "config.ci.yml";
@@ -37,7 +37,8 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
             await addAlertsMain(TEST_CONFIG_PATH);
         }
         catch (e) {
-            console.info("Catching invalid symbol");
+            console.info("Test Catching what should be invalid symbol");
+            console.error(e.message);
             if (e instanceof InvalidSymbolError) {
                 expect(e.symbol).toEqual("ASDFTEST");
             }

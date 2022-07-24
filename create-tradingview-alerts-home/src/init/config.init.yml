@@ -27,6 +27,10 @@ alert:
     webhook:
       enabled: true
       url: "https://3commas.io/trade_signal/trading_view"
+    playSound:
+      enabled: true
+      name: "Thin"
+      duration: "Once"
   # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|base|quote}}
   # name: "MI dev3 for {{base}} {{quote}}"
   # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)

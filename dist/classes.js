@@ -1,4 +1,12 @@
 export class MasterSymbol {
+    source;
+    id;
+    prefix;
+    ticker;
+    instrument;
+    quoteAsset;
+    classification;
+    raw;
     constructor(raw, source, instrument, quoteAsset, id, classification) {
         this.raw = raw;
         this.id = id || `${source.toUpperCase()}:${instrument}${quoteAsset}`;
@@ -17,6 +25,10 @@ export class NoInputFoundError extends Error {
     }
 }
 export class SelectionError extends Error {
+    _configName;
+    _pageUrl;
+    _needle;
+    _haystack;
     constructor(needle, haystack) {
         super(`Unable to partial match '${needle}' from the following options:\n${haystack.join("\n")}`);
         Object.setPrototypeOf(this, SelectionError.prototype);
@@ -31,6 +43,7 @@ export class SelectionError extends Error {
     }
 }
 export class InvalidSymbolError extends Error {
+    symbol;
     constructor() {
         super(`Invalid Symbol`);
         Object.setPrototypeOf(this, InvalidSymbolError.prototype);

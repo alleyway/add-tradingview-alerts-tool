@@ -14,6 +14,13 @@ describe('CLI Program Tests', () => {
         const args = argumentString?.split(" ");
         await program.parseAsync(args, { from: "user" });
     };
+    it('test regular expression', async () => {
+        const options = ["first", "second", "xSQ", "xSQ", "fifth"];
+        const conditionToMatch = "xSQ[2]";
+        const match = conditionToMatch.match(/(.*?)\[(\d+)\]$/);
+        // if match is not null, then the number to look for should be match[2]
+        expect(match).toBeDefined();
+    });
     it('no command', async () => {
         await runCLIWithArgs(null);
         expect(mockExit).toHaveBeenCalledWith(1);

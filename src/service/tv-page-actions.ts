@@ -247,7 +247,18 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     await takeScreenshot(page, "alert_begin_configure")
 
-    const selectFromDropDown = async (conditionToMatch) => {
+    const selectFromDropDown = async (conditionToMatchArg) => {
+        let conditionToMatch = conditionToMatchArg
+        let targetOccurrence = 0
+        const match = conditionToMatch.match(/\[(\d+)\]$/)
+        // if match is not null, then the number to look for should be match[1]
+
+        if (match) {
+            conditionToMatch = match[2]
+            targetOccurrence = Number.parseInt(match[2])
+            log.trace(`Indexed condition used: ${kleur.yellow(conditionToMatchArg)}\n Setting occurrence to ${kleur.blue(targetOccurrence)}`)
+        }
+
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`)
         const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
 
@@ -259,6 +270,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         }
         let found = false
         let foundOptions = []
+        let occurrenceCount = 0
         for (const el of elements) {
             /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.innerText, el);
@@ -266,10 +278,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
             foundOptions.push(optionText)
             if (isMatch(conditionToMatch, optionText)) {
-                log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
-                found = true
-                el.click()
-                return;
+                if (occurrenceCount == targetOccurrence){
+                    log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
+                    found = true
+                    el.click()
+                    return;
+                } else {
+                    log.trace(`Matching option found, but not occurrenceCount ${kleur.blue(occurrenceCount)} not matching targetOccurrence `)
+                    occurrenceCount += 1
+                }
+
             }
         }
         if (!found) throw new SelectionError(conditionToMatch, foundOptions)

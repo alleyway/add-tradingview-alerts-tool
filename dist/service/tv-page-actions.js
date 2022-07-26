@@ -204,10 +204,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     const selectFromDropDown = async (conditionToMatchArg) => {
         let conditionToMatch = conditionToMatchArg;
         let targetOccurrence = 0;
-        const match = conditionToMatch.match(/\[(\d+)\]$/);
+        const match = conditionToMatch.match(/(.*?)\[(\d+)\]$/);
         // if match is not null, then the number to look for should be match[1]
         if (match) {
-            conditionToMatch = match[2];
+            conditionToMatch = match[1];
             targetOccurrence = Number.parseInt(match[2]);
             log.trace(`Indexed condition used: ${kleur.yellow(conditionToMatchArg)}\n Setting occurrence to ${kleur.blue(targetOccurrence)}`);
         }

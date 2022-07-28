@@ -46,7 +46,7 @@ describe('tv-page-actions tests', () => {
         console.log("shutting down");
         await browser.close();
     });
-    it('dummy tv-page-actions test', async () => {
+    test.skip('dummy tv-page-actions test', async () => {
         expect("blah").toBeDefined();
         await waitForTimeout(3, "just waiting");
     });

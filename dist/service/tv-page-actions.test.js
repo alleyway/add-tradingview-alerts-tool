@@ -1,6 +1,7 @@
 import { isEnvEnabled, styleOverride, waitForTimeout } from "./common-service";
 import { launchBrowser, login } from "./tv-page-actions";
 import log from "./log";
+import { jest } from '@jest/globals';
 describe('tv-page-actions tests', () => {
     jest.setTimeout(120000);
     let browser;
@@ -47,6 +48,7 @@ describe('tv-page-actions tests', () => {
     });
     it('dummy tv-page-actions test', async () => {
         expect("blah").toBeDefined();
+        await waitForTimeout(3, "just waiting");
     });
 });
 //# sourceMappingURL=tv-page-actions.test.js.map

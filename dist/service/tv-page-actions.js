@@ -31,7 +31,17 @@ export const fetchFirstXPath = async (page, selector, timeout = 20000, screensho
 };
 export const takeScreenshot = async (page, name = "unnamed") => {
     if (screenshot) {
-        const screenshotPath = `screenshot_${new Date().getTime()}_${name}`;
+        const username = await page.evaluate(() => {
+            // @ts-ignore
+            const user = window.user;
+            if (user) {
+                return "_" + user.username;
+            }
+            else {
+                return "";
+            }
+        });
+        const screenshotPath = `screenshot_${new Date().getTime()}${username}_${name}`;
         log.trace(`saving screenshot: ${screenshotPath}`);
         await page.screenshot({
             path: screenshotPath + ".png",

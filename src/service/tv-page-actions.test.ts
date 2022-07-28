@@ -2,6 +2,7 @@
 import {isEnvEnabled, styleOverride, waitForTimeout} from "./common-service";
 import {launchBrowser, login} from "./tv-page-actions";
 import log from "./log";
+import {jest} from '@jest/globals'
 
 
 describe('tv-page-actions tests', () => {
@@ -67,6 +68,7 @@ describe('tv-page-actions tests', () => {
 
     it('dummy tv-page-actions test', async () => {
         expect("blah").toBeDefined()
+        await waitForTimeout(3, "just waiting")
     })
 
 

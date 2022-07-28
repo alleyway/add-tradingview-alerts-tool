@@ -26,7 +26,7 @@
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first!' && npx release-it",
     "release-beta": "npx release-it --preRelease=beta",
     "prepare": "husky install",
-    "test": "jest",
+    "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --ci --watchAll=false --forceExit",
     "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --watchAll=false --forceExit",
     "test:watch": "jest --watch"
   },
@@ -61,7 +61,7 @@
     "husky": "^8.0.1",
     "jest": "^28.1.3",
     "jest-junit": "^14.0.0",
-    "release-it": "^15.1.4",
+    "release-it": "^15.2.0",
     "ts-jest": "^28.0.7",
     "typescript": "^4.7.4"
   },

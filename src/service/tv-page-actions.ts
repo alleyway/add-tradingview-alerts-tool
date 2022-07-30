@@ -47,7 +47,7 @@ export const takeScreenshot = async (page, name: string = "unnamed") => {
                 return ""
             }
         })
-        
+
         const screenshotPath = `screenshot_${new Date().getTime()}${username}_${name}`
         log.trace(`saving screenshot: ${screenshotPath}`)
         await page.screenshot({
@@ -478,7 +478,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 const moreOptionsEl = await fetchFirstXPath(page, "//span[contains(@class, 'toggle-text--less')]/..", 1000)
                 moreOptionsEl.evaluate(b => b.click());
 
-                if (isChecked != actions.playSound?.enabled) {
+                if (actions.playSound?.enabled !== undefined && isChecked != actions.playSound?.enabled) {
                     log.trace(`setting ${kleur.blue("play-sound")} input as checked`)
                     el.click()
                     await waitForTimeout(.3)
@@ -604,6 +604,8 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await configureSingleAlertSettings(page, singleAlertSettings)
 
     await waitForTimeout(.5);
+
+    await takeScreenshot(page, "before_submitting_alert")
 
     await clickSubmit(page)
 

@@ -403,7 +403,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             else if (configKey === "playSound") {
                 const moreOptionsEl = await fetchFirstXPath(page, "//span[contains(@class, 'toggle-text--less')]/..", 1000);
                 moreOptionsEl.evaluate(b => b.click());
-                if (isChecked != actions.playSound?.enabled) {
+                if (actions.playSound?.enabled !== undefined && isChecked != actions.playSound?.enabled) {
                     log.trace(`setting ${kleur.blue("play-sound")} input as checked`);
                     el.click();
                     await waitForTimeout(.3);
@@ -508,6 +508,7 @@ export const addAlert = async (page, singleAlertSettings) => {
     }
     await configureSingleAlertSettings(page, singleAlertSettings);
     await waitForTimeout(.5);
+    await takeScreenshot(page, "before_submitting_alert");
     await clickSubmit(page);
     await waitForTimeout(2);
     await clickContinueIfWarning(page);

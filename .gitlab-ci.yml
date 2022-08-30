@@ -75,6 +75,8 @@ test:
   script:
     - echo "${ENV_FILE_CONTENTS}" >> .env
     - chmod 755 ./dist/cli.js
+    - node -v
+    - npm --version
     - npm run test:ci
 
 pages:

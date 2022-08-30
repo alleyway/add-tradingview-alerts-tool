@@ -3,6 +3,5 @@ import { SelectionError, InvalidSymbolError, AddAlertInvocationError } from "./c
 import { fetchSymbolsForSource } from "./service/exchange-service";
 import { waitForTimeout, atatVersion, isEnvEnabled, styleOverride } from "./service/common-service";
 import log from "./service/log";
-import { MasterSymbol } from "./classes";
 export { launchBrowser, fetchFirstXPath, clickContinueIfWarning, takeScreenshot, configureInterval, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchSymbolsForSource, waitForTimeout, atatVersion, log, isEnvEnabled, SelectionError, InvalidSymbolError, convertIntervalForTradingView, checkForInvalidSymbol, styleOverride, isXpathVisible, AddAlertInvocationError };
 //# sourceMappingURL=index.js.map

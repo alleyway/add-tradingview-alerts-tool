@@ -15,6 +15,8 @@ export interface ISingleAlertSettings {
         quaternaryRight?: string | number;
     };
     option?: string;
+    expireOpenEnded?: boolean;
+    expireInterval?: number;
     actions?: {
         notifyOnApp?: boolean;
         showPopup?: boolean;

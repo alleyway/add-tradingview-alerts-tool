@@ -24,6 +24,9 @@ export interface ISingleAlertSettings {
     // option
     option?: string,
 
+    expireOpenEnded?: boolean,
+    expireInterval?: number,
+
     //expiration:
     actions?: {
         notifyOnApp?: boolean

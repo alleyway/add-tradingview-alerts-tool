@@ -58,6 +58,7 @@
     "@release-it/bumper": "^4.0.0",
     "@types/jest": "^29.0.0",
     "@types/node": "^16.11.41",
+    "babel-jest": "^29.0.1",
     "husky": "^8.0.1",
     "jest": "^29.0.1",
     "jest-junit": "^14.0.1",

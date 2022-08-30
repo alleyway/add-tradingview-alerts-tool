@@ -48,7 +48,7 @@
     "kleur": "^4.1.5",
     "pacote": "^13.6.2",
     "prompts": "^2.4.2",
-    "puppeteer": "^15.5.0",
+    "puppeteer": "^17.0.0",
     "regex-parser": "^2.2.11",
     "yaml": "^2.1.1"
   },

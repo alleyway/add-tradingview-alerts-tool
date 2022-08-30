@@ -77,7 +77,7 @@ test:
     - chmod 755 ./dist/cli.js
     - node -v
     - npm --version
-    - export NODE_OPTIONS="--experimental-specifier-resolution=node"
+    - export NODE_OPTIONS="--experimental-specifier-resolution=node --experimental-vm-modules"
     - npm run test:ci
 
 pages:

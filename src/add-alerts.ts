@@ -249,6 +249,8 @@ export const addAlertsMain = async (configFileName) => {
                         quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
                     },
                     option: makeReplacements(alertConfig.option),
+                    expireInterval: alertConfig.expireInterval,
+                    expireOpenEnded: alertConfig.expireOpenEnded
                 }
 
                 if (alertConfig.actions) {

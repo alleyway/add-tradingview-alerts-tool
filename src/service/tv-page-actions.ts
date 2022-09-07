@@ -8,6 +8,7 @@ import {accessSync, constants, writeFileSync} from "fs";
 import puppeteer, {Browser} from "puppeteer";
 import path from "path";
 import {mkdir} from "fs/promises";
+import exp from "constants";
 
 // data-dialog-name="gopro"
 
@@ -136,7 +137,7 @@ const clickInputAndDelete = async (page, inputElement) => {
     await page.evaluate((el) => el.value = "", inputElement)
 }
 
-export const launchBrowser = async (headless: boolean, url?: string) : Promise<Browser> => {
+export const launchBrowser = async (headless: boolean, url?: string): Promise<Browser> => {
 
     const userDataDir = path.join(process.cwd(), "user_data") // where chrome will store it's stuff
 
@@ -213,7 +214,7 @@ export const logout = async (page) => {
     });
 }
 
-export const checkForInvalidSymbol = async (page, symbol: string)  => {
+export const checkForInvalidSymbol = async (page, symbol: string) => {
     // this function could be used when navigating by typing or by the url using ?symbol=ASDF
     // now see if it's invalid symbol, could be multi-chart so check active
     if (await isXpathVisible(page, "//div[contains(@class,'chart-container') and contains(@class,' active')]//*/div[contains(@class, 'invalidSymbol') and not(contains(@class, 'js-hidden'))]")) {
@@ -254,7 +255,7 @@ const isMatch = (needle: string, haystack: string) => {
 
 export const configureSingleAlertSettings = async (page, singleAlertSettings: ISingleAlertSettings) => {
 
-    const {condition, name, option, message, actions} = singleAlertSettings
+    const {condition, name, expireOpenEnded, expireInterval, option, message, actions} = singleAlertSettings
 
     await takeScreenshot(page, "alert_begin_configure")
 
@@ -289,7 +290,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
             foundOptions.push(optionText)
             if (isMatch(conditionToMatch, optionText)) {
-                if (occurrenceCount == targetOccurrence){
+                if (occurrenceCount == targetOccurrence) {
                     log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                     found = true
                     el.click()
@@ -449,6 +450,66 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     }
 
+    if (expireOpenEnded !== undefined) {
+
+        log.trace("set to expire open ended")
+        await waitForTimeout(.1);
+        const openEndedCheckbox = await fetchFirstXPath(page, `//div[contains(@class, 'tv-alert-dialog__fieldset-value-item--open-ended')]//input[@type='checkbox']`)
+        const isDisabled = await page.evaluate(element => element.disabled, openEndedCheckbox)
+
+        if (isDisabled) {
+            //not sure this really works...
+            log.warn("Expire Open Ended checkbox is disabled, maybe we're on a free account.")
+        } else {
+            const isChecked = await page.evaluate(element => element.checked, openEndedCheckbox)
+            if (expireOpenEnded != isChecked) {
+                openEndedCheckbox.click()
+            }
+        }
+        await waitForTimeout(.1);
+
+         if (!expireOpenEnded && expireInterval) {
+
+             log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`)
+             const dateInput = await fetchFirstXPath(page,"//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_date']")
+             const timeInput = await fetchFirstXPath(page,"//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_time']")
+
+             const dateISO = await page.evaluate((expireInterval) => {
+                 console.log("expireInterval: " +expireInterval)
+                 const currentDate = new Date()
+                 currentDate.setTime(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000) + expireInterval * 60 * 60 * 1000);
+                 return currentDate.toISOString()
+             }, expireInterval)
+
+             const [splitDate, timeFull] = dateISO.split("T")
+             const [hours, min, secs] = timeFull.split(":")
+
+             const expDate = splitDate.replaceAll("-", "")
+             const expTime = `${hours}${min}`
+             log.trace(`exp_date: ${expDate}`)
+             log.trace(`exp_time: ${expTime}`)
+
+             await dateInput.click()
+             await waitForTimeout(50);
+             await page.keyboard.press('End');
+             for (const l of "yyyy-mm-dd".split("")){
+                 await waitForTimeout(50);
+                 await page.keyboard.press('Backspace');
+             }
+             await dateInput.type(String(expDate))
+             await waitForTimeout(50);
+             await timeInput.click()
+             await waitForTimeout(50);
+             await page.keyboard.press('End');
+             for (const l of "hh:mm".split("")){
+                 await waitForTimeout(50);
+                 await page.keyboard.press('Backspace');
+             }
+             await timeInput.type(String(expTime))
+             await waitForTimeout(.2);
+        }
+    }
+
     // alert actions
 
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
@@ -483,7 +544,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                     el.click()
                     await waitForTimeout(.3)
                 }
-                if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration ) {
+                if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration) {
                     {
                         await waitForTimeout(.5)
 
@@ -573,7 +634,6 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await typeShortcutForAlertDialog()
 
 
-
     log.trace("..make sure we're showing the alert dialog")
 
     const isNotShowingAlertDialog = async () => {
@@ -589,7 +649,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
 
         const MAX_TRIES = 3
         let retryCount = 1
-        while((await isNotShowingAlertDialog()) && retryCount <= MAX_TRIES + 1) {
+        while ((await isNotShowingAlertDialog()) && retryCount <= MAX_TRIES + 1) {
             if (retryCount == MAX_TRIES) {
                 await takeScreenshot(page, "unable_to_bring_up_alert_dialog")
                 throw new AddAlertInvocationError()

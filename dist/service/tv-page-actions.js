@@ -209,7 +209,7 @@ const isMatch = (needle, haystack) => {
     }
 };
 export const configureSingleAlertSettings = async (page, singleAlertSettings) => {
-    const { condition, name, option, message, actions } = singleAlertSettings;
+    const { condition, name, expireOpenEnded, expireInterval, option, message, actions } = singleAlertSettings;
     await takeScreenshot(page, "alert_begin_configure");
     const selectFromDropDown = async (conditionToMatchArg) => {
         let conditionToMatch = conditionToMatchArg;
@@ -378,6 +378,58 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         }
         if (!found)
             throw new SelectionError(option, foundOptions);
+    }
+    if (expireOpenEnded !== undefined) {
+        log.trace("set to expire open ended");
+        await waitForTimeout(.1);
+        const openEndedCheckbox = await fetchFirstXPath(page, `//div[contains(@class, 'tv-alert-dialog__fieldset-value-item--open-ended')]//input[@type='checkbox']`);
+        const isDisabled = await page.evaluate(element => element.disabled, openEndedCheckbox);
+        if (isDisabled) {
+            //not sure this really works...
+            log.warn("Expire Open Ended checkbox is disabled, maybe we're on a free account.");
+        }
+        else {
+            const isChecked = await page.evaluate(element => element.checked, openEndedCheckbox);
+            if (expireOpenEnded != isChecked) {
+                openEndedCheckbox.click();
+            }
+        }
+        await waitForTimeout(.1);
+        if (!expireOpenEnded && expireInterval) {
+            log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`);
+            const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_date']");
+            const timeInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_time']");
+            const dateISO = await page.evaluate((expireInterval) => {
+                console.log("expireInterval: " + expireInterval);
+                const currentDate = new Date();
+                currentDate.setTime(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000) + expireInterval * 60 * 60 * 1000);
+                return currentDate.toISOString();
+            }, expireInterval);
+            const [splitDate, timeFull] = dateISO.split("T");
+            const [hours, min, secs] = timeFull.split(":");
+            const expDate = splitDate.replaceAll("-", "");
+            const expTime = `${hours}${min}`;
+            log.trace(`exp_date: ${expDate}`);
+            log.trace(`exp_time: ${expTime}`);
+            await dateInput.click();
+            await waitForTimeout(50);
+            await page.keyboard.press('End');
+            for (const l of "yyyy-mm-dd".split("")) {
+                await waitForTimeout(50);
+                await page.keyboard.press('Backspace');
+            }
+            await dateInput.type(String(expDate));
+            await waitForTimeout(50);
+            await timeInput.click();
+            await waitForTimeout(50);
+            await page.keyboard.press('End');
+            for (const l of "hh:mm".split("")) {
+                await waitForTimeout(50);
+                await page.keyboard.press('Backspace');
+            }
+            await timeInput.type(String(expTime));
+            await waitForTimeout(.2);
+        }
     }
     // alert actions
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {

@@ -15,10 +15,28 @@ import exp from "constants";
 const screenshot = isEnvEnabled(process.env.SCREENSHOT)
 
 
+const doXpath = async (page, selector: string) => {
+
+    /* istanbul ignore next */
+    const response = await page.evaluate((sel) => {
+        const el = document.evaluate(sel,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null
+        ).singleNodeValue as HTMLElement
+
+        return !!el
+
+    }, selector)
+    return response
+}
+
 export const isXpathVisible = async (page, selector: string, screenShotOnFail = false) => {
     log.trace(kleur.gray(`...isXpathVisible?: ${kleur.yellow(selector)}`))
-    const elements = await page.$x(selector)
-    const visible = elements.length > 0
+    // const elements = await page.$x(selector)
+    // const visible = elements.length > 0
+    const visible = await doXpath(page, selector)
     log.trace(`..isXpathVisible: ${visible}`)
     return visible
 }
@@ -90,20 +108,23 @@ export const configureInterval = async (interval: string, page) => {
 
 // queries used on the alert conditions
 const dropdownXpathQueries = {
-    primaryLeft: "//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-    primaryRight: "//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-    secondary: "//*[contains(@class,'tv-control-fieldset__value tv-alert-dialog__fieldset-value js-condition-operator-input-wrap')]/*[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small']/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+    primaryLeft: "//span[@data-name='main-series-select']",
+    primaryRight: "//span[@data-name='main-series-plot-select']",
+    secondary: "//span[@data-name='operator-select']",
 
-    tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
-    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+    tertiaryLeft: "//*[contains(@class, 'bandsRow')]//span[@data-name='start-band-select'][0]",
+    quaternaryLeft: "//*[contains(@class, 'bandsRow')]//span[@data-name='start-band-select'][1]",
 
-    tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[1]",
-    quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ') and contains(@class, 'js-second-operand-')]/span[@class='tv-control-select__wrap tv-dropdown-behavior tv-control-select--size_small' and 1]/span[@class='tv-control-select__control tv-dropdown-behavior__button'])[2]",
+    tertiaryRight: "//*[contains(@class, 'bandsRow')]//span[@data-name='end-band-select'][0]",
+    quaternaryRight: "//*[contains(@class, 'bandsRow')]//span[@data-name='end-band-select'][1]",
 }
 
+
 const dropdownSoundXpathQueries = {
-    name: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--left')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
-    duration: "//div[contains(@class, 'js-sound-settings')]/div[contains(@class, 'tv-alert-dialog__group-item--right')]/*/span[@class='tv-control-select__control tv-dropdown-behavior__button']",
+    nameTarget: "//span[@role='button' and @data-name='sound-title-select']",
+    nameListItems: "//div[contains(@class, 'soundSelectMenuItem-')]//div[contains(@class, 'title-')]",
+    durationTarget: "//span[@role='button' and @data-name='sound-duration-select']",
+    durationListItems: "//div[@role='listbox']//span[contains(@class, 'label-')]",
 }
 
 
@@ -123,18 +144,22 @@ const readOnlyInputQueries = {
 
 
 const alertActionCorresponding = {
-    notifyOnApp: "send-push",
+    notifyOnApp: "notify-on-app",
     showPopup: "show-popup",
     sendEmail: "send-email",
-    webhook: "webhook-toggle",
+    webhook: "webhook",
     playSound: "play-sound"
 }
 
 
 const clickInputAndDelete = async (page, inputElement) => {
 
+    await inputElement.click()
+    await waitForTimeout(.3)
     /* istanbul ignore next */
-    await page.evaluate((el) => el.value = "", inputElement)
+    await page.evaluate((el) => {
+        el.value = ""
+    }, inputElement)
 }
 
 export const launchBrowser = async (headless: boolean, url?: string): Promise<Browser> => {
@@ -259,7 +284,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     await takeScreenshot(page, "alert_begin_configure")
 
-    const selectFromDropDown = async (conditionToMatchArg) => {
+    const selectFromDropDown = async (conditionToMatchArg, selector: string) => {
         let conditionToMatch = conditionToMatchArg
         let targetOccurrence = 0
         const match = conditionToMatch.match(/(.*?)\[(\d+)\]$/)
@@ -272,7 +297,6 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         }
 
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`)
-        const selector = "//span[@class='tv-control-select__dropdown tv-dropdown-behavior__body i-opened']//span[@class='tv-control-select__option-wrap']";
 
         await page.waitForXPath(selector, {timeout: 8000})
         const elements = await page.$x(selector)
@@ -322,7 +346,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
                 await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue)
+                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//span[contains(@class, 'selectItem-')]")
                 await waitForTimeout(.4, "after selecting from dropdown");
 
             } catch (e) {
@@ -398,7 +422,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     if (!!option) {
         log.trace(`Looking for option: ${kleur.blue(option)}`)
 
-        const selector = "//*[@class='js-fire-rate-row']//div[@data-title]"
+        const selector = "//button/span/span[contains(@class, 'ellipsis-container')]"
 
         try {
             await page.waitForXPath(selector, {timeout: 8000})
@@ -416,33 +440,34 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         let foundOptions = []
         for (const el of elements) {
             /* istanbul ignore next */
-            let optionText = await page.evaluate(element => element.dataset.title, el);
+            let optionText = await page.evaluate(element => element.innerText, el);
             foundOptions.push(optionText)
             if (optionText === option && !found) {
                 log.trace(`Found! Clicking ${kleur.yellow(optionText)}`)
                 found = true
                 await waitForTimeout(.4);
-                /* istanbul ignore next */
-                await page.evaluate((text) => {
-                    const el = document.evaluate(`//*[@class='js-fire-rate-row']//div[@data-title='${text}']`,
-                        document,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                    ).singleNodeValue as HTMLElement
-                    el.click()
-
-                }, option)
+                await el.click()
+                // /* istanbul ignore next */
+                // await page.evaluate((text) => {
+                //     const el = document.evaluate(`//*[@class='js-fire-rate-row']//div[@data-title='${text}']`,
+                //         document,
+                //         null,
+                //         XPathResult.FIRST_ORDERED_NODE_TYPE,
+                //         null
+                //     ).singleNodeValue as HTMLElement
+                //     el.click()
+                //
+                // }, option)
                 await waitForTimeout(.4);
-                const justClickedEl = await fetchFirstXPath(page, `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`)
-
-                /* istanbul ignore next */
-                const className = await page.evaluate(el => el.className, justClickedEl);
-
-                if (className.indexOf("i-active") < 0) {
-                    log.error("option element was clicked, but it's parent does not have the 'i-active' class assigned")
-                    throw Error("Unable to select option correctly...a bug in the system")
-                }
+                // const justClickedEl = await fetchFirstXPath(page, `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`)
+                //
+                // /* istanbul ignore next */
+                // const className = await page.evaluate(el => el.className, justClickedEl);
+                //
+                // if (className.indexOf("i-active") < 0) {
+                //     log.error("option element was clicked, but it's parent does not have the 'i-active' class assigned")
+                //     throw Error("Unable to select option correctly...a bug in the system")
+                // }
 
             }
         }
@@ -452,63 +477,89 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     if (expireOpenEnded !== undefined) {
 
-        log.trace("set to expire open ended")
+        log.trace("set whether to expire open ended")
         await waitForTimeout(.1);
-        const openEndedCheckbox = await fetchFirstXPath(page, `//div[contains(@class, 'tv-alert-dialog__fieldset-value-item--open-ended')]//input[@type='checkbox']`)
+
+        const expDropdownTarget = await fetchFirstXPath(page, "//legend[text()='Expiration']/../..//button")
+        await expDropdownTarget.click()
+
+
+        const openEndedCheckbox = await fetchFirstXPath(page, `//input[@id='unexpired-date']`)
+
+
         const isDisabled = await page.evaluate(element => element.disabled, openEndedCheckbox)
 
-        if (isDisabled) {
-            //not sure this really works...
-            log.warn("Expire Open Ended checkbox is disabled, maybe we're on a free account.")
-        } else {
-            const isChecked = await page.evaluate(element => element.checked, openEndedCheckbox)
-            if (expireOpenEnded != isChecked) {
-                openEndedCheckbox.click()
-            }
+        if (expireOpenEnded != isDisabled) {
+            openEndedCheckbox.click()
         }
+
         await waitForTimeout(.1);
 
-         if (!expireOpenEnded && expireInterval) {
+        if (!expireOpenEnded && expireInterval) {
 
-             log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`)
-             const dateInput = await fetchFirstXPath(page,"//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_date']")
-             const timeInput = await fetchFirstXPath(page,"//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_time']")
+            log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`)
+            const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_date']")
+            const timeInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_time']")
 
-             const dateISO = await page.evaluate((expireInterval) => {
-                 console.log("expireInterval: " +expireInterval)
-                 const currentDate = new Date()
-                 currentDate.setTime(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000) + expireInterval * 60 * 60 * 1000);
-                 return currentDate.toISOString()
-             }, expireInterval)
+            const dateISO = await page.evaluate((expireInterval) => {
+                console.log("expireInterval: " + expireInterval)
+                const currentDate = new Date()
+                currentDate.setTime(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000) + expireInterval * 60 * 60 * 1000);
+                return currentDate.toISOString()
+            }, expireInterval)
 
-             const [splitDate, timeFull] = dateISO.split("T")
-             const [hours, min, secs] = timeFull.split(":")
+            const [splitDate, timeFull] = dateISO.split("T")
+            const [hours, min, secs] = timeFull.split(":")
 
-             const expDate = splitDate.replaceAll("-", "")
-             const expTime = `${hours}${min}`
-             log.trace(`exp_date: ${expDate}`)
-             log.trace(`exp_time: ${expTime}`)
+            const expDate = splitDate.replaceAll("-", "")
+            const expTime = `${hours}${min}`
+            log.trace(`exp_date: ${expDate}`)
+            log.trace(`exp_time: ${expTime}`)
 
-             await dateInput.click()
-             await waitForTimeout(50);
-             await page.keyboard.press('End');
-             for (const l of "yyyy-mm-dd".split("")){
-                 await waitForTimeout(50);
-                 await page.keyboard.press('Backspace');
-             }
-             await dateInput.type(String(expDate))
-             await waitForTimeout(50);
-             await timeInput.click()
-             await waitForTimeout(50);
-             await page.keyboard.press('End');
-             for (const l of "hh:mm".split("")){
-                 await waitForTimeout(50);
-                 await page.keyboard.press('Backspace');
-             }
-             await timeInput.type(String(expTime))
-             await waitForTimeout(.2);
+            await dateInput.click()
+            await waitForTimeout(50);
+            await page.keyboard.press('End');
+            for (const l of "yyyy-mm-dd".split("")) {
+                await waitForTimeout(50);
+                await page.keyboard.press('Backspace');
+            }
+            await dateInput.type(String(expDate))
+            await waitForTimeout(50);
+            await timeInput.click()
+            await waitForTimeout(50);
+            await page.keyboard.press('End');
+            for (const l of "hh:mm".split("")) {
+                await waitForTimeout(50);
+                await page.keyboard.press('Backspace');
+            }
+            await timeInput.type(String(expTime))
+            await waitForTimeout(.2);
         }
     }
+
+    if (!!name) {
+        log.trace(`Setting Alert Name: ${kleur.blue(name)}`)
+        const nameInput = await fetchFirstXPath(page, "//input[@id='alert-name']")
+        await clickInputAndDelete(page, nameInput)
+        await nameInput.type(name)
+        await waitForTimeout(.5);
+    }
+
+
+    if (!!message) {
+        log.trace(`Setting message: ${kleur.blue(message)}`)
+        const messageTextarea = await fetchFirstXPath(page, "//textarea[@id='alert-message']")
+        await clickInputAndDelete(page, messageTextarea)
+        await messageTextarea.type(message)
+    }
+
+    await waitForTimeout(.2);
+
+    const notificationsTab = await fetchFirstXPath(page, "//button[@data-name='notifications']")
+
+    await notificationsTab.click()
+
+    await waitForTimeout(.4);
 
     // alert actions
 
@@ -516,7 +567,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         if (!!actions && !!actions[configKey] !== undefined) {
             await waitForTimeout(.3)
-            const el = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='${elementInputName}']`)
+            const el = await fetchFirstXPath(page, `//span[@data-name='${elementInputName}']//input`)
             /* istanbul ignore next */
             const isChecked = await page.evaluate(element => element.checked, el)
 
@@ -529,15 +580,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 if (actions.webhook.enabled && actions.webhook.url) {
                     await waitForTimeout(.3)
                     log.trace(`typing webhook url: ${kleur.blue(actions.webhook.url)}`)
-                    const webhookUrlEl = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]//input[@name='webhook-url']`, 1000)
+                    const webhookUrlEl = await fetchFirstXPath(page, `//input[contains(@placeholder, 'alert-hook')]`, 1000)
                     await clickInputAndDelete(page, webhookUrlEl)
                     await webhookUrlEl.type(String(actions.webhook.url))
                 }
 
             } else if (configKey === "playSound") {
-
-                const moreOptionsEl = await fetchFirstXPath(page, "//span[contains(@class, 'toggle-text--less')]/..", 1000)
-                moreOptionsEl.evaluate(b => b.click());
 
                 if (actions.playSound?.enabled !== undefined && isChecked != actions.playSound?.enabled) {
                     log.trace(`setting ${kleur.blue("play-sound")} input as checked`)
@@ -549,20 +597,20 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                         await waitForTimeout(.5)
 
                         log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`)
-                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["name"], 3000)
+                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["nameTarget"], 3000)
                         log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.name)}`)
                         targetElement.evaluate((b) => b.click())
                         await waitForTimeout(.3)
-                        await selectFromDropDown(actions.playSound.name)
+                        await selectFromDropDown(actions.playSound.name, dropdownSoundXpathQueries["nameListItems"])
                     }
                     {
                         await waitForTimeout(.5)
                         log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.duration")}`)
-                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["duration"], 3000)
+                        const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["durationTarget"], 3000)
                         log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.duration)}`)
                         targetElement.evaluate((b) => b.click())
                         await waitForTimeout(.3)
-                        await selectFromDropDown(actions.playSound.duration)
+                        await selectFromDropDown(actions.playSound.duration, dropdownSoundXpathQueries["durationListItems"])
                     }
                     await waitForTimeout(.5)
                 }
@@ -578,26 +626,11 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     }
 
 
-    if (!!name) {
-        log.trace(`Setting Alert Name: ${kleur.blue(name)}`)
-        const nameInput = await fetchFirstXPath(page, "//input[@name='alert-name']")
-        await clickInputAndDelete(page, nameInput)
-        await nameInput.type(name)
-        await waitForTimeout(.5);
-    }
-
-
-    if (!!message) {
-        log.trace(`Setting message: ${kleur.blue(message)}`)
-        const messageTextarea = await fetchFirstXPath(page, "//textarea[@class='tv-control-textarea']")
-        await clickInputAndDelete(page, messageTextarea)
-        await messageTextarea.type(message)
-    }
 }
 
 export const clickSubmit = async (page) => {
     log.trace("clickSubmit()")
-    const submitButton = await fetchFirstXPath(page, `//div[contains(@class, 'tv-dialog')]/*/div[@data-name='submit']`)
+    const submitButton = await fetchFirstXPath(page, "//div[contains(@data-name, 'alerts-create-edit-dialog')]//button[@data-name='submit']")
     submitButton.evaluate((b) => b.click())
 }
 
@@ -634,10 +667,10 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await typeShortcutForAlertDialog()
 
 
-    log.trace("..make sure we're showing the alert dialog")
+    await waitForTimeout(.7, "..make sure we're showing the alert dialog");
 
     const isNotShowingAlertDialog = async () => {
-        return !(await isXpathVisible(page, "//div[contains(@class, 'tv-alert-dialog')]"))
+        return !(await isXpathVisible(page, "//div[contains(@data-name, 'alerts-create-edit-dialog')]"))
     }
 
     if (await isNotShowingAlertDialog()) {

@@ -35,11 +35,14 @@ describe('CLI Program Tests', () => {
     it('fetch-symbols binance -q eth', async () => {
         await runCLIWithArgs("fetch-symbols binance -q eth");
     });
-    it('fetch-symbols ftx -l 4 -q usd --classification futures_dated', async () => {
-        await runCLIWithArgs("fetch-symbols ftx -q usd --classification futures_dated");
-    });
-    it('fetch-symbols ftx -q blah --classification futures_dated', async () => {
-        await runCLIWithArgs("fetch-symbols ftx -q blah --classification futures_dated");
-    });
+    // it('fetch-symbols ftx -l 4 -q usd --classification futures_dated', async () => {
+    //     await runCLIWithArgs("fetch-symbols ftx -q usd --classification futures_dated")
+    //
+    // });
+    //
+    // it('fetch-symbols ftx -q blah --classification futures_dated', async () => {
+    //     await runCLIWithArgs("fetch-symbols ftx -q blah --classification futures_dated")
+    //
+    // });
 });
 //# sourceMappingURL=program.test.js.map

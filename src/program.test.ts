@@ -56,14 +56,14 @@ describe('CLI Program Tests', () => {
 
     });
 
-    it('fetch-symbols ftx -l 4 -q usd --classification futures_dated', async () => {
-        await runCLIWithArgs("fetch-symbols ftx -q usd --classification futures_dated")
-
-    });
-
-    it('fetch-symbols ftx -q blah --classification futures_dated', async () => {
-        await runCLIWithArgs("fetch-symbols ftx -q blah --classification futures_dated")
-
-    });
+    // it('fetch-symbols ftx -l 4 -q usd --classification futures_dated', async () => {
+    //     await runCLIWithArgs("fetch-symbols ftx -q usd --classification futures_dated")
+    //
+    // });
+    //
+    // it('fetch-symbols ftx -q blah --classification futures_dated', async () => {
+    //     await runCLIWithArgs("fetch-symbols ftx -q blah --classification futures_dated")
+    //
+    // });
 
 })

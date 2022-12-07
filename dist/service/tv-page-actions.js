@@ -449,6 +449,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             await timeInput.type(String(expTime));
             await waitForTimeout(.2);
         }
+        await waitForTimeout(.2);
+        const expSubmitButton = await fetchFirstXPath(page, "//div[@data-name='popup-menu-container']//div[@data-name='menu-inner']/div/button");
+        await expSubmitButton.click();
     }
     if (!!name) {
         log.trace(`Setting Alert Name: ${kleur.blue(name)}`);

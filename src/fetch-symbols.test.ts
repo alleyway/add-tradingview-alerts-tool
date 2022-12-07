@@ -13,7 +13,7 @@ describe('Fetch Symbols Test', () => {
 
     it('fetchSymbolsMain()', async () => {
 
-        const testSource = SOURCES_AVAILABLE[0];
+        const testSource = SOURCES_AVAILABLE[5];
         await fetchSymbolsMain(testSource)
 
         const filePath = path.join(process.cwd(),`${testSource}_symbols.csv` )

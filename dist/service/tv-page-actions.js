@@ -407,16 +407,17 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         await waitForTimeout(.1);
         const expDropdownTarget = await fetchFirstXPath(page, "//legend[text()='Expiration']/../..//button");
         await expDropdownTarget.click();
+        await waitForTimeout(.4);
         const openEndedCheckbox = await fetchFirstXPath(page, `//input[@id='unexpired-date']`);
-        const isDisabled = await page.evaluate(element => element.disabled, openEndedCheckbox);
-        if (expireOpenEnded != isDisabled) {
+        const isOpenEnded = await page.evaluate(element => element.checked, openEndedCheckbox);
+        if (expireOpenEnded != isOpenEnded) {
             openEndedCheckbox.click();
         }
-        await waitForTimeout(.1);
+        await waitForTimeout(.3);
         if (!expireOpenEnded && expireInterval) {
             log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`);
-            const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_date']");
-            const timeInput = await fetchFirstXPath(page, "//div[contains(@class, 'tv-alert-dialog')]//input[@data-name='alert_exp_time']");
+            const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'pickerInput-')]//input");
+            const timeInput = await fetchFirstXPath(page, "//div[contains(@class, 'time-')]//input");
             const dateISO = await page.evaluate((expireInterval) => {
                 console.log("expireInterval: " + expireInterval);
                 const currentDate = new Date();

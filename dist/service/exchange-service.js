@@ -12,7 +12,7 @@ export const BINANCE_FUTURES_COINM = "binance_futures_coinm";
 export const BINANCEUS = "binanceus";
 export const BITTREX = "bittrex";
 export const COINBASE = "coinbase";
-export const FTX = "ftx";
+// export const FTX = "ftx"
 export const KRAKEN = "kraken";
 export const KRAKEN_FUTURES = "kraken_futures";
 export const KUCOIN = "kucoin";
@@ -30,7 +30,7 @@ export const SOURCES_AVAILABLE = [
     BINANCEUS,
     BITTREX,
     COINBASE,
-    FTX,
+    // FTX,
     KRAKEN,
     KUCOIN,
     OKX_SPOT,
@@ -197,42 +197,45 @@ export const fetchCoinbase = async () => {
     };
     return fetchAndTransform("https://api.pro.coinbase.com/products", null, transformer);
 };
-export const fetchFtx = async () => {
-    const levTokensTransformer = (obj) => {
-        return new MasterSymbol(obj, "FTX_LEV_TOKENS", obj.name, "USD", `FTX:${obj.underlying}`, Classification.FUTURES_DATED);
-    };
-    const levTokenSymbols = await fetchAndTransform("https://ftx.com/api/lt/tokens", "result", levTokensTransformer);
-    const levTokenNames = levTokenSymbols.map((ms) => ms.instrument);
-    const transformer = (obj) => {
-        if (obj.enabled) {
-            if (obj.type === "spot") {
-                const classification = levTokenNames.includes(obj.baseCurrency) ? Classification.LEVERAGED_TOKEN : Classification.SPOT;
-                return new MasterSymbol(obj, FTX, obj.baseCurrency, obj.quoteCurrency, null, classification);
-            }
-            else if (obj.type == "future") {
-                if (obj.tokenizedEquity)
-                    return null; // eg. AAPL or AAPL-0326
-                if (obj.name.match(/-PERP$/)) {
-                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, Classification.FUTURES_PERPETUAL);
-                }
-                else if (obj.name.match(/-\d{4}$/)) { //AVAX-0326
-                    const [base, exp] = obj.name.split("-");
-                    return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${base}${exp}`, Classification.FUTURES_DATED);
-                }
-                else {
-                    return null;
-                }
-            }
-            else {
-                return null;
-            }
-        }
-        else {
-            return null;
-        }
-    };
-    return fetchAndTransform("https://ftx.com/api/markets", "result", transformer);
-};
+// export const fetchFtx = async (): Promise<MasterSymbol[]> => {
+//
+//     const levTokensTransformer = (obj) => {
+//         return new MasterSymbol(obj, "FTX_LEV_TOKENS", obj.name, "USD", `FTX:${obj.underlying}`, Classification.FUTURES_DATED)
+//     }
+//     const levTokenSymbols = await fetchAndTransform("https://ftx.com/api/lt/tokens", "result", levTokensTransformer)
+//
+//     const levTokenNames = levTokenSymbols.map((ms) => ms.instrument)
+//
+//
+//     const transformer = (obj) => {
+//         if (obj.enabled) {
+//             if (obj.type === "spot") {
+//                 const classification: ClassificationType = levTokenNames.includes(obj.baseCurrency) ? Classification.LEVERAGED_TOKEN : Classification.SPOT
+//                 return new MasterSymbol(obj, FTX, obj.baseCurrency, obj.quoteCurrency, null, classification)
+//             } else if (obj.type == "future") {
+//
+//                 if (obj.tokenizedEquity) return null // eg. AAPL or AAPL-0326
+//
+//                 if (obj.name.match(/-PERP$/)) {
+//                     return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${obj.underlying}PERP`, Classification.FUTURES_PERPETUAL)
+//
+//                 } else if (obj.name.match(/-\d{4}$/)) { //AVAX-0326
+//                     const [base, exp] = obj.name.split("-")
+//                     return new MasterSymbol(obj, FTX, obj.name, "USD", `FTX:${base}${exp}`, Classification.FUTURES_DATED)
+//                 } else {
+//                     return null
+//                 }
+//             } else {
+//                 return null
+//             }
+//         } else {
+//
+//             return null
+//         }
+//     }
+//     return fetchAndTransform("https://ftx.com/api/markets", "result", transformer)
+//
+// }
 export const fetchBinanceFuturesUsdM = async () => {
     const transformer = (obj) => {
         if (obj.status === "TRADING" && obj.contractType === "PERPETUAL") {
@@ -320,9 +323,9 @@ export const fetchSymbolsForSource = async (source) => {
         case BINANCEUS:
             symbolArray = await fetchBinance(true);
             break;
-        case FTX:
-            symbolArray = await fetchFtx();
-            break;
+        // case FTX:
+        //     symbolArray = await fetchFtx()
+        //     break;
         case COINBASE:
             symbolArray = await fetchCoinbase();
             break;

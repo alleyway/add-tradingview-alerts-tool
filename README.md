@@ -106,7 +106,7 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 
 #### Download Trading Pairs From Binance/BinanceUS
 
-This command downloads all USDT trading pairs for Binance: 
+This command downloads all USDT trading pairs for Binance: (NOTE: binance is now geofencing some of their endpoints)
 ```yaml 
     ./atat fetch-symbols binance -q usdt
     
@@ -119,17 +119,6 @@ This command downloads all trading pairs for BinanceUS:
 
     # Creates binanceus_symbols.csv
 ```
-
-#### Download Trading Pairs From FTX
-
-You can also use the `--classification` flag to only grab symbols of a certain type (options available are  "spot", "leveraged_token", "futures_perpetual", "futures_dated") 
-
-```yaml
-    ./atat fetch-symbols ftx --classification leveraged_token
-
-    # Creates ftx_leveraged_token_symbols.csv
-```
-
 
 #### Download Trading Pairs From Coinbase
 

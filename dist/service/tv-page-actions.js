@@ -90,10 +90,14 @@ const dropdownXpathQueries = {
     primaryLeft: "//span[@data-name='main-series-select']",
     primaryRight: "//span[@data-name='main-series-plot-select']",
     secondary: "//span[@data-name='operator-select']",
-    tertiaryLeft: "//*[contains(@class, 'bandsRow')]//span[@data-name='start-band-select'][0]",
-    quaternaryLeft: "//*[contains(@class, 'bandsRow')]//span[@data-name='start-band-select'][1]",
-    tertiaryRight: "//*[contains(@class, 'bandsRow')]//span[@data-name='end-band-select'][0]",
-    quaternaryRight: "//*[contains(@class, 'bandsRow')]//span[@data-name='end-band-select'][1]",
+    // Only get listbox when there's either just one value
+    // "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select']"
+    // Or get when there's an upper and lower bound
+    // "//legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']"
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='end-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='end-band-select']",
+    quaternaryLeft: "//legend[text()='Lower Bound']/../..//span[@data-name='start-band-select']",
+    quaternaryRight: "//legend[text()='Lower Bound']/../..//span[@data-name='end-band-select']",
 };
 const dropdownSoundXpathQueries = {
     nameTarget: "//span[@role='button' and @data-name='sound-title-select']",
@@ -102,10 +106,10 @@ const dropdownSoundXpathQueries = {
     durationListItems: "//div[@role='listbox']//span[contains(@class, 'label-')]",
 };
 const inputXpathQueries = {
-    tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[1]",
-    tertiaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[1]",
-    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ')]/div[contains(@class, 'js-number-input')]/input)[2]",
-    quaternaryRight: "(//div[contains(@class, 'tv-alert-dialog__group-item--right ')]/div[contains(@class, 'js-number-input')]/input)[2]",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='start-band-range']",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='end-band-range']",
+    quaternaryLeft: "//legend[text()='Lower Bound']/../..//input[@data-property-id='start-band-range']",
+    quaternaryRight: "//legend[text()='Lower Bound']/../..//input[@data-property-id='end-band-range']",
 };
 const readOnlyInputQueries = {
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[1]//input[@type='text']",

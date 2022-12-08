@@ -3,5 +3,6 @@ import { SelectionError, InvalidSymbolError, AddAlertInvocationError } from "./c
 import { fetchSymbolsForSource } from "./service/exchange-service";
 import { waitForTimeout, atatVersion, isEnvEnabled, styleOverride } from "./service/common-service";
 import log from "./service/log";
-export { launchBrowser, fetchFirstXPath, clickContinueIfWarning, takeScreenshot, configureInterval, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchSymbolsForSource, waitForTimeout, atatVersion, log, isEnvEnabled, SelectionError, InvalidSymbolError, convertIntervalForTradingView, checkForInvalidSymbol, styleOverride, isXpathVisible, AddAlertInvocationError };
+import { soundNames, soundDurations } from "./interfaces";
+export { launchBrowser, fetchFirstXPath, clickContinueIfWarning, takeScreenshot, configureInterval, configureSingleAlertSettings, clickSubmit, addAlert, navigateToSymbol, login, logout, fetchSymbolsForSource, waitForTimeout, atatVersion, log, isEnvEnabled, SelectionError, InvalidSymbolError, convertIntervalForTradingView, checkForInvalidSymbol, styleOverride, isXpathVisible, AddAlertInvocationError, soundDurations, soundNames };
 //# sourceMappingURL=index.js.map

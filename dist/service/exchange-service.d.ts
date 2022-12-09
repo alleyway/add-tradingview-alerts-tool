@@ -16,6 +16,7 @@ export declare const BYBIT_DERIVATIVES = "bybit_derivatives";
 export declare const BYBIT_SPOT = "bybit_spot";
 export declare const BITMEX = "bitmex";
 export declare const SOURCES_AVAILABLE: string[];
+export declare const proxyMaybe: (url: string) => string;
 export declare const fetchBitMex: () => Promise<MasterSymbol[]>;
 export declare const fetchByBitDerivatives: () => Promise<MasterSymbol[]>;
 export declare const fetchByBitSpot: () => Promise<MasterSymbol[]>;

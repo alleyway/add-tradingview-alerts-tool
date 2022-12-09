@@ -46,6 +46,21 @@ const logJson = (obj, name: string = "") => {
 }
 
 
+export const proxyMaybe = (url: string) => {
+
+    if (process.env.PROXY_BASE){
+
+        // parse the url to get the host, path, and query segments
+
+        const realUrl = new URL(url)
+        return `${process.env.PROXY_BASE}/api/proxy${realUrl.search}&host=${realUrl.host}&path=${realUrl.pathname}`
+
+    } else {
+        return url
+    }
+
+}
+
 const fetchAndTransform = async (url, responsePath, transformer: (any) => MasterSymbol) => {
 
     const responseObject = await fetch(url)
@@ -332,7 +347,7 @@ export const fetchBinance = async (isUs: boolean): Promise<MasterSymbol[]> => {
             return null
         }
     }
-    return fetchAndTransform(url, "symbols", transformer)
+    return fetchAndTransform(proxyMaybe(url), "symbols", transformer)
 }
 
 

@@ -1,4 +1,4 @@
-import { fetchByBitDerivatives, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchKrakenFutures, fetchBitMex, fetchOkxSwap } from "./exchange-service";
+import { fetchByBitDerivatives, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap } from "./exchange-service";
 import fs from "fs";
 import path from "path";
 import { isEnvEnabled } from "./common-service";
@@ -46,24 +46,22 @@ describe('Integrated Test of Exchanges', () => {
     //     const results = await fetchFtx()
     //     checkResults(results, 100)
     // });
-    // it('fetchBinanceFuturesUsdM()', async () => {
-    //     const results = await fetchBinanceFuturesUsdM()
-    //     checkResults(results, 100)
-    // });
-    //
-    // it('fetchBinanceFuturesCoinM()', async () => {
-    //     const results = await fetchBinanceFuturesCoinM()
-    //     checkResults(results, 30)
-    // });
+    it('fetchBinanceFuturesUsdM()', async () => {
+        const results = await fetchBinanceFuturesUsdM();
+        checkResults(results, 100);
+    });
+    it('fetchBinanceFuturesCoinM()', async () => {
+        const results = await fetchBinanceFuturesCoinM();
+        checkResults(results, 30);
+    });
     it('fetchBinance(true) //BINANCEUS', async () => {
         const results = await fetchBinance(true);
         checkResults(results, 100);
     });
-    //
-    // it('fetchBinance(false) //BINANCE', async () => {
-    //     const results = await fetchBinance(false)
-    //     checkResults(results, 100)
-    // });
+    it('fetchBinance(false) //BINANCE', async () => {
+        const results = await fetchBinance(false);
+        checkResults(results, 100);
+    });
     it('fetchOkxSpt()', async () => {
         const results = await fetchOkxSpot();
         checkResults(results, 100);

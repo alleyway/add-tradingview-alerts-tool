@@ -269,7 +269,7 @@ export const fetchBinanceFuturesCoinM = async () => {
             return null;
         }
     };
-    return fetchAndTransform("https://dapi.binance.com/dapi/v1/exchangeInfo", "symbols", transformer);
+    return fetchAndTransform(proxyMaybe("https://dapi.binance.com/dapi/v1/exchangeInfo"), "symbols", transformer);
 };
 export const fetchBinance = async (isUs) => {
     const exchange = isUs ? BINANCEUS : BINANCE;

@@ -53,7 +53,7 @@ export const proxyMaybe = (url: string) => {
         // parse the url to get the host, path, and query segments
 
         const realUrl = new URL(url)
-        return `${process.env.PROXY_BASE}/api/proxy${realUrl.search}&host=${realUrl.host}&path=${realUrl.pathname}`
+        return `${process.env.PROXY_BASE}/api/proxy?${realUrl.search}&host=${realUrl.host}&path=${realUrl.pathname}`
 
     } else {
         return url
@@ -312,7 +312,7 @@ export const fetchBinanceFuturesUsdM = async (): Promise<MasterSymbol[]> => {
             return null
         }
     }
-    return fetchAndTransform("https://fapi.binance.com/fapi/v1/exchangeInfo", "symbols", transformer)
+    return fetchAndTransform(proxyMaybe("https://fapi.binance.com/fapi/v1/exchangeInfo"), "symbols", transformer)
 }
 
 export const fetchBinanceFuturesCoinM = async (): Promise<MasterSymbol[]> => {

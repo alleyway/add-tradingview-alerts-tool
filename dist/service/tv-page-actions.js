@@ -124,11 +124,12 @@ const alertActionCorresponding = {
 };
 const clickInputAndDelete = async (page, inputElement) => {
     await inputElement.click();
-    await waitForTimeout(.3);
+    await waitForTimeout(.5);
     /* istanbul ignore next */
     await page.evaluate((el) => {
         el.value = "";
     }, inputElement);
+    await waitForTimeout(.3);
 };
 export const launchBrowser = async (headless, url) => {
     const userDataDir = path.join(process.cwd(), "user_data"); // where chrome will store it's stuff

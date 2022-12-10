@@ -160,11 +160,12 @@ const alertActionCorresponding = {
 const clickInputAndDelete = async (page, inputElement) => {
 
     await inputElement.click()
-    await waitForTimeout(.3)
+    await waitForTimeout(.5)
     /* istanbul ignore next */
     await page.evaluate((el) => {
         el.value = ""
     }, inputElement)
+    await waitForTimeout(.3)
 }
 
 export const launchBrowser = async (headless: boolean, url?: string): Promise<Browser> => {

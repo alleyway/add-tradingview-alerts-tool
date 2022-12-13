@@ -467,9 +467,19 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     }
     if (!!message) {
         log.trace(`Setting message: ${kleur.blue(message)}`);
-        const messageTextarea = await fetchFirstXPath(page, "//textarea[@id='alert-message']");
-        await clickInputAndDelete(page, messageTextarea);
-        await messageTextarea.type(message);
+        try {
+            const messageTextarea = await fetchFirstXPath(page, "//textarea[@id='alert-message']", 1000, false);
+            await clickInputAndDelete(page, messageTextarea);
+            await messageTextarea.type(message);
+        }
+        catch (e) {
+            if (e.constructor.name === "TimeoutError") {
+                log.warn(`No message box found, but message specified: ${message}`);
+            }
+            else {
+                throw e;
+            }
+        }
     }
     await waitForTimeout(.2);
     const notificationsTab = await fetchFirstXPath(page, "//button[@data-name='notifications']");

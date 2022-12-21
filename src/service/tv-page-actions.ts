@@ -5,7 +5,7 @@ import kleur from "kleur";
 import {AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes";
 import RegexParser from "regex-parser"
 import {accessSync, constants, writeFileSync} from "fs";
-import puppeteer, {Browser} from "puppeteer";
+import puppeteer, {Browser, executablePath} from "puppeteer";
 import path from "path";
 import {mkdir} from "fs/promises";
 import exp from "constants";
@@ -180,6 +180,7 @@ export const launchBrowser = async (headless: boolean, url?: string): Promise<Br
     }
 
     return puppeteer.launch({
+        executablePath: executablePath(),
         headless: headless, userDataDir,
         defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
         args: ['--no-sandbox',

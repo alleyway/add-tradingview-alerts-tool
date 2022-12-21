@@ -4,7 +4,7 @@ import kleur from "kleur";
 import { AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes";
 import RegexParser from "regex-parser";
 import { accessSync, constants, writeFileSync } from "fs";
-import puppeteer from "puppeteer";
+import puppeteer, { executablePath } from "puppeteer";
 import path from "path";
 import { mkdir } from "fs/promises";
 // data-dialog-name="gopro"
@@ -141,6 +141,7 @@ export const launchBrowser = async (headless, url) => {
         await mkdir(userDataDir);
     }
     return puppeteer.launch({
+        executablePath: executablePath(),
         headless: headless, userDataDir,
         defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
         args: ['--no-sandbox',

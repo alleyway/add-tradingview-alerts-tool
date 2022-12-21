@@ -1,8 +1,8 @@
 export declare const soundNames: readonly ["Thin", "3 Notes Reverb", "Alarm Clock", "Beep-beep", "Calling", "Chirpy", "Fault", "Hand Bell"];
-export declare type SoundName = typeof soundNames[number];
+export type SoundName = typeof soundNames[number];
 export declare const isSoundName: (string: unknown) => string is "Thin" | "3 Notes Reverb" | "Alarm Clock" | "Beep-beep" | "Calling" | "Chirpy" | "Fault" | "Hand Bell";
 export declare const soundDurations: readonly ["Once", "5 seconds", "10 seconds", "30 seconds", "Minute"];
-export declare type SoundDuration = typeof soundDurations[number];
+export type SoundDuration = typeof soundDurations[number];
 export declare const isSoundDuration: (string: unknown) => string is "Once" | "5 seconds" | "10 seconds" | "30 seconds" | "Minute";
 export interface ISingleAlertSettings {
     condition: {
@@ -40,7 +40,7 @@ export declare enum Classification {
     FUTURES_PERPETUAL = "FUTURES_PERPETUAL",
     FUTURES_DATED = "FUTURES_DATED"
 }
-export declare type ClassificationType = keyof typeof Classification;
+export type ClassificationType = keyof typeof Classification;
 export interface IBaseSymbol {
     source: string;
     id: string;

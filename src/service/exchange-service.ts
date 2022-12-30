@@ -1,5 +1,5 @@
 import {MasterSymbol} from "../classes";
-import axios, {AxiosRequestConfig} from "axios";
+import fetch from "node-fetch"
 import log from "./log";
 import kleur from "kleur";
 import fs from "fs";
@@ -63,9 +63,9 @@ export const proxyMaybe = (url: string) => {
 
 const fetchAndTransform = async (url, responsePath, transformer: (any) => MasterSymbol) => {
 
-    const responseObject = await fetch(url)
+    const responseObject = await (await fetch(url)).json()
 
-    const resultsArray = responsePath ? responseObject.data[responsePath] : responseObject.data
+    const resultsArray = responsePath ? responseObject[responsePath] : responseObject
 
     const masterSymbols: MasterSymbol[] = []
 
@@ -87,15 +87,6 @@ const fetchAndTransform = async (url, responsePath, transformer: (any) => Master
     return masterSymbols
 }
 
-const fetch = (url: string) => {
-
-    const options: AxiosRequestConfig = {
-        method: "GET",
-        url: url
-    };
-
-    return axios(options)
-}
 
 export const fetchBitMex = async (): Promise<MasterSymbol[]> => {
 
@@ -161,7 +152,7 @@ export const fetchKraken = async (): Promise<MasterSymbol[]> => {
 
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
 
-    const responseObject = await resp.data
+    const responseObject = await resp.json()
 
     // @ts-ignore
     const symbolsObject = responseObject.result

@@ -2,9 +2,6 @@
 module.exports = {
     rootDir: "./",
     globals: {
-        'ts-jest': {
-            useESM: true,
-        },
         __DEV__: true,
         __PROD__: false
     },
@@ -25,7 +22,14 @@ module.exports = {
     ],
     setupFiles: ["dotenv/config"],
     transform: {
-        "common-service\\.ts": "babel-jest",
+        // "common-service\\.ts": "babel-jest",
+        '^.+\\.tsx?$': [
+            "ts-jest",
+            {
+                useESM: true,
+            }
+        ]
+
     },
     extensionsToTreatAsEsm: [".ts"],
     // moduleNameMapper: {

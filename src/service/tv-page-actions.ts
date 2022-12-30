@@ -292,6 +292,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     await takeScreenshot(page, "alert_begin_configure")
 
     const selectFromDropDown = async (conditionToMatchArg, selector: string) => {
+        log.trace(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`)
+
+        await page.waitForXPath(selector, {timeout: 8000})
+        const elements = await page.$x(selector)
+
+        if (elements.length == 0) {
+            log.warn("zero dropdown options found with selector")
+            await takeScreenshot(page, "zero_dropdown_options")
+        }
+
         let conditionToMatch = conditionToMatchArg
         let targetOccurrence = 0
         const match = conditionToMatch.match(/(.*?)\[(\d+)\]$/)
@@ -305,12 +315,6 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`)
 
-        await page.waitForXPath(selector, {timeout: 8000})
-        const elements = await page.$x(selector)
-
-        if (elements.length == 0) {
-            await takeScreenshot(page, "zero_dropdown_options")
-        }
         let found = false
         let foundOptions = []
         let occurrenceCount = 0
@@ -353,7 +357,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
                 await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//span[contains(@class, 'selectItem-')]")
+                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/span")
                 await waitForTimeout(.4, "after selecting from dropdown");
 
             } catch (e) {

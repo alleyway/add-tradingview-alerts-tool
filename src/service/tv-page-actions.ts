@@ -578,7 +578,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     await waitForTimeout(.2);
 
-    const notificationsTab = await fetchFirstXPath(page, "//button[@data-name='notifications']")
+    const notificationsTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__notifications']")
 
     await notificationsTab.click()
 

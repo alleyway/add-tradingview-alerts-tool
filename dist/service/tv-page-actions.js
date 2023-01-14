@@ -287,7 +287,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`);
                 targetElement.click();
                 await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/span");
+                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div/span");
                 await waitForTimeout(.4, "after selecting from dropdown");
             }
             catch (e) {
@@ -485,7 +485,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         }
     }
     await waitForTimeout(.2);
-    const notificationsTab = await fetchFirstXPath(page, "//button[@data-name='notifications']");
+    const notificationsTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__notifications']");
     await notificationsTab.click();
     await waitForTimeout(.4);
     // alert actions

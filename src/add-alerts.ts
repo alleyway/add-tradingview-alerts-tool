@@ -238,7 +238,7 @@ export const addAlertsMain = async (configFileName) => {
 
                 const singleAlertSettings: ISingleAlertSettings = {
                     name: makeReplacements(row.alert_name || row.name || alertConfig.name), // TODO: deprecate "name" one day
-                    message: makeReplacements(alertConfig.message),
+                    message: makeReplacements(alertConfig.message).trimEnd(),
                     condition: {
                         primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
                         primaryRight: makeReplacements(alertConfig.condition.primaryRight),

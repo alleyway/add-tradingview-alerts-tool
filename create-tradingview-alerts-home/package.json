@@ -13,9 +13,9 @@
     "release-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta'"
   },
   "devDependencies": {
-    "@release-it/bumper": "^4.0.0",
+    "@release-it/bumper": "^4.0.2",
     "release-it": "^15.6.0",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "kleur": "^4.1.5",

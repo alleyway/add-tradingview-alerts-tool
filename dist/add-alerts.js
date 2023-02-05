@@ -170,7 +170,7 @@ export const addAlertsMain = async (configFileName) => {
                 await waitForTimeout(2, "after navigating to ticker");
                 const singleAlertSettings = {
                     name: makeReplacements(row.alert_name || row.name || alertConfig.name),
-                    message: makeReplacements(alertConfig.message).trimEnd(),
+                    message: makeReplacements(alertConfig.message).trimRight(),
                     condition: {
                         primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),
                         primaryRight: makeReplacements(alertConfig.condition.primaryRight),

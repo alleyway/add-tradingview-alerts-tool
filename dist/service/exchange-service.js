@@ -1,5 +1,4 @@
 import { MasterSymbol } from "../classes";
-import fetch from "node-fetch";
 import log from "./log";
 import kleur from "kleur";
 import fs from "fs";

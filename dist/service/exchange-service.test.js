@@ -1,4 +1,4 @@
-import { fetchByBitDerivatives, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap } from "./exchange-service";
+import { fetchByBitInverse, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap, fetchByBitLinear } from "./exchange-service";
 import fs from "fs";
 import path from "path";
 import { isEnvEnabled } from "./common-service";
@@ -14,9 +14,13 @@ describe('Integrated Test of Exchanges', () => {
         const results = await fetchBitMex();
         checkResults(results, 30);
     });
-    it('fetchByBitDerivatives()', async () => {
-        const results = await fetchByBitDerivatives();
-        checkResults(results, 100);
+    it('fetchByBitInverse()', async () => {
+        const results = await fetchByBitInverse();
+        checkResults(results, 14);
+    });
+    it('fetchByBitLinear()', async () => {
+        const results = await fetchByBitLinear();
+        checkResults(results, 220);
     });
     it('fetchByBitSpot()', async () => {
         const results = await fetchByBitSpot();

@@ -147,10 +147,16 @@ This command downloads all trading pairs for BinanceUS:
     ./atat fetch-symbols okx_spot -q usdt
 ```
 
-#### Download Trading Pairs From ByBit
+#### Download Trading Pairs From ByBit Inverse
 
 ```bash
-    ./atat fetch-symbols bybit_derivatives
+    ./atat fetch-symbols bybit_inverse
+```
+
+#### Download Trading Pairs From ByBit Linear
+
+```bash
+    ./atat fetch-symbols bybit_linear
 ```
 
 

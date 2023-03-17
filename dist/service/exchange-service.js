@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { Classification } from "../interfaces";
 import { isEnvEnabled } from "./common-service";
+import get from "lodash.get";
 export const BINANCE = "binance";
 export const BINANCE_FUTURES_USDM = "binance_futures_usdm";
 export const BINANCE_FUTURES_COINM = "binance_futures_coinm";
@@ -19,8 +20,9 @@ export const KUCOIN_FUTURES = "kucoin_futures"; // not on TV yet
 export const OKX_SPOT = "okx_spot"; //formerly OKEX
 export const OKX_SWAP = "okx_swap"; //formerly OKEX
 export const OKX_FUTURES = "okx_futures"; //formerly OKEX
-export const BYBIT_DERIVATIVES = "bybit_derivatives";
-export const BYBIT_SPOT = "bybit_spot"; // not on TV yet
+export const BYBIT_INVERSE = "bybit_inverse";
+export const BYBIT_LINEAR = "bybit_linear";
+export const BYBIT_SPOT = "bybit_spot";
 export const BITMEX = "bitmex"; // unable to do multiple pairs in 3commas
 export const SOURCES_AVAILABLE = [
     BINANCE,
@@ -29,12 +31,14 @@ export const SOURCES_AVAILABLE = [
     BINANCEUS,
     BITTREX,
     COINBASE,
+    BYBIT_INVERSE,
+    BYBIT_LINEAR,
+    // BYBIT_SPOT, // spot is STILL not on tradingview
     // FTX,
     KRAKEN,
     KUCOIN,
     OKX_SPOT,
-    OKX_SWAP,
-    BYBIT_DERIVATIVES
+    OKX_SWAP
 ];
 const logJson = (obj, name = "") => {
     log.trace(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`);
@@ -51,7 +55,7 @@ export const proxyMaybe = (url) => {
 };
 const fetchAndTransform = async (url, responsePath, transformer) => {
     const responseObject = await (await fetch(url)).json();
-    const resultsArray = responsePath ? responseObject[responsePath] : responseObject;
+    const resultsArray = responsePath ? get(responseObject, responsePath) : responseObject;
     const masterSymbols = [];
     log.info(`${resultsArray.length} results returned from API`);
     let count = 0;
@@ -71,7 +75,7 @@ const fetchAndTransform = async (url, responsePath, transformer) => {
 export const fetchBitMex = async () => {
     const transformer = (obj) => {
         if (obj.expiry === null) {
-            return new MasterSymbol(obj, BITMEX, obj.symbol, obj.quoteCurrency, `BITMEX:${obj.symbol}`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, BITMEX, obj.symbol, obj.quoteCurrency, `BITMEX:${obj.symbol}.P`, Classification.FUTURES_PERPETUAL);
         }
         else {
             return null;
@@ -79,42 +83,72 @@ export const fetchBitMex = async () => {
     };
     return fetchAndTransform("https://www.bitmex.com/api/v1/instrument/active", null, transformer);
 };
-export const fetchByBitDerivatives = async () => {
-    // Inverse, usdt perp, and inverse futures all share same endpoint
-    // https://bybit-exchange.github.io/docs/inverse/#t-querysymbol
+export const fetchByBitInverse = async () => {
     const transformer = (obj) => {
         if (obj.status === "Trading") {
-            let classification = Classification.FUTURES_PERPETUAL;
-            if (obj.alias.match(/\d{4}$/)) {
-                classification = Classification.FUTURES_DATED;
+            let classification;
+            let symbol = obj.symbol;
+            let tvSuffix = "";
+            if (obj.contractType == "InversePerpetual") {
+                classification = Classification.FUTURES_PERPETUAL;
+                tvSuffix = ".P";
             }
-            return new MasterSymbol(obj, BYBIT_DERIVATIVES, obj.name, obj.quote_currency, `BYBIT:${obj.alias}`, classification);
+            else if (obj.contractType == "InverseFutures") {
+                classification = Classification.FUTURES_DATED;
+                const match = obj.symbol.match(/(.*?)(\d\d)$/);
+                symbol = `${match[1]}20${match[2]}`;
+            }
+            else {
+                log.error(`Found unknown contract type: ${obj.contractType}`);
+            }
+            return new MasterSymbol(obj, BYBIT_INVERSE, symbol, obj.quoteCoin, `BYBIT:${symbol}${tvSuffix}`, classification);
         }
         else {
             //logJson(obj, "ByBit Discarded:")
             return null;
         }
     };
-    return fetchAndTransform("https://api.bybit.com/v2/public/symbols", "result", transformer);
+    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=inverse", "result.list", transformer);
+};
+export const fetchByBitLinear = async () => {
+    const transformer = (obj) => {
+        if (obj.status === "Trading") {
+            let classification;
+            let symbol = obj.symbol;
+            if (obj.contractType == "LinearPerpetual") {
+                classification = Classification.FUTURES_PERPETUAL;
+            }
+            else {
+                log.error(`Found unknown contract type: ${obj.contractType}`);
+            }
+            return new MasterSymbol(obj, BYBIT_LINEAR, symbol, obj.quoteCoin, `BYBIT:${symbol}.P`, classification);
+        }
+        else {
+            //logJson(obj, "ByBit Discarded:")
+            return null;
+        }
+    };
+    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=linear", "result.list", transformer);
 };
 export const fetchByBitSpot = async () => {
-    // warning not yet on TV
+    // actually these aren't on tradingview yet, even in march of 2023
     const transformer = (obj) => {
-        return new MasterSymbol(obj, "BYBIT", obj.baseCurrency, obj.quoteCurrency, `BYBIT_SPOT:${obj.alias}`);
+        return new MasterSymbol(obj, BYBIT_SPOT, obj.baseCoin, obj.quoteCoin, `BYBIT:${obj.symbol}`);
     };
-    return fetchAndTransform("https://api.bybit.com/spot/v1/symbols", "result", transformer);
+    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000", "result.list", transformer);
 };
 export const fetchKucoin = async () => {
     const transformer = (obj) => {
         if (obj.enableTrading) {
-            return new MasterSymbol(obj, KUCOIN, obj.baseCurrency, obj.quoteCurrency);
+            const symbol = obj.name.replace("-", "");
+            return new MasterSymbol(obj, KUCOIN, obj.baseCurrency, obj.quoteCurrency, `KUCOIN:${symbol}`);
         }
         else {
             //logJson(obj, "Kucoin Discarded:")
             return null;
         }
     };
-    return fetchAndTransform("https://api.kucoin.com/api/v1/symbols", "data", transformer);
+    return fetchAndTransform("https://api.kucoin.com/api/v2/symbols", "data", transformer);
 };
 export const fetchKraken = async () => {
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs");
@@ -160,7 +194,7 @@ export const fetchKrakenFutures = async () => {
             let classification = null;
             if (obj.tag === "perpetual") {
                 classification = Classification.FUTURES_PERPETUAL;
-                return new MasterSymbol(obj, KRAKEN_FUTURES, obj.symbol, quoteCurrency, `KRAKEN:${baseCurrency}${quoteCurrency}PERP`, classification);
+                return new MasterSymbol(obj, KRAKEN_FUTURES, obj.symbol, quoteCurrency, `KRAKEN:${baseCurrency}${quoteCurrency}.PM`, classification);
             }
             else {
                 // TODO: dated futures
@@ -178,7 +212,7 @@ export const fetchBittrex = async () => {
     const transformer = (obj) => {
         if (obj.status === "ONLINE") {
             const classification = (obj.baseCurrencySymbol.match(/X\s(?:BULL|BEAR)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT;
-            return new MasterSymbol(obj, BITTREX, obj.quoteCurrencySymbol, obj.baseCurrencySymbol, null, classification);
+            return new MasterSymbol(obj, BITTREX, obj.baseCurrencySymbol, obj.quoteCurrencySymbol, null, classification);
         }
         else {
             //logJson(obj, "Bittrex Discarded:")
@@ -197,7 +231,7 @@ export const fetchCoinbase = async () => {
             return null;
         }
     };
-    return fetchAndTransform("https://api.pro.coinbase.com/products", null, transformer);
+    return fetchAndTransform("https://api.exchange.coinbase.com/products", null, transformer);
 };
 // export const fetchFtx = async (): Promise<MasterSymbol[]> => {
 //
@@ -254,7 +288,7 @@ export const fetchBinanceFuturesUsdM = async () => {
 export const fetchBinanceFuturesCoinM = async () => {
     const transformer = (obj) => {
         if (obj.contractStatus === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}`, Classification.FUTURES_PERPETUAL);
         }
         else {
             // logJson(obj, "Binance Futures Discarded:")
@@ -291,11 +325,12 @@ export const fetchOkxSpot = async () => {
 };
 export const fetchOkxSwap = async () => {
     const transformer = (obj) => {
+        const symbol = obj.instFamily.replace("-", "");
         if (obj.ctType === "inverse") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.settleCcy}PERP`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, OKX_SWAP, symbol, obj.ctValCcy, `OKX:${symbol}.P`, Classification.FUTURES_PERPETUAL);
         }
         else if (obj.ctType === "linear") {
-            return new MasterSymbol(obj, OKX_SWAP, obj.instId, obj.ctValCcy, `OKEX:${obj.ctValCcy}${obj.settleCcy}PERP`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, OKX_SWAP, symbol, obj.ctValCcy, `OKX:${obj.ctValCcy}${obj.settleCcy}.P`, Classification.FUTURES_PERPETUAL);
         }
         else {
             log.warn(`unable to parse ctType: ${obj.ctType}`);
@@ -349,8 +384,14 @@ export const fetchSymbolsForSource = async (source) => {
         case OKX_SWAP:
             symbolArray = await fetchOkxSwap();
             break;
-        case BYBIT_DERIVATIVES:
-            symbolArray = await fetchByBitDerivatives();
+        case BYBIT_SPOT:
+            symbolArray = await fetchByBitSpot();
+            break;
+        case BYBIT_LINEAR:
+            symbolArray = await fetchByBitLinear();
+            break;
+        case BYBIT_INVERSE:
+            symbolArray = await fetchByBitInverse();
             break;
         default:
             log.error(`Invalid source specified: ${kleur.yellow(source)} \n\n Choose one of the following:\n\n ${kleur.green(SOURCES_AVAILABLE.join(", "))}`);

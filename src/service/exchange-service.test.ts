@@ -1,5 +1,5 @@
 import {
-    fetchByBitDerivatives,
+    fetchByBitInverse,
     fetchKucoin,
     fetchKraken,
     fetchBittrex,
@@ -10,7 +10,7 @@ import {
     fetchByBitSpot,
     fetchBinanceFuturesCoinM,
     fetchKrakenFutures,
-    fetchBitMex, fetchOkxSwap
+    fetchBitMex, fetchOkxSwap, fetchByBitLinear
 } from "./exchange-service";
 import {MasterSymbol} from "../classes";
 import fs from "fs";
@@ -35,16 +35,20 @@ describe('Integrated Test of Exchanges', () => {
         checkResults(results, 30)
     });
 
-    it('fetchByBitDerivatives()', async () => {
-        const results = await fetchByBitDerivatives()
-        checkResults(results, 100)
+    it('fetchByBitInverse()', async () => {
+        const results = await fetchByBitInverse()
+        checkResults(results, 14)
+    });
+
+    it('fetchByBitLinear()', async () => {
+        const results = await fetchByBitLinear()
+        checkResults(results, 220)
     });
 
     it('fetchByBitSpot()', async () => {
         const results = await fetchByBitSpot()
         checkResults(results, 100)
     });
-
 
     it('fetchKucoin()', async () => {
         const results = await fetchKucoin()

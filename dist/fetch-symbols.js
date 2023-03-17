@@ -3,6 +3,7 @@ import { fetchSymbolsForSource } from "./service/exchange-service";
 import { writeToStream } from "fast-csv";
 import log from "./service/log";
 import { Classification } from "./interfaces";
+import kleur from "kleur";
 const write = (stream, rows, options) => {
     return new Promise((res, rej) => {
         writeToStream(stream, rows, options)
@@ -46,6 +47,6 @@ export const fetchSymbolsMain = async (source, quoteAssetFilter, classificationF
     const outputPath = `${formattedExchange}${classificationFilter ? "_" + classificationFilter.toLowerCase() : ""}${quoteAssetFilter ? "_" + quoteAssetFilter.toLowerCase() : ""}_symbols.csv`;
     const outStream = fs.createWriteStream(outputPath);
     await write(outStream, rows, { headers: true });
-    log.success(`Wrote ${rows.length} rows to: ${outputPath}`);
+    log.success(`Wrote ${rows.length} rows to: ${kleur.blue(outputPath)}`);
 };
 //# sourceMappingURL=fetch-symbols.js.map

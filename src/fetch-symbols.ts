@@ -3,6 +3,7 @@ import {fetchSymbolsForSource} from "./service/exchange-service";
 import {FormatterOptionsArgs, writeToStream, FormatterRow} from "fast-csv";
 import log from "./service/log";
 import {Classification} from "./interfaces";
+import kleur from "kleur";
 
 
 const write = (stream: NodeJS.WritableStream, rows: FormatterRow[], options: FormatterOptionsArgs<FormatterRow, FormatterRow>): Promise<void> => {
@@ -64,5 +65,5 @@ export const fetchSymbolsMain = async (source: string, quoteAssetFilter?: string
 
     await write(outStream, rows, {headers: true})
 
-    log.success(`Wrote ${rows.length} rows to: ${outputPath}`)
+    log.success(`Wrote ${rows.length} rows to: ${kleur.blue(outputPath)}`)
 }

@@ -11,6 +11,8 @@ import { InvalidSymbolError } from "./classes";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
         const rows = [];
+        if (!existsSync(filename))
+            reject(`File specified in config was not found: ${kleur.yellow(filename)}`);
         try {
             const readStream = createReadStream(filename);
             readStream
@@ -50,6 +52,7 @@ export const addAlertsMain = async (configFileName) => {
     let blackListRows = [];
     if (config.files.exclude) {
         try {
+            log.info(`${kleur.gray("Reading blacklist file: ")}${kleur.cyan(config.files.exclude)}`);
             blackListRows = await readFilePromise(config.files.exclude);
             if (blackListRows.length > 0) {
                 if (!blackListRows[0].symbol) {
@@ -65,11 +68,11 @@ export const addAlertsMain = async (configFileName) => {
     }
     let symbolRows = [];
     try {
-        log.trace(`${kleur.gray("Reading input file: ")}${kleur.cyan(config.files.input)}`);
+        log.info(`${kleur.gray("Reading input file: ")}${kleur.cyan(config.files.input)}`);
         symbolRows = await readFilePromise(config.files.input);
     }
     catch (e) {
-        log.fatal(`Unable to open file specified in config: ${config.files.input}`);
+        log.fatal(`Unable to open file specified in config: ${kleur.yellow(config.files.input)}`);
         process.exit(1);
     }
     const firstRow = symbolRows[0];

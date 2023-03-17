@@ -31,9 +31,9 @@ alert:
       enabled: true
       name: "Thin"
       duration: "Once"
-  # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|base|quote}}
-  # name: "MI dev3 for {{base}} {{quote}}"
-  # indentation matters! {{quote}} and {{base}} are swapped out for quote asset(eg. USDT) and the base (eg. BTC)
+  # alert name is optional - can override in csv if you add a "name" column. can use {{symbol|instrument|quote_asset}}
+  # name: "MI dev3 for {{instrument}} {{quote_asset}}"
+  # indentation matters! {{quote_asset}} and {{instrument}} are swapped out for quote asset(eg. USDT) and the instrument (eg. BTC)
   message: >
     {
          "message_type": "bot",

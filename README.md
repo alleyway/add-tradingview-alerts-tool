@@ -107,66 +107,50 @@ Creates CSV file for use as input (see above config) for supported exchanges. Wa
 #### Download Trading Pairs From Binance/BinanceUS
 
 This command downloads all USDT trading pairs for Binance: (NOTE: binance is now geofencing some of their endpoints)
-```yaml 
-    ./atat fetch-symbols binance -q usdt
-    
-    # Creates binance_usdt_symbols.csv    
+```bash 
+    ./atat fetch-symbols binance -q usdt        
 ```
 
 This command downloads all trading pairs for BinanceUS:
-```yaml
+```bash
     ./atat fetch-symbols binanceus
-
-    # Creates binanceus_symbols.csv
 ```
 
 #### Download Trading Pairs From Coinbase
 
-```yaml
+```bash
     ./atat fetch-symbols coinbase -q usd
-
-    # Creates coinbase_usd_symbols.csv
 ```
 
 
 #### Download Trading Pairs From Bittrex
 
-```yaml
+```bash
     ./atat fetch-symbols bittrex -q btc
-
-    # Creates bittrex_btc_symbols.csv
 ```
 
 #### Download Trading Pairs From Kraken
 
-```yaml
+```bash
     ./atat fetch-symbols kraken -q usd
-
-    # Creates kraken_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From KuCoin
 
-```yaml
+```bash
     ./atat fetch-symbols kucoin -q usdt
-
-    # Creates kucoin_usd_symbols.csv
 ```
 
 #### Download Trading Pairs From OKX (formerly OKEx)
 
-```yaml
+```bash
     ./atat fetch-symbols okx_spot -q usdt
-
-    # Creates okx_spot_usdt_symbols.csv
 ```
 
 #### Download Trading Pairs From ByBit
 
-```yaml
+```bash
     ./atat fetch-symbols bybit_derivatives
-
-    # Creates bybit_derivatives_symbols.csv
 ```
 
 
@@ -186,8 +170,9 @@ You must actually create an alert once with those options, before they become de
 
 NOTE: You'll need to log into TradingView the first time you run the script, then you'll need to close the browser and re-run the command 
 
-    ./atat add-alerts
-
+```bash
+./atat add-alerts
+```
 You can stop the script in Terminal/PowerShell by pressing Ctrl-C
     
 If the tool gets interrupted for some reason, you can remove the rows of already-added alert symbols (from the .csv) and re-run

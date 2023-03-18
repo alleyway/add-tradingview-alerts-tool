@@ -38,19 +38,25 @@ Watch as this tool enters your TradingView alerts automatically.
 
 MacOS/Windows/Linux
 
-[Install NodeJS](https://nodejs.org/en/) (recommended version: 18.12.1)
+[Install NodeJS](https://nodejs.org/en/) (recommended version: 18.x)
 
 ## Installation
 
 Open Terminal/PowerShell and run the following:
 
-    # make sure you're running at least node version 18
-    node -v 
+__Make sure you're running at least node version 18__
 
-    # create your tradingview-alerts-home directory and/or upgrade version
-    npx @alleyway/create-tradingview-alerts-home
-    
-    # Follow prompts to initialize your tradingview-alerts-home
+```shell
+node -v
+```
+     
+__Create your tradingview-alerts-home directory and/or upgrade version__
+__(it will prompt to create a subdirectory and install ATAT)__
+
+```shell
+npx @alleyway/create-tradingview-alerts-home@latest
+```
+
     
 Edit your config.yml file (if you're passing signals for automated trading such as 3commas, configure those details here) 
 
@@ -237,7 +243,7 @@ alert:
 * "atat" command not found? From your tradingview-alerts-home directory run the following:
 
 
-    npx @alleyway/create-tradingview-alerts-home
+    npx @alleyway/create-tradingview-alerts-home@latest
 
 * Any other hiccups? [File an issue](https://github.com/alleyway/add-tradingview-alerts-tool/issues/new)
 

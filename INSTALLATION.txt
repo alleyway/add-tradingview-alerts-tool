@@ -1,11 +1,11 @@
-1) Make sure you have node version 14.16.0 or higher installed
+1) Make sure you have node version 18.x installed
 
     node --version
 
 
 2) Run the global installation command which will ask to install to a subdirectory called "tradingview-alerts-home"
 
-    npx @alleyway/create-tradingview-alerts-home
+    npx @alleyway/create-tradingview-alerts-home@latest
 
 
 

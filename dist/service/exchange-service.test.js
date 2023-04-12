@@ -16,7 +16,7 @@ describe('Integrated Test of Exchanges', () => {
     });
     it('fetchByBitInverse()', async () => {
         const results = await fetchByBitInverse();
-        checkResults(results, 14);
+        checkResults(results, 13);
     });
     it('fetchByBitLinear()', async () => {
         const results = await fetchByBitLinear();

@@ -275,7 +275,7 @@ export const fetchCoinbase = async () => {
 export const fetchBinanceFuturesUsdM = async () => {
     const transformer = (obj) => {
         if (obj.status === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_USDM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}PERP`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, BINANCE_FUTURES_USDM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`, Classification.FUTURES_PERPETUAL);
         }
         else {
             // logJson(obj, "Binance Futures Discarded:")
@@ -288,7 +288,7 @@ export const fetchBinanceFuturesUsdM = async () => {
 export const fetchBinanceFuturesCoinM = async () => {
     const transformer = (obj) => {
         if (obj.contractStatus === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}`, Classification.FUTURES_PERPETUAL);
+            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset, `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`, Classification.FUTURES_PERPETUAL);
         }
         else {
             // logJson(obj, "Binance Futures Discarded:")

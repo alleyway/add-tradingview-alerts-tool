@@ -492,7 +492,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
         if (!!actions && !!actions[configKey] !== undefined) {
             await waitForTimeout(.3);
-            const el = await fetchFirstXPath(page, `//span[@data-name='${elementInputName}']//input`);
+            const el = await fetchFirstXPath(page, `//input[@data-name='${elementInputName}']`);
             /* istanbul ignore next */
             const isChecked = await page.evaluate(element => element.checked, el);
             if (configKey === "webhook") {

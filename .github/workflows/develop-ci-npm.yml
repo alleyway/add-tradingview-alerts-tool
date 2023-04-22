@@ -1,4 +1,4 @@
-name: Publish Package to npmjs
+name: Publish CI Package to npmjs
 on:
   push:
     branches:

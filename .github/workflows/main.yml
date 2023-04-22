@@ -17,8 +17,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install -g npm
       - run: npm ci
-      - run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> .npmrc
-      - run: echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
+      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+      - run: echo "email=${{ secrets.NPM_PUBLISH_EMAIL }}" >> .npmrc
       - run: echo always-auth=true >> .npmrc
       - run: echo provenance=true >> .npmrc
       - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}

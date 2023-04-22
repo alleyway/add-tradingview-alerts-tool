@@ -1,0 +1,27 @@
+name: Publish to NPM on develop (tag ci)
+on:
+  push:
+    tags:
+      - '*-beta*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm
+      - run: npm ci
+      - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+      - run: echo "email=${{ secrets.NPM_PUBLISH_EMAIL }}" >> .npmrc
+      - run: echo always-auth=true >> .npmrc
+      - run: echo provenance=true >> .npmrc
+      - run: npx release-it --preRelease=beta --config .release-it.beta.json --ci --no-git --verbose
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_PUBLISH_EMAIL: ${{ secrets.NPM_PUBLISH_EMAIL }}

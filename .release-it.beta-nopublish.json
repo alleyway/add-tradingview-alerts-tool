@@ -1,0 +1,14 @@
+{
+  "git": {
+    "requireCleanWorkingDir": true
+  },
+  "npm": {
+    "publish": false,
+    "ignoreVersion": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": "src/manifest.json"
+    }
+  }
+}

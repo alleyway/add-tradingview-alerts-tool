@@ -5,7 +5,7 @@ on:
       - develop
 jobs:
   build:
-    runs-on: alleywayapps/atat-ci-image:v523
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write

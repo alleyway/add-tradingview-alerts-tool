@@ -49,7 +49,7 @@
     "pacote": "^15.1.2",
     "puppeteer": "^19.8.5",
     "regex-parser": "^2.2.11",
-    "semver": "^7.3.8",
+    "semver": "^7.5.0",
     "yaml": "^2.2.1"
   },
   "devDependencies": {

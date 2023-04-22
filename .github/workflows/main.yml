@@ -1,10 +1,11 @@
 name: Publish Package to npmjs
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - develop
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: alleywayapps/atat-ci-image:v523
     permissions:
       contents: read
       id-token: write
@@ -14,8 +15,11 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install -g npm
-      - run: npm ci
-      - run: npm publish --provenance --access public
+      - run: echo "//registry.npmjs.org/:_authToken=${NPM_PUBLISH_KEY}" >> .npmrc
+      - run: echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
+      - run: echo always-auth=true >> .npmrc
+      - run: echo provenance=true >> .npmrc
+      - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_id }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_PUBLISH_KEY: ${{ secrets.NPM_PUBLISH_KEY }}
+          NPM_PUBLISH_EMAIL: ${{ secrets.NPM_PUBLISH_EMAIL }}

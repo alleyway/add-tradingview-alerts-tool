@@ -1,4 +1,4 @@
-name: Publish CI Package to npmjs
+name: Publish to NPM on develop (tag ci)
 on:
   push:
     branches:

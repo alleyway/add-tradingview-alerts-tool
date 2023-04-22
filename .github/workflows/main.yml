@@ -15,6 +15,8 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g npm
+      - run: npm ci
       - run: echo "//registry.npmjs.org/:_authToken=${NPM_PUBLISH_KEY}" >> .npmrc
       - run: echo "email=${NPM_PUBLISH_EMAIL}" >> .npmrc
       - run: echo always-auth=true >> .npmrc

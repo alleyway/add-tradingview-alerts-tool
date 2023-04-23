@@ -7,7 +7,7 @@ image: alleywayapps/atat-ci-image:v523
 stages:
   - build
   - test
-#  - deploy
+  - deploy
 
 
 build_image:

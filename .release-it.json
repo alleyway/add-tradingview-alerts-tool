@@ -1,6 +1,6 @@
 {
   "github": {
-    "release": true
+    "release": false
   },
   "plugins": {
     "@release-it/bumper": {

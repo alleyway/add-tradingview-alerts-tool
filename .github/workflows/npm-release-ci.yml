@@ -1,4 +1,4 @@
-name: Publish to NPM on develop (tag ci)
+name: Publish to NPM Release
 on:
   release:
     types: [created]

@@ -9,10 +9,5 @@
     "publish": true,
     "ignoreVersion": false,
     "skipChecks": true
-  },
-  "plugins": {
-    "@release-it/bumper": {
-      "out": "src/manifest.json"
-    }
   }
 }

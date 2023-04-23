@@ -65,5 +65,4 @@ RUN  npm install npm@9.6.5 -g \
 # Install Puppeteer under /node_modules so it's available system-wide
      && npm install -g puppeteer@19.10.1 --unsafe-perm=true
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
-
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

@@ -1,3 +1,3 @@
-declare const log: import("consola/dist/consola-3fef035a").a;
+declare const log: import("consola").Consola;
 export declare const logLogInfo: () => void;
 export default log;

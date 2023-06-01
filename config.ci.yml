@@ -1,0 +1,37 @@
+files:
+  input: /Users/mlake/alleyway/add-tradingview-alerts-tool/ci_symbols.csv
+  exclude: blacklist.csv
+tradingview:
+  chartUrl: https://www.tradingview.com/chart/woMcsJSE/
+  interval: 4h
+  username: mlake900
+  password: temp999
+alert:
+  condition:
+    primaryLeft: RSI
+    primaryRight: null
+    secondary: Moving Up
+    tertiaryLeft: 3.4
+    tertiaryRight: 14
+    quaternaryLeft: null
+    quaternaryRight: null
+  option: Once Per Bar Close
+  actions:
+    notifyOnApp: false
+    showPopup: false
+    sendEmail: false
+    webhook:
+      enabled: false
+      url: https://3commas.io/trade_signal/trading_view
+    playSound:
+      enabled: true
+      name: Thin
+      duration: Once
+  message: |
+    {
+         "message_type": "bot",
+         "bot_id": 999999,
+         "email_token": "fffffff-fffff-fffff-ffff-ffffffffff",
+         "delay_seconds": 0,
+         "pair": "{{quote_asset}}_{{instrument}}"
+    }

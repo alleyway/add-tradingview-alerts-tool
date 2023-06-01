@@ -1,9 +1,7 @@
 import { isEnvEnabled, styleOverride, waitForTimeout } from "./common-service";
 import { launchBrowser, login } from "./tv-page-actions";
 import log from "./log";
-import { jest } from '@jest/globals';
 describe('tv-page-actions tests', () => {
-    jest.setTimeout(120000);
     let browser;
     let page;
     beforeAll(async () => {
@@ -41,7 +39,7 @@ describe('tv-page-actions tests', () => {
             }
         }
         await waitForTimeout(3, "wait a little longer for page to load");
-    });
+    }, 120000);
     afterAll(async () => {
         console.log("shutting down");
         await browser.close();

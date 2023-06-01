@@ -7,7 +7,6 @@ import {jest} from '@jest/globals'
 
 describe('tv-page-actions tests', () => {
 
-    jest.setTimeout(120000)
     let browser
 
     let page
@@ -58,7 +57,7 @@ describe('tv-page-actions tests', () => {
         }
 
         await waitForTimeout(3, "wait a little longer for page to load")
-    });
+    }, 120000);
 
 
     afterAll(async () => {

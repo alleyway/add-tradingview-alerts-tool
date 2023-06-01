@@ -1,6 +1,11 @@
 {
   "github": {
-    "release": false
+    "release": true
+  },
+  "npm": {
+    "publish": false,
+    "ignoreVersion": false,
+    "skipChecks": true
   },
   "plugins": {
     "@release-it/bumper": {

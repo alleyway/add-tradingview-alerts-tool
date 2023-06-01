@@ -24,7 +24,7 @@
     "atat": "node --experimental-specifier-resolution=node --no-warnings ./dist/cli.js",
     "prepublishOnly": "npm run build",
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first! and DO NOT PUBLISH FROM HERE!' && npx release-it",
-    "release-beta": "npx release-it --preRelease=beta --config .release-it.beta-nopublish.json",
+    "release-beta": "echo 'MAKE SURE to TAG your beta for github actions to deploy npm package!!' && npx release-it --preRelease=beta --config .release-it.beta-nopublish.json",
     "prepare": "husky install",
     "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --ci --watchAll=false --forceExit",
     "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --watchAll=false --forceExit",

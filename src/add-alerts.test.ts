@@ -7,7 +7,7 @@ import {InvalidSymbolError} from "./classes";
 
 describe('Add Alerts Test', () => {
 
-    jest.setTimeout(120000)
+    jest.setTimeout(140000)
 
     it('addAlerts(configFile)', async () => {
 

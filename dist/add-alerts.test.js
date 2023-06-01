@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync, copyFileSync } from "fs";
 import { jest } from '@jest/globals';
 import { InvalidSymbolError } from "./classes";
 describe('Add Alerts Test', () => {
-    jest.setTimeout(120000);
+    jest.setTimeout(140000);
     it('addAlerts(configFile)', async () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);

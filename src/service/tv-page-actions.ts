@@ -225,6 +225,9 @@ export const login = async (page, username, pass) => {
     submitButton.click()
     await waitForTimeout(2);
 
+    page.reload()
+    await waitForTimeout(4);
+
 }
 
 export const logout = async (page) => {

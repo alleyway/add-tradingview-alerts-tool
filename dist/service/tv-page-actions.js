@@ -169,14 +169,14 @@ export const login = async (page, username, pass) => {
     catch (e) {
         log.warn("no email toggle button showing!");
     }
-    const usernameInput = await fetchFirstXPath(page, '//input[@name=\'username\']');
+    const usernameInput = await fetchFirstXPath(page, '//input[@name=\'id_username\']');
     await usernameInput.type(`${username}`);
     await waitForTimeout(.5);
     await takeScreenshot(page, "shouldbe_before_password_entry");
-    const passwordInput = await fetchFirstXPath(page, '//input[@name=\'password\']');
+    const passwordInput = await fetchFirstXPath(page, '//input[@name=\'id_password\']');
     log.trace("typing password");
     await passwordInput.type(pass);
-    const submitButton = await fetchFirstXPath(page, "//button[@type='submit' and contains(@class, 'tv-button--primary')]");
+    const submitButton = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//button[count(span)=1]");
     log.trace("clicking submit button");
     submitButton.click();
     await waitForTimeout(2);

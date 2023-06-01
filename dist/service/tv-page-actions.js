@@ -162,7 +162,7 @@ export const launchBrowser = async (headless, url) => {
 };
 export const login = async (page, username, pass) => {
     try {
-        const emailSignInButton = await fetchFirstXPath(page, `//span[contains(@class, 'tv-signin-dialog__toggle-email')]`, 5000);
+        const emailSignInButton = await fetchFirstXPath(page, `//div[@data-dialog-name='sign-in']//button[@name='Email']`, 5000);
         emailSignInButton.click();
         await waitForTimeout(1);
     }

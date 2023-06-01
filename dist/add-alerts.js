@@ -1,7 +1,7 @@
 import * as csv from 'fast-csv';
 import { createReadStream, existsSync, readFileSync } from "fs";
 import YAML from "yaml";
-import { addAlert, configureInterval, isEnvEnabled, waitForTimeout } from "./index";
+import { addAlert, configureInterval, isEnvEnabled, waitForTimeout, isXpathVisible } from "./index";
 import { checkForInvalidSymbol, launchBrowser, login, minimizeFooterChartPanel, navigateToSymbol } from "./service/tv-page-actions";
 import { soundNames, isSoundName, isSoundDuration, soundDurations } from "./interfaces";
 import log, { logLogInfo } from "./service/log";
@@ -114,7 +114,8 @@ export const addAlertsMain = async (configFileName) => {
             return document.title.includes("Denied");
         });
     }
-    if (accessDenied) {
+    const isShowingSignIn = await isXpathVisible(page, `//div[@data-dialog-name='sign-in']`);
+    if (accessDenied || isShowingSignIn) {
         if (config.tradingview.username && config.tradingview.password) {
             await login(page, config.tradingview.username, config.tradingview.password);
         }

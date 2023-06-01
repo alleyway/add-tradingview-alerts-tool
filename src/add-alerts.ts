@@ -1,7 +1,7 @@
 import * as csv from 'fast-csv';
 import {createReadStream, existsSync, readFileSync} from "fs"
 import YAML from "yaml"
-import {addAlert, configureInterval, isEnvEnabled, waitForTimeout} from "./index";
+import {addAlert, configureInterval, isEnvEnabled, waitForTimeout, isXpathVisible} from "./index";
 import {
     checkForInvalidSymbol,
     launchBrowser,
@@ -160,7 +160,9 @@ export const addAlertsMain = async (configFileName) => {
         });
     }
 
-    if (accessDenied) {
+    const isShowingSignIn = await isXpathVisible(page, `//div[@data-dialog-name='sign-in']`)
+
+    if (accessDenied || isShowingSignIn) {
 
         if (config.tradingview.username && config.tradingview.password) {
 

@@ -20,7 +20,7 @@ jobs:
       - run: echo "email=${{ secrets.NPM_PUBLISH_EMAIL }}" >> .npmrc
       - run: echo always-auth=true >> .npmrc
       - run: echo provenance=true >> .npmrc
-      - run: npx release-it --config .release-it.prod.json --ci --no-git --verbose
+      - run: npx release-it --config .release-it.prod.json --ci --no-git --no-increment --verbose
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_PUBLISH_EMAIL: ${{ secrets.NPM_PUBLISH_EMAIL }}

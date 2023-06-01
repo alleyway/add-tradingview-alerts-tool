@@ -235,7 +235,7 @@ export const addAlertsMain = async (configFileName) => {
 
                 await navigateToSymbol(page, row.symbol)
 
-                await waitForTimeout(2, "after navigating to ticker")
+                await waitForTimeout(3, "after navigating to ticker")
 
                 await checkForInvalidSymbol(page, row.symbol)
 

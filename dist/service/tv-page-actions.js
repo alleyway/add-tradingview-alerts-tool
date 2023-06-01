@@ -142,7 +142,7 @@ export const launchBrowser = async (headless, url) => {
     }
     return puppeteer.launch({
         executablePath: executablePath(),
-        headless: headless, userDataDir,
+        headless: headless ? "new" : false, userDataDir,
         defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
         args: ['--no-sandbox',
             '--enable-experimental-web-platform-features',

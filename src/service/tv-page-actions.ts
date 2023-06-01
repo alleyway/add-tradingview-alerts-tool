@@ -117,10 +117,10 @@ const dropdownXpathQueries = {
     // Or get when there's an upper and lower bound
     // "//legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']"
 
-    tertiaryLeft:  "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']",
     tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='end-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='end-band-select']",
 
-    quaternaryLeft:  "//legend[text()='Lower Bound']/../..//span[@data-name='start-band-select']",
+    quaternaryLeft: "//legend[text()='Lower Bound']/../..//span[@data-name='start-band-select']",
     quaternaryRight: "//legend[text()='Lower Bound']/../..//span[@data-name='end-band-select']",
 }
 
@@ -135,10 +135,10 @@ const dropdownSoundXpathQueries = {
 
 const inputXpathQueries = {
 
-    tertiaryLeft:  "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='start-band-range']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='start-band-range']",
     tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='end-band-range']",
 
-    quaternaryLeft:  "//legend[text()='Lower Bound']/../..//input[@data-property-id='start-band-range']",
+    quaternaryLeft: "//legend[text()='Lower Bound']/../..//input[@data-property-id='start-band-range']",
     quaternaryRight: "//legend[text()='Lower Bound']/../..//input[@data-property-id='end-band-range']",
 }
 
@@ -181,7 +181,7 @@ export const launchBrowser = async (headless: boolean, url?: string): Promise<Br
 
     return puppeteer.launch({
         executablePath: executablePath(),
-        headless: headless, userDataDir,
+        headless: headless ? "new" : false, userDataDir,
         defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
         args: ['--no-sandbox',
             '--enable-experimental-web-platform-features', // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105

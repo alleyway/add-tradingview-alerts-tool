@@ -153,7 +153,7 @@ export const launchBrowser = async (headless, url) => {
             '--no-zygote',
             // '--single-process', // will cause it to die
             '--disable-gpu',
-            headless ? "--headless" : "",
+            headless ? "--headless=new" : "",
             headless && !url ? "" : `--app=${url}`,
             '--window-size=1920,1080', // otherwise headless doesn't work
             // '--incognito'

@@ -10,7 +10,7 @@ describe('Add Alerts Test', () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
         const csvContent = `symbol,instrument,quote_asset,alert_name
-GLOBALPRIME:AUDUSD/0.70874+1/GLOBALPRIME:EURAUD*1.50676+1/GLOBALPRIME:GBPAUD*1.77447+GLOBALPRIME:AUDCHF/0.68181+GLOBALPRIME:AUDCAD/0.90837+GLOBALPRIME:AUDJPY/90.223+GLOBALPRIME:AUDNZD/1.09412,BTC,USDT, "my CI test name"
+OANDA:AUDUSD/0.70874+1/OANDA:EURAUD*1.50676+1/OANDA:GBPAUD*1.77447+OANDA:AUDCHF/0.68181+OANDA:AUDCAD/0.90837+OANDA:AUDJPY/90.223+OANDA:AUDNZD/1.09412,BTC,USDT, "my CI test name"
 ASDFTEST,ASDF,TEST, "creating invalid symbol"
 `;
         writeFileSync(ciSymbolsCsvPath, csvContent, { encoding: "utf-8" });

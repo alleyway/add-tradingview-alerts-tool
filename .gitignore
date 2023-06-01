@@ -4,8 +4,8 @@ user_data/
 .env
 config.yml
 *_pairs.csv
-*_symbols.csv
 /config.*.yml
+/!config.ci.yml
 /blacklist.csv
 output/
 tradingview-alerts-home

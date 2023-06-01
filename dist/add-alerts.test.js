@@ -2,10 +2,8 @@ import YAML from "yaml";
 import path from "path";
 import { addAlertsMain } from "./add-alerts";
 import { readFileSync, writeFileSync, copyFileSync } from "fs";
-import { jest } from '@jest/globals';
 import { InvalidSymbolError } from "./classes";
 describe('Add Alerts Test', () => {
-    jest.setTimeout(140000);
     it('addAlerts(configFile)', async () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
@@ -45,6 +43,6 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
                 throw e;
             }
         }
-    });
+    }, 140000);
 });
 //# sourceMappingURL=add-alerts.test.js.map

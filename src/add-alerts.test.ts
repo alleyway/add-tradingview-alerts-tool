@@ -2,12 +2,9 @@ import YAML from "yaml";
 import path from "path";
 import {addAlertsMain} from "./add-alerts";
 import {readFileSync, writeFileSync, copyFileSync} from "fs";
-import {jest} from '@jest/globals'
 import {InvalidSymbolError} from "./classes";
 
 describe('Add Alerts Test', () => {
-
-    jest.setTimeout(140000)
 
     it('addAlerts(configFile)', async () => {
 
@@ -63,7 +60,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
 
 
 
-    });
+    }, 140000);
 
 
 })

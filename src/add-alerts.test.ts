@@ -40,7 +40,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
 
         // write it out again
         const TEST_CONFIG_PATH = "config.ci.yml";
-        const configOutputString = YAML.stringify(config, {simpleKeys:true})
+        const configOutputString = YAML.stringify(config, {simpleKeys: true})
         writeFileSync(TEST_CONFIG_PATH, configOutputString, {encoding: "utf-8"});
 
 
@@ -56,8 +56,6 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
                 throw e
             }
         }
-
-
 
 
     }, 240000);

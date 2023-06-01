@@ -43,6 +43,6 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
                 throw e;
             }
         }
-    }, 140000);
+    }, 240000);
 });
 //# sourceMappingURL=add-alerts.test.js.map

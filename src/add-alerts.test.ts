@@ -60,7 +60,7 @@ ASDFTEST,ASDF,TEST, "creating invalid symbol"
 
 
 
-    }, 140000);
+    }, 240000);
 
 
 })

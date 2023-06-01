@@ -234,9 +234,10 @@ export const addAlertsMain = async (configFileName) => {
                 await waitForTimeout(2, "let things settle from processing last alert")
 
                 await navigateToSymbol(page, row.symbol)
-                await checkForInvalidSymbol(page, row.symbol)
 
                 await waitForTimeout(2, "after navigating to ticker")
+
+                await checkForInvalidSymbol(page, row.symbol)
 
 
                 const singleAlertSettings: ISingleAlertSettings = {

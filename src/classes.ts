@@ -1,4 +1,4 @@
-import {IBaseSymbol, ClassificationType} from "./interfaces";
+import {IBaseSymbol, ClassificationType} from "./interfaces.js";
 
 export class MasterSymbol implements IBaseSymbol {
 

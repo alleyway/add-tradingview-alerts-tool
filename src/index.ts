@@ -13,14 +13,14 @@ import {
     checkForInvalidSymbol,
     launchBrowser,
     isXpathVisible
-} from "./service/tv-page-actions"
-import {SelectionError, InvalidSymbolError, AddAlertInvocationError} from "./classes";
-import {fetchSymbolsForSource} from "./service/exchange-service"
-import {waitForTimeout, atatVersion, isEnvEnabled, styleOverride} from "./service/common-service"
-import log from "./service/log"
+} from "./service/tv-page-actions.js"
+import {SelectionError, InvalidSymbolError, AddAlertInvocationError} from "./classes.js";
+import {fetchSymbolsForSource} from "./service/exchange-service.js"
+import {waitForTimeout, atatVersion, isEnvEnabled, styleOverride} from "./service/common-service.js"
+import log from "./service/log.js"
 
-import {IBaseSymbol, ISingleAlertSettings, ClassificationType, soundNames, soundDurations} from "./interfaces"
-import {MasterSymbol} from "./classes";
+import {IBaseSymbol, ISingleAlertSettings, ClassificationType, soundNames, soundDurations} from "./interfaces.js"
+import {MasterSymbol} from "./classes.js";
 
 export type {IBaseSymbol, ISingleAlertSettings, MasterSymbol, ClassificationType}
 

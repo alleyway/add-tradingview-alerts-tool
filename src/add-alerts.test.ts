@@ -1,8 +1,8 @@
 import YAML from "yaml";
 import path from "path";
-import {addAlertsMain} from "./add-alerts";
+import {addAlertsMain} from "./add-alerts.js";
 import {readFileSync, writeFileSync, copyFileSync} from "fs";
-import {InvalidSymbolError} from "./classes";
+import {InvalidSymbolError} from "./classes.js";
 
 describe('Add Alerts Test', () => {
 

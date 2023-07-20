@@ -1,7 +1,7 @@
-import { fetchByBitInverse, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap, fetchByBitLinear } from "./exchange-service";
+import { fetchByBitInverse, fetchKucoin, fetchKraken, fetchBittrex, fetchCoinbase, fetchBinanceFuturesUsdM, fetchBinance, fetchOkxSpot, fetchByBitSpot, fetchBinanceFuturesCoinM, fetchKrakenFutures, fetchBitMex, fetchOkxSwap, fetchByBitLinear } from "./exchange-service.js";
 import fs from "fs";
 import path from "path";
-import { isEnvEnabled } from "./common-service";
+import { isEnvEnabled } from "./common-service.js";
 describe('Integrated Test of Exchanges', () => {
     const checkResults = (results, minNumberExpecting) => {
         if (isEnvEnabled(process.env.TEST_SAVE_OUTPUT)) {

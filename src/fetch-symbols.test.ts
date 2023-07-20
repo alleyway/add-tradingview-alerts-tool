@@ -1,5 +1,5 @@
-import {fetchSymbolsMain} from "./fetch-symbols";
-import {SOURCES_AVAILABLE} from "./service/exchange-service";
+import {fetchSymbolsMain} from "./fetch-symbols.js";
+import {SOURCES_AVAILABLE} from "./service/exchange-service.js";
 import fs from "fs";
 import path from "path";
 

@@ -1,12 +1,12 @@
 import {Command, Argument, Option} from 'commander';
-import {fetchSymbolsMain} from "./fetch-symbols";
-import log from "./service/log";
-import {addAlertsMain} from "./add-alerts";
-import {initBaseDelay, atatVersion, waitForTimeout} from "./service/common-service";
+import {fetchSymbolsMain} from "./fetch-symbols.js";
+import log from "./service/log.js";
+import {addAlertsMain} from "./add-alerts.js";
+import {initBaseDelay, atatVersion, waitForTimeout} from "./service/common-service.js";
 import kleur from "kleur";
-import {updateNotifier} from "./update-notifier";
-import {SOURCES_AVAILABLE} from "./service/exchange-service";
-import {Classification} from "./interfaces";
+import {updateNotifier} from "./update-notifier.js";
+import {SOURCES_AVAILABLE} from "./service/exchange-service.js";
+import {Classification} from "./interfaces.js";
 
 
 const program = new Command();

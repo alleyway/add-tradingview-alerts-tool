@@ -1,6 +1,6 @@
-import log from "./log";
+import log from "./log.js";
 import kleur from "kleur";
-import {readFile} from "fs/promises";
+// import {readFile} from "fs/promises";
 
 
 /*
@@ -9,11 +9,11 @@ import {readFile} from "fs/promises";
 
     so the solution is to have this file(only) transpiled by babel
  */
-// import manifest from "../manifest.json" assert {"type": "json"}
+import manifest from "../manifest.json" assert {"type": "json"}
 // import manifest from "../manifest.json"
 
 // @ts-ignore
-const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
+// const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
 
 let BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;
 
@@ -35,9 +35,9 @@ export const waitForTimeout = (millsOrMultplier: number, message: string = ""): 
     if (millsOrMultplier < 20) {
         multiplier = millsOrMultplier
         waitTime = Math.round(((BASE_DELAY * millsOrMultplier) / 1000) * 1000)
-        log.trace(kleur.gray(`...waiting ${kleur.bold().white(waitTime)}ms = ${kleur.yellow(`${multiplier} x`)} ${kleur.white(BASE_DELAY)}  ${message}`))
+        log.debug(kleur.gray(`...waiting ${kleur.bold().white(waitTime)}ms = ${kleur.yellow(`${multiplier} x`)} ${kleur.white(BASE_DELAY)}  ${message}`))
     } else {
-        log.trace(kleur.gray(`...waiting ${kleur.bold().white(waitTime)}ms   ${message}`))
+        log.debug(kleur.gray(`...waiting ${kleur.bold().white(waitTime)}ms   ${message}`))
     }
 
     return new Promise((resolve) => {

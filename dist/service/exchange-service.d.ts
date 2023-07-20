@@ -1,4 +1,4 @@
-import { MasterSymbol } from "../classes";
+import { MasterSymbol } from "../classes.js";
 export declare const BINANCE = "binance";
 export declare const BINANCE_FUTURES_USDM = "binance_futures_usdm";
 export declare const BINANCE_FUTURES_COINM = "binance_futures_coinm";

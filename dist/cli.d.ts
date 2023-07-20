@@ -1,2 +1,2 @@
-#!/usr/bin/env node --experimental-specifier-resolution=node --no-warnings
+#!/usr/bin/env node
 import 'dotenv/config';

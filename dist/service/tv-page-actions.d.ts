@@ -1,4 +1,4 @@
-import { ISingleAlertSettings } from "../interfaces";
+import { ISingleAlertSettings } from "../interfaces.js";
 import { Browser } from "puppeteer";
 export declare const isXpathVisible: (page: any, selector: string, screenShotOnFail?: boolean) => Promise<any>;
 export declare const fetchFirstXPath: (page: any, selector: string, timeout?: number, screenshotOnFail?: boolean) => Promise<any>;

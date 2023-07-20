@@ -1,8 +1,8 @@
 import fs from "fs";
-import {fetchSymbolsForSource} from "./service/exchange-service";
+import {fetchSymbolsForSource} from "./service/exchange-service.js";
 import {FormatterOptionsArgs, writeToStream, FormatterRow} from "fast-csv";
-import log from "./service/log";
-import {Classification} from "./interfaces";
+import log from "./service/log.js";
+import {Classification} from "./interfaces.js";
 import kleur from "kleur";
 
 

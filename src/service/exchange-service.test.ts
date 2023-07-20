@@ -11,11 +11,11 @@ import {
     fetchBinanceFuturesCoinM,
     fetchKrakenFutures,
     fetchBitMex, fetchOkxSwap, fetchByBitLinear
-} from "./exchange-service";
-import {MasterSymbol} from "../classes";
+} from "./exchange-service.js";
+import {MasterSymbol} from "../classes.js";
 import fs from "fs";
 import path from "path";
-import {isEnvEnabled} from "./common-service";
+import {isEnvEnabled} from "./common-service.js";
 
 
 describe('Integrated Test of Exchanges', () => {

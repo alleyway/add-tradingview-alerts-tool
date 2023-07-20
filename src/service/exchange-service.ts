@@ -1,10 +1,10 @@
-import {MasterSymbol} from "../classes";
-import log from "./log";
+import {MasterSymbol} from "../classes.js";
+import log from "./log.js";
 import kleur from "kleur";
 import fs from "fs";
 import path from "path";
-import {ClassificationType, Classification} from "../interfaces";
-import {isEnvEnabled} from "./common-service";
+import {ClassificationType, Classification} from "../interfaces.js";
+import {isEnvEnabled} from "./common-service.js";
 import get from "lodash.get"
 
 export const BINANCE = "binance"
@@ -46,7 +46,7 @@ export const SOURCES_AVAILABLE = [
 
 
 const logJson = (obj, name: string = "") => {
-    log.trace(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`)
+    log.debug(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`)
 }
 
 

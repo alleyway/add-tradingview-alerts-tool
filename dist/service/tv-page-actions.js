@@ -1,7 +1,7 @@
-import { waitForTimeout, isEnvEnabled } from "./common-service";
-import log from "./log";
+import { waitForTimeout, isEnvEnabled } from "./common-service.js";
+import log from "./log.js";
 import kleur from "kleur";
-import { AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes";
+import { AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError } from "../classes.js";
 import RegexParser from "regex-parser";
 import { accessSync, constants, writeFileSync } from "fs";
 import puppeteer, { executablePath } from "puppeteer";
@@ -18,15 +18,15 @@ const doXpath = async (page, selector) => {
     return response;
 };
 export const isXpathVisible = async (page, selector, screenShotOnFail = false) => {
-    log.trace(kleur.gray(`...isXpathVisible?: ${kleur.yellow(selector)}`));
+    log.debug(kleur.gray(`...isXpathVisible?: ${kleur.yellow(selector)}`));
     // const elements = await page.$x(selector)
     // const visible = elements.length > 0
     const visible = await doXpath(page, selector);
-    log.trace(`..isXpathVisible: ${visible}`);
+    log.debug(`..isXpathVisible: ${visible}`);
     return visible;
 };
 export const fetchFirstXPath = async (page, selector, timeout = 20000, screenshotOnFail = true) => {
-    log.trace(kleur.gray(`...selector: ${kleur.yellow(selector)}`));
+    log.debug(kleur.gray(`...selector: ${kleur.yellow(selector)}`));
     try {
         await page.waitForXPath(selector, { timeout });
     }
@@ -51,7 +51,7 @@ export const takeScreenshot = async (page, name = "unnamed") => {
             }
         });
         const screenshotPath = `screenshot_${new Date().getTime()}${username}_${name}`;
-        log.trace(`saving screenshot: ${screenshotPath}`);
+        log.debug(`saving screenshot: ${screenshotPath}`);
         await page.screenshot({
             path: screenshotPath + ".png",
         });
@@ -60,21 +60,21 @@ export const takeScreenshot = async (page, name = "unnamed") => {
     }
 };
 export const minimizeFooterChartPanel = async (page) => {
-    log.trace(`minimizing footer chart panel`);
+    log.debug(`minimizing footer chart panel`);
     try {
         const footerPanelMinimizeButton = await fetchFirstXPath(page, `//div[@id='footer-chart-panel']//button[@data-name='toggle-visibility-button' and @data-active='false']`, 5000);
         footerPanelMinimizeButton.click();
         await waitForTimeout(.4);
     }
     catch (e) {
-        log.trace("no minimize button found, footer chart panel must be hidden already");
+        log.debug("no minimize button found, footer chart panel must be hidden already");
     }
 };
 export const convertIntervalForTradingView = (interval) => {
     return interval.split("").filter((val) => val !== "m").join("");
 };
 export const configureInterval = async (interval, page) => {
-    log.trace(`set ${kleur.blue("interval")}: ${kleur.yellow(interval)}`);
+    log.debug(`set ${kleur.blue("interval")}: ${kleur.yellow(interval)}`);
     await page.keyboard.press(",");
     await waitForTimeout(.5, "after pressing interval shortcut key");
     try {
@@ -174,10 +174,10 @@ export const login = async (page, username, pass) => {
     await waitForTimeout(.5);
     await takeScreenshot(page, "shouldbe_before_password_entry");
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'id_password\']');
-    log.trace("typing password");
+    log.debug("typing password");
     await passwordInput.type(pass);
     const submitButton = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//button[count(span)=1]");
-    log.trace("clicking submit button");
+    log.debug("clicking submit button");
     submitButton.click();
     await waitForTimeout(2);
     page.reload();
@@ -223,7 +223,7 @@ export const navigateToSymbol = async (page, symbol) => {
 };
 const isMatch = (needle, haystack) => {
     if (needle.startsWith("/")) {
-        log.trace(`Parsing what appears to be regular expression: ${kleur.yellow(needle)} ... Haystack: ${kleur.gray(haystack)}`);
+        log.debug(`Parsing what appears to be regular expression: ${kleur.yellow(needle)} ... Haystack: ${kleur.gray(haystack)}`);
         const regexp = RegexParser(needle);
         return !!regexp.exec(haystack);
     }
@@ -235,7 +235,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     const { condition, name, expireOpenEnded, expireInterval, option, message, actions } = singleAlertSettings;
     await takeScreenshot(page, "alert_begin_configure");
     const selectFromDropDown = async (conditionToMatchArg, selector) => {
-        log.trace(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`);
+        log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`);
         await page.waitForXPath(selector, { timeout: 8000 });
         const elements = await page.$x(selector);
         if (elements.length == 0) {
@@ -249,9 +249,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         if (match) {
             conditionToMatch = match[1];
             targetOccurrence = Number.parseInt(match[2]);
-            log.trace(`Indexed condition used: ${kleur.yellow(conditionToMatchArg)}\n Setting occurrence to ${kleur.blue(targetOccurrence)}`);
+            log.debug(`Indexed condition used: ${kleur.yellow(conditionToMatchArg)}\n Setting occurrence to ${kleur.blue(targetOccurrence)}`);
         }
-        log.trace(`searching menu for ${kleur.yellow(conditionToMatch)}`);
+        log.debug(`searching menu for ${kleur.yellow(conditionToMatch)}`);
         let found = false;
         let foundOptions = [];
         let occurrenceCount = 0;
@@ -263,13 +263,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             foundOptions.push(optionText);
             if (isMatch(conditionToMatch, optionText)) {
                 if (occurrenceCount == targetOccurrence) {
-                    log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
+                    log.debug(`Found! Clicking ${kleur.yellow(optionText)}`);
                     found = true;
                     el.click();
                     return;
                 }
                 else {
-                    log.trace(`Matching option found, but not occurrenceCount ${kleur.blue(occurrenceCount)} not matching targetOccurrence `);
+                    log.debug(`Matching option found, but not occurrenceCount ${kleur.blue(occurrenceCount)} not matching targetOccurrence `);
                     occurrenceCount += 1;
                 }
             }
@@ -279,14 +279,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     };
     const performActualEntry = async (key) => {
         const conditionOrInputValue = String(condition[key]);
-        log.trace(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`);
+        log.debug(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`);
         await waitForTimeout(.8);
         if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
             try {
-                log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow(key)}`);
+                log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow(key)}`);
                 const targetElement = await fetchFirstXPath(page, dropdownXpathQueries[key], 3000);
                 // must be a dropdown...
-                log.trace(`Found dropdown! Clicking element of ${kleur.yellow(key)}`);
+                log.debug(`Found dropdown! Clicking element of ${kleur.yellow(key)}`);
                 targetElement.click();
                 await waitForTimeout(.9, "let dropdown populate");
                 await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div/span");
@@ -296,10 +296,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 if (e.constructor.name === "TimeoutError") {
                     if (!inputXpathQueries[key])
                         throw (new NoInputFoundError(`Unable to find dropdown xpath target for primaryLeft/secondary. Make sure chart layout is SAVED with an indicator that contains/matches this: ${conditionOrInputValue}`));
-                    log.trace(`Timed out looking for dropdown. Looking for INPUT xpath of ${kleur.yellow(key)}`);
+                    log.debug(`Timed out looking for dropdown. Looking for INPUT xpath of ${kleur.yellow(key)}`);
                     try {
                         const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 1000);
-                        log.trace(`Typing value: ${kleur.blue(conditionOrInputValue)}`);
+                        log.debug(`Typing value: ${kleur.blue(conditionOrInputValue)}`);
                         await clickInputAndDelete(page, valueInput);
                         await valueInput.type(String(conditionOrInputValue));
                     }
@@ -307,13 +307,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                         if (inputError.constructor.name === "TimeoutError") {
                             if (!readOnlyInputQueries[key])
                                 throw (new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`));
-                            log.trace(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`);
+                            log.debug(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`);
                             try {
                                 const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000);
                                 /* istanbul ignore next */
                                 const readOnlyValue = await page.evaluate((el) => el.value, valueReadonlyInput);
                                 if (readOnlyValue === conditionOrInputValue) {
-                                    log.trace(`looks like the readonly input is actually ${conditionOrInputValue} as expected`);
+                                    log.debug(`looks like the readonly input is actually ${conditionOrInputValue} as expected`);
                                 }
                                 else {
                                     throw new Error(`Read only input value for ${key} is ${readOnlyValue}, but expected ${conditionOrInputValue}`);
@@ -346,7 +346,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     }
     catch (e) {
         if (e instanceof NoInputFoundError) {
-            log.trace("NoInputFoundError, maybe we need to send secondary before setting primaryRight");
+            log.debug("NoInputFoundError, maybe we need to send secondary before setting primaryRight");
             // sometimes the secondary must be set first before the primaryRight shows up
             await performActualEntry("secondary");
             await performActualEntry("primaryRight");
@@ -361,7 +361,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     await performActualEntry("quaternaryRight");
     await waitForTimeout(.4);
     if (!!option) {
-        log.trace(`Looking for option: ${kleur.blue(option)}`);
+        log.debug(`Looking for option: ${kleur.blue(option)}`);
         const selector = "//button/span/span[contains(@class, 'ellipsis-container')]";
         try {
             await page.waitForXPath(selector, { timeout: 8000 });
@@ -382,7 +382,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             let optionText = await page.evaluate(element => element.innerText, el);
             foundOptions.push(optionText);
             if (optionText === option && !found) {
-                log.trace(`Found! Clicking ${kleur.yellow(optionText)}`);
+                log.debug(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 await waitForTimeout(.4);
                 await el.click();
@@ -413,7 +413,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             throw new SelectionError(option, foundOptions);
     }
     if (expireOpenEnded !== undefined) {
-        log.trace("set whether to expire open ended");
+        log.debug("set whether to expire open ended");
         await waitForTimeout(.1);
         const expDropdownTarget = await fetchFirstXPath(page, "//legend[text()='Expiration']/../..//button");
         await expDropdownTarget.click();
@@ -438,8 +438,8 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             const [hours, min, secs] = timeFull.split(":");
             const expDate = splitDate.replaceAll("-", "");
             const expTime = `${hours}${min}`;
-            log.trace(`exp_date: ${expDate}`);
-            log.trace(`exp_time: ${expTime}`);
+            log.debug(`exp_date: ${expDate}`);
+            log.debug(`exp_time: ${expTime}`);
             await dateInput.click();
             await waitForTimeout(50);
             await page.keyboard.press('End');
@@ -464,14 +464,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         await expSubmitButton.click();
     }
     if (!!name) {
-        log.trace(`Setting Alert Name: ${kleur.blue(name)}`);
+        log.debug(`Setting Alert Name: ${kleur.blue(name)}`);
         const nameInput = await fetchFirstXPath(page, "//input[@id='alert-name']");
         await clickInputAndDelete(page, nameInput);
         await nameInput.type(name);
         await waitForTimeout(.5);
     }
     if (!!message) {
-        log.trace(`Setting message: ${kleur.blue(message)}`);
+        log.debug(`Setting message: ${kleur.blue(message)}`);
         try {
             const messageTextarea = await fetchFirstXPath(page, "//textarea[@id='alert-message']", 1000, false);
             await clickInputAndDelete(page, messageTextarea);
@@ -499,13 +499,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             const isChecked = await page.evaluate(element => element.checked, el);
             if (configKey === "webhook") {
                 if (isChecked != actions.webhook.enabled) {
-                    log.trace(`setting ${kleur.blue("webhook")} as checked`);
+                    log.debug(`setting ${kleur.blue("webhook")} as checked`);
                     el.click();
                     await waitForTimeout(.3);
                 }
                 if (actions.webhook.enabled && actions.webhook.url) {
                     await waitForTimeout(.3);
-                    log.trace(`typing webhook url: ${kleur.blue(actions.webhook.url)}`);
+                    log.debug(`typing webhook url: ${kleur.blue(actions.webhook.url)}`);
                     const webhookUrlEl = await fetchFirstXPath(page, `//input[contains(@placeholder, 'alert-hook')]`, 1000);
                     await clickInputAndDelete(page, webhookUrlEl);
                     await webhookUrlEl.type(String(actions.webhook.url));
@@ -513,25 +513,25 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             }
             else if (configKey === "playSound") {
                 if (actions.playSound?.enabled !== undefined && isChecked != actions.playSound?.enabled) {
-                    log.trace(`setting ${kleur.blue("play-sound")} input as checked`);
+                    log.debug(`setting ${kleur.blue("play-sound")} input as checked`);
                     el.click();
                     await waitForTimeout(.3);
                 }
                 if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration) {
                     {
                         await waitForTimeout(.5);
-                        log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`);
+                        log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`);
                         const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["nameTarget"], 3000);
-                        log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.name)}`);
+                        log.debug(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.name)}`);
                         targetElement.evaluate((b) => b.click());
                         await waitForTimeout(.3);
                         await selectFromDropDown(actions.playSound.name, dropdownSoundXpathQueries["nameListItems"]);
                     }
                     {
                         await waitForTimeout(.5);
-                        log.trace(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.duration")}`);
+                        log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.duration")}`);
                         const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["durationTarget"], 3000);
-                        log.trace(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.duration)}`);
+                        log.debug(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.duration)}`);
                         targetElement.evaluate((b) => b.click());
                         await waitForTimeout(.3);
                         await selectFromDropDown(actions.playSound.duration, dropdownSoundXpathQueries["durationListItems"]);
@@ -541,7 +541,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             }
             else {
                 if (isChecked != actions[configKey]) {
-                    log.trace(`setting ${kleur.blue(configKey)} as checked`);
+                    log.debug(`setting ${kleur.blue(configKey)} as checked`);
                     el.click();
                 }
             }
@@ -549,26 +549,26 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     }
 };
 export const clickSubmit = async (page) => {
-    log.trace("clickSubmit()");
+    log.debug("clickSubmit()");
     const submitButton = await fetchFirstXPath(page, "//div[contains(@data-name, 'alerts-create-edit-dialog')]//button[@data-name='submit']");
     submitButton.evaluate((b) => b.click());
 };
 // sometimes there's a warning of "this alert may trigger differently than expected"
 export const clickContinueIfWarning = async (page) => {
     try {
-        log.trace("clickContinueIfWarning()");
+        log.debug("clickContinueIfWarning()");
         const continueAnywayButton = await fetchFirstXPath(page, `//button[@name='continue']`, 3000, false);
         continueAnywayButton.evaluate((b) => b.click());
         await waitForTimeout(4, "waiting after clicking 'continue anyway' button");
     }
     catch (error) {
-        log.trace("No warning dialog");
+        log.debug("No warning dialog");
     }
 };
 export const addAlert = async (page, singleAlertSettings) => {
-    log.trace("addAlert()");
+    log.debug("addAlert()");
     const typeShortcutForAlertDialog = async () => {
-        log.trace("addAlert()...pressing shortcut key");
+        log.debug("addAlert()...pressing shortcut key");
         await page.keyboard.press('Escape');
         await waitForTimeout(.5);
         await page.keyboard.press('Escape');
@@ -596,7 +596,7 @@ export const addAlert = async (page, singleAlertSettings) => {
                 await takeScreenshot(page, "unable_to_bring_up_alert_dialog");
                 throw new AddAlertInvocationError();
             }
-            log.trace("Attempting to show alert dialog again...");
+            log.debug("Attempting to show alert dialog again...");
             await waitForTimeout(retryCount, "pausing a little");
             await typeShortcutForAlertDialog();
             retryCount += 1;

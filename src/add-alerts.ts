@@ -1,14 +1,14 @@
 import * as csv from 'fast-csv';
 import {createReadStream, existsSync, readFileSync} from "fs"
 import YAML from "yaml"
-import {addAlert, configureInterval, isEnvEnabled, waitForTimeout, isXpathVisible} from "./index";
+import {addAlert, configureInterval, isEnvEnabled, waitForTimeout, isXpathVisible} from "./index.js";
 import {
     checkForInvalidSymbol,
     launchBrowser,
     login,
     minimizeFooterChartPanel,
     navigateToSymbol
-} from "./service/tv-page-actions";
+} from "./service/tv-page-actions.js";
 import {
     ISingleAlertSettings,
     SoundName,
@@ -17,11 +17,11 @@ import {
     isSoundName,
     isSoundDuration,
     soundDurations
-} from "./interfaces";
-import log, {logLogInfo} from "./service/log"
+} from "./interfaces.js";
+import log, {logLogInfo} from "./service/log.js"
 import kleur from "kleur";
-import {logBaseDelay, styleOverride} from "./service/common-service";
-import {InvalidSymbolError} from "./classes";
+import {logBaseDelay, styleOverride} from "./service/common-service.js";
+import {InvalidSymbolError} from "./classes.js";
 import {Browser, Page} from "puppeteer";
 
 const readFilePromise = (filename: string) => {
@@ -140,7 +140,7 @@ export const addAlertsMain = async (configFileName) => {
     if (headless) {
         page = await browser.newPage();
 
-        log.trace(`Go to ${config.tradingview.chartUrl} and wait until domloaded`)
+        log.debug(`Go to ${config.tradingview.chartUrl} and wait until domloaded`)
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
             waitUntil: 'domcontentloaded'
         });

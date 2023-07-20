@@ -1,4 +1,4 @@
-import { updateNotifier } from "./update-notifier";
+import { updateNotifier } from "./update-notifier.js";
 describe('Update Notifier Tests', () => {
     it('updateNotifier() - latest', async () => {
         const message = await updateNotifier("1.9.3");

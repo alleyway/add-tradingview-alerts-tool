@@ -9,7 +9,7 @@ IF EXIST "%dp0%\node.exe" (
   SET PATHEXT=%PATHEXT:;.JS;=;%
 )
 
-"%_prog%" "--experimental-specifier-resolution=node" "--no-warnings" "%dp0%\node_modules\@alleyway\add-tradingview-alerts-tool\dist\cli.js" %*
+"%_prog%" "--no-warnings" "%dp0%\node_modules\@alleyway\add-tradingview-alerts-tool\dist\cli.js" %*
 ENDLOCAL
 EXIT /b %errorlevel%
 :find_dp0

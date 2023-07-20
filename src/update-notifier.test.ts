@@ -1,5 +1,5 @@
 
-import {updateNotifier} from "./update-notifier";
+import {updateNotifier} from "./update-notifier.js";
 
 describe('Update Notifier Tests', () => {
 

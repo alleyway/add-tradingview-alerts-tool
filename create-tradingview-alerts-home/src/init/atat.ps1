@@ -9,10 +9,10 @@ if ($PSVersionTable.PSVersion -lt "6.0" -or $IsWindows) {
 }
 $ret=0
 if (Test-Path "$basedir/node$exe") {
-  & "$basedir/node$exe" "--experimental-specifier-resolution=node" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" $args
+  & "$basedir/node$exe" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" $args
   $ret=$LASTEXITCODE
 } else {
-  & "node$exe" "--experimental-specifier-resolution=node" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" $args
+  & "node$exe" "--no-warnings" "$basedir/node_modules/@alleyway/add-tradingview-alerts-tool/dist/cli.js" $args
   $ret=$LASTEXITCODE
 }
 exit $ret

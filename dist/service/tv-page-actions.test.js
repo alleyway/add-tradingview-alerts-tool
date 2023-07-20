@@ -1,6 +1,6 @@
-import { isEnvEnabled, styleOverride, waitForTimeout } from "./common-service";
-import { launchBrowser, login } from "./tv-page-actions";
-import log from "./log";
+import { isEnvEnabled, styleOverride, waitForTimeout } from "./common-service.js";
+import { launchBrowser, login } from "./tv-page-actions.js";
+import log from "./log.js";
 describe('tv-page-actions tests', () => {
     let browser;
     let page;
@@ -14,7 +14,7 @@ describe('tv-page-actions tests', () => {
         let accessDenied;
         if (headless) {
             page = await browser.newPage();
-            log.trace(`Go to ${chartUrl} and wait until domcontentloaded`);
+            log.debug(`Go to ${chartUrl} and wait until domcontentloaded`);
             const pageResponse = await page.goto(chartUrl + "#signin", {
                 waitUntil: 'domcontentloaded'
             });

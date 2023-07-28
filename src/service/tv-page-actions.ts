@@ -360,7 +360,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 log.debug(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
                 await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div/span")
+                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div/div/span")
                 await waitForTimeout(.4, "after selecting from dropdown");
 
             } catch (e) {

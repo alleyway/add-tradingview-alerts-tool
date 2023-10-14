@@ -176,7 +176,7 @@ export const login = async (page, username, pass) => {
     const passwordInput = await fetchFirstXPath(page, '//input[@name=\'id_password\']');
     log.debug("typing password");
     await passwordInput.type(pass);
-    const submitButton = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//button[count(span)=1]");
+    const submitButton = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//button[contains(@class, 'submitButton')]");
     log.debug("clicking submit button");
     submitButton.click();
     await waitForTimeout(2);

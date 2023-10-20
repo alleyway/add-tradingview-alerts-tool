@@ -117,7 +117,7 @@ export const addAlertsMain = async (configFileName) => {
     const isShowingSignIn = await isXpathVisible(page, `//div[@data-dialog-name='sign-in']`);
     if (accessDenied || isShowingSignIn) {
         if (config.tradingview.username && config.tradingview.password) {
-            await login(page, config.tradingview.username, config.tradingview.password);
+            await login(page, config.tradingview.username, config.tradingview.password, config.tradingview.backupCode);
         }
         else {
             log.warn("You'll need to sign into TradingView in this browser (one time only)\n...after signing in, press ctrl-c to kill this script, then run it again");

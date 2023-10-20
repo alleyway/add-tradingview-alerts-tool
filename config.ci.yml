@@ -6,6 +6,7 @@ tradingview:
   interval: 4h
   username: alleyway
   password: temp999
+  backupCode: XofPotnW
 alert:
   condition:
     primaryLeft: RSI

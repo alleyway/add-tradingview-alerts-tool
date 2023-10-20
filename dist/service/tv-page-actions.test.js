@@ -35,7 +35,7 @@ describe('tv-page-actions tests', () => {
         if (accessDenied) {
             log.info("Access denied, logging in...");
             if (username && password) {
-                await login(page, username, password);
+                await login(page, username, password, null);
             }
         }
         await waitForTimeout(3, "wait a little longer for page to load");

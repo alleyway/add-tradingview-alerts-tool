@@ -50,7 +50,7 @@ describe('tv-page-actions tests', () => {
             log.info("Access denied, logging in...")
             if (username && password) {
 
-                await login(page, username, password)
+                await login(page, username, password, null)
 
             }
 

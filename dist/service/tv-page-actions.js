@@ -160,7 +160,7 @@ export const launchBrowser = async (headless, url) => {
         ]
     });
 };
-export const login = async (page, username, pass) => {
+export const login = async (page, username, pass, backupCode) => {
     try {
         const emailSignInButton = await fetchFirstXPath(page, `//div[@data-dialog-name='sign-in']//button[@name='Email']`, 5000);
         emailSignInButton.click();
@@ -180,6 +180,34 @@ export const login = async (page, username, pass) => {
     log.debug("clicking submit button");
     submitButton.click();
     await waitForTimeout(2);
+    let twoFactorOrBackupCodeInput = null;
+    try {
+        twoFactorOrBackupCodeInput = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//input[@id='id_code']", 5000);
+    }
+    catch (e) {
+        log.warn("Two Factor Authentication / Backup Code input not showing");
+    }
+    if (twoFactorOrBackupCodeInput !== null) {
+        if (!backupCode) {
+            log.warn(`${kleur.yellow("MANUAL ACTION NEEDED: ")} You have 30 seconds to enter your 2FA or backup code`);
+            await waitForTimeout(30 * 1000);
+        }
+        else {
+            await twoFactorOrBackupCodeInput.type(`${backupCode}`);
+            await waitForTimeout(3);
+            let possibleErrorElement = null;
+            try {
+                possibleErrorElement = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//div[contains(@class, 'mainProblem')]//div[contains(@class,'text-wrap')]/span", 5000);
+            }
+            catch (e) {
+                log.warn("doesn't seem like there's an error..");
+            }
+            if (possibleErrorElement) {
+                const errorText = await page.evaluate(element => element.innerText, possibleErrorElement);
+                throw new Error(errorText);
+            }
+        }
+    }
     page.reload();
     await waitForTimeout(4);
 };

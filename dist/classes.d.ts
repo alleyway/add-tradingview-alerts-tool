@@ -29,3 +29,7 @@ export declare class InvalidSymbolError extends Error {
 export declare class AddAlertInvocationError extends Error {
     constructor();
 }
+export declare class ErrorWithScreenShot extends Error {
+    filenameSearch: RegExp | string;
+    constructor(message: any, filenameSearch: any);
+}

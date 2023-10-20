@@ -14,7 +14,7 @@ import {
     launchBrowser,
     isXpathVisible
 } from "./service/tv-page-actions.js"
-import {SelectionError, InvalidSymbolError, AddAlertInvocationError} from "./classes.js";
+import {SelectionError, InvalidSymbolError, AddAlertInvocationError, ErrorWithScreenShot} from "./classes.js";
 import {fetchSymbolsForSource} from "./service/exchange-service.js"
 import {waitForTimeout, atatVersion, isEnvEnabled, styleOverride} from "./service/common-service.js"
 import log from "./service/log.js"
@@ -42,6 +42,7 @@ export {
     log,
     isEnvEnabled,
     SelectionError,
+    ErrorWithScreenShot,
     InvalidSymbolError,
     convertIntervalForTradingView,
     checkForInvalidSymbol,

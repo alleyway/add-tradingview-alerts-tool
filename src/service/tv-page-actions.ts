@@ -2,7 +2,13 @@ import {ISingleAlertSettings} from "../interfaces.js";
 import {waitForTimeout, isEnvEnabled} from "./common-service.js";
 import log from "./log.js"
 import kleur from "kleur";
-import {AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError} from "../classes.js";
+import {
+    AddAlertInvocationError,
+    InvalidSymbolError,
+    NoInputFoundError,
+    SelectionError,
+    ErrorWithScreenShot
+} from "../classes.js";
 import RegexParser from "regex-parser"
 import {accessSync, constants, writeFileSync} from "fs";
 import puppeteer, {Browser, executablePath} from "puppeteer";
@@ -70,7 +76,7 @@ export const takeScreenshot = async (page, name: string = "unnamed") => {
         const screenshotPath = `screenshot_${new Date().getTime()}${username}_${name}`
         log.debug(`saving screenshot: ${screenshotPath}`)
         await page.screenshot({
-            path: screenshotPath + ".png",
+            path: screenshotPath + ".webp",
         });
         const html = await page.content()
         writeFileSync(screenshotPath + ".xml", html, {encoding: "utf-8"})
@@ -254,7 +260,8 @@ export const login = async (page, username, pass, backupCode) => {
             }
             if (possibleErrorElement) {
                 const errorText = await page.evaluate(element => element.innerText, possibleErrorElement);
-                throw new Error(errorText)
+                await takeScreenshot(page, "twoFactorError")
+                throw new ErrorWithScreenShot(errorText, "twoFactorError")
             }
         }
     }

@@ -74,3 +74,12 @@ export class AddAlertInvocationError extends Error {
         Object.setPrototypeOf(this, AddAlertInvocationError.prototype);
     }
 }
+
+export class ErrorWithScreenShot extends Error {
+    public filenameSearch: RegExp | string;
+    constructor(message, filenameSearch) {
+        super(message);
+        this.filenameSearch = filenameSearch
+        Object.setPrototypeOf(this, ErrorWithScreenShot.prototype);
+    }
+}

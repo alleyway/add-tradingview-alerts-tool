@@ -55,4 +55,12 @@ export class AddAlertInvocationError extends Error {
         Object.setPrototypeOf(this, AddAlertInvocationError.prototype);
     }
 }
+export class ErrorWithScreenShot extends Error {
+    filenameSearch;
+    constructor(message, filenameSearch) {
+        super(message);
+        this.filenameSearch = filenameSearch;
+        Object.setPrototypeOf(this, ErrorWithScreenShot.prototype);
+    }
+}
 //# sourceMappingURL=classes.js.map

@@ -209,6 +209,8 @@ export const login = async (page, username, pass, backupCode) => {
             }
         }
     }
+    await waitForTimeout(1, "after logging in, but before reload page");
+    await takeScreenshot(page, "after_login_before_reload");
     page.reload();
     await waitForTimeout(4);
 };

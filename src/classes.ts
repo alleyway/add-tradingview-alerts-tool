@@ -77,9 +77,11 @@ export class AddAlertInvocationError extends Error {
 
 export class ErrorWithScreenShot extends Error {
     public filenameSearch: RegExp | string;
-    constructor(message, filenameSearch) {
+    public title: string;
+    constructor(message, filenameSearch, title?) {
         super(message);
         this.filenameSearch = filenameSearch
+        this.title = title
         Object.setPrototypeOf(this, ErrorWithScreenShot.prototype);
     }
 }

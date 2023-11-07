@@ -31,5 +31,6 @@ export declare class AddAlertInvocationError extends Error {
 }
 export declare class ErrorWithScreenShot extends Error {
     filenameSearch: RegExp | string;
-    constructor(message: any, filenameSearch: any);
+    title: string;
+    constructor(message: any, filenameSearch: any, title?: any);
 }

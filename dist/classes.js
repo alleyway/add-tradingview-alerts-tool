@@ -57,9 +57,11 @@ export class AddAlertInvocationError extends Error {
 }
 export class ErrorWithScreenShot extends Error {
     filenameSearch;
-    constructor(message, filenameSearch) {
+    title;
+    constructor(message, filenameSearch, title) {
         super(message);
         this.filenameSearch = filenameSearch;
+        this.title = title;
         Object.setPrototypeOf(this, ErrorWithScreenShot.prototype);
     }
 }

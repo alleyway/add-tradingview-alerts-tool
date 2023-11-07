@@ -58,7 +58,7 @@
     "@jest/globals": "^29.7.0",
     "@release-it/bumper": "^5.1.0",
     "@types/jest": "^29.5.7",
-    "@types/node": "^18.16.0",
+    "@types/node": "^18.18.8",
     "babel-jest": "^29.7.0",
     "husky": "^8.0.3",
     "jest": "^29.7.0",

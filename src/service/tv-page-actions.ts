@@ -474,10 +474,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     if (!!option) {
         log.debug(`Looking for option: ${kleur.blue(option)}`)
 
-        const selector = "//button/span/span[contains(@class, 'ellipsis-container')]"
-
         try {
-            await page.waitForXPath(selector, {timeout: 8000})
+
+            const targetElement = await fetchFirstXPath(page, "//fieldset[@aria-label='Trigger']//span[@role='button']", 3000)
+            log.debug(`Found dropdown! Clicking element of ${kleur.yellow(option)}`)
+            targetElement.evaluate((b) => b.click())
+
+            await selectFromDropDown(option, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div")
+
         } catch (e) {
             if (e.constructor.name === "TimeoutError") {
                 throw new Error(`No fire rate 'option' available, but one was specified in alert configuration: ${option}`)
@@ -485,45 +489,6 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 throw e
             }
         }
-
-        const elements = await page.$x(selector)
-
-        let found = false
-        let foundOptions = []
-        for (const el of elements) {
-            /* istanbul ignore next */
-            let optionText = await page.evaluate(element => element.innerText, el);
-            foundOptions.push(optionText)
-            if (optionText === option && !found) {
-                log.debug(`Found! Clicking ${kleur.yellow(optionText)}`)
-                found = true
-                await waitForTimeout(.4);
-                await el.click()
-                // /* istanbul ignore next */
-                // await page.evaluate((text) => {
-                //     const el = document.evaluate(`//*[@class='js-fire-rate-row']//div[@data-title='${text}']`,
-                //         document,
-                //         null,
-                //         XPathResult.FIRST_ORDERED_NODE_TYPE,
-                //         null
-                //     ).singleNodeValue as HTMLElement
-                //     el.click()
-                //
-                // }, option)
-                await waitForTimeout(.4);
-                // const justClickedEl = await fetchFirstXPath(page, `//*[@class='js-fire-rate-row']//div[@data-title='${option}']/..`)
-                //
-                // /* istanbul ignore next */
-                // const className = await page.evaluate(el => el.className, justClickedEl);
-                //
-                // if (className.indexOf("i-active") < 0) {
-                //     log.error("option element was clicked, but it's parent does not have the 'i-active' class assigned")
-                //     throw Error("Unable to select option correctly...a bug in the system")
-                // }
-
-            }
-        }
-        if (!found) throw new SelectionError(option, foundOptions)
 
     }
 

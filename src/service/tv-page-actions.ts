@@ -479,7 +479,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             const targetElement = await fetchFirstXPath(page, "//fieldset[@aria-label='Trigger']//span[@role='button']", 3000)
             log.debug(`Found dropdown! Clicking element of ${kleur.yellow(option)}`)
             targetElement.evaluate((b) => b.click())
-
+            await waitForTimeout(.3)
             await selectFromDropDown(option, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div")
 
         } catch (e) {

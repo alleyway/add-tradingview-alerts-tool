@@ -38,7 +38,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "2.6.5",
+  "version": "2.6.6",
   "dependencies": {
     "commander": "^11.1.0",
     "consola": "^3.2.3",

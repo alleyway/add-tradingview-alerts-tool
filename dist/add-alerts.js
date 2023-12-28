@@ -173,7 +173,7 @@ export const addAlertsMain = async (configFileName) => {
                 await waitForTimeout(3, "after navigating to ticker");
                 await checkForInvalidSymbol(page, row.symbol);
                 const singleAlertSettings = {
-                    name: makeReplacements(row.alert_name || row.name || alertConfig.name),
+                    name: makeReplacements(row.alert_name || row.name || alertConfig.name), // TODO: deprecate "name" one day
                     message: makeReplacements(alertConfig.message)?.trimRight(),
                     condition: {
                         primaryLeft: makeReplacements(alertConfig.condition.primaryLeft),

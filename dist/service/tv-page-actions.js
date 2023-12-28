@@ -145,7 +145,7 @@ export const launchBrowser = async (headless, url) => {
         headless: headless ? "new" : false, userDataDir,
         defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
         args: ['--no-sandbox',
-            '--enable-experimental-web-platform-features',
+            '--enable-experimental-web-platform-features', // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',

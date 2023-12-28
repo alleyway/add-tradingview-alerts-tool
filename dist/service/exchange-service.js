@@ -108,7 +108,7 @@ export const fetchByBitInverse = async () => {
             return null;
         }
     };
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=inverse", "result.list", transformer);
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=inverse"), "result.list", transformer);
 };
 export const fetchByBitLinear = async () => {
     const transformer = (obj) => {
@@ -128,14 +128,14 @@ export const fetchByBitLinear = async () => {
             return null;
         }
     };
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=linear", "result.list", transformer);
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=linear"), "result.list", transformer);
 };
 export const fetchByBitSpot = async () => {
     // actually these aren't on tradingview yet, even in march of 2023
     const transformer = (obj) => {
         return new MasterSymbol(obj, BYBIT_SPOT, obj.baseCoin, obj.quoteCoin, `BYBIT:${obj.symbol}`);
     };
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000", "result.list", transformer);
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000"), "result.list", transformer);
 };
 export const fetchKucoin = async () => {
     const transformer = (obj) => {

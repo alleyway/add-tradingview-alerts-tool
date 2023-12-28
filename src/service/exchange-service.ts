@@ -131,7 +131,7 @@ export const fetchByBitInverse = async (): Promise<MasterSymbol[]> => {
         }
     }
 
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=inverse", "result.list", transformer)
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=inverse"), "result.list", transformer)
 }
 
 export const fetchByBitLinear = async (): Promise<MasterSymbol[]> => {
@@ -153,7 +153,7 @@ export const fetchByBitLinear = async (): Promise<MasterSymbol[]> => {
         }
     }
 
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=linear", "result.list", transformer)
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=linear"), "result.list", transformer)
 }
 
 export const fetchByBitSpot = async (): Promise<MasterSymbol[]> => {
@@ -162,7 +162,7 @@ export const fetchByBitSpot = async (): Promise<MasterSymbol[]> => {
         return new MasterSymbol(obj, BYBIT_SPOT, obj.baseCoin, obj.quoteCoin, `BYBIT:${obj.symbol}`)
     }
 
-    return fetchAndTransform("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000", "result.list", transformer)
+    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000"), "result.list", transformer)
 }
 
 export const fetchKucoin = async (): Promise<MasterSymbol[]> => {

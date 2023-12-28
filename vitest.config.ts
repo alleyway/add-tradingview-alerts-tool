@@ -5,10 +5,9 @@ export default defineConfig({
         globals: true,
         setupFiles: ['dotenv/config'],
         outputFile: {
-            junit: "junit.xml",
-            html: "./coverage/index.html"
+            junit: "junit.xml"
         },
-        reporters: ["html", "junit"],
+        reporters: ["junit"],
         coverage: {
             provider: 'v8', // or 'istanbul'
             reporter: ["cobertura"],

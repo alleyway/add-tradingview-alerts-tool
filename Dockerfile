@@ -6,7 +6,7 @@
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 #
 # can't use bullseye because it doesn't have libappindicator (unless installed manually)
-FROM node:18.16.1-buster-slim
+FROM node:20.10.0-buster-slim
 
 WORKDIR /usr/app
 

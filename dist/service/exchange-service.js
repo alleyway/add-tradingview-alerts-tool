@@ -47,7 +47,7 @@ export const proxyMaybe = (url) => {
     if (process.env.PROXY_BASE) {
         // parse the url to get the host, path, and query segments
         const realUrl = new URL(url);
-        return `${process.env.PROXY_BASE}/api/proxy?${realUrl.search}&host=${realUrl.host}&path=${realUrl.pathname}`;
+        return `${process.env.PROXY_BASE}/api/proxy${realUrl.search || "?"}&host=${realUrl.host}&path=${realUrl.pathname}`;
     }
     else {
         return url;

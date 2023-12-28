@@ -2,6 +2,7 @@ import {fetchSymbolsMain} from "./fetch-symbols.js";
 import {SOURCES_AVAILABLE} from "./service/exchange-service.js";
 import fs from "fs";
 import path from "path";
+import { assert, describe, expect, it } from 'vitest'
 
 
 describe('Fetch Symbols Test', () => {

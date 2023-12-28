@@ -2,11 +2,7 @@ files:
   input: /Users/mlake/alleyway/add-tradingview-alerts-tool/ci_symbols.csv
   exclude: blacklist.csv
 tradingview:
-  chartUrl: https://www.tradingview.com/chart/wvXLUs4P/
   interval: 4h
-  username: alleyway
-  password: temp999
-  backupCode: XofPotnW
 alert:
   condition:
     primaryLeft: RSI

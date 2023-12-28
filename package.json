@@ -26,9 +26,9 @@
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first! and DO NOT PUBLISH FROM HERE!' && npx release-it",
     "release-beta": "echo 'MAKE SURE to TAG your beta for github actions to deploy npm package!!' && npx release-it --preRelease=beta --config .release-it.beta-nopublish.json",
     "prepare": "husky install",
-    "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --ci --watchAll=false --forceExit",
-    "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/jest --collectCoverage --coverageDirectory=\"./coverage\" --ci --reporters=default --reporters=jest-junit --watchAll=false --forceExit",
-    "test:watch": "jest --watch"
+    "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest watch",
+    "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest --coverage",
+    "test:watch": "node_modules/.bin/vitest --watch"
   },
   "keywords": [
     "tradingview",
@@ -53,21 +53,13 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
-    "@babel/preset-env": "^7.23.6",
-    "@babel/preset-typescript": "^7.23.3",
-    "@babel/plugin-syntax-import-assertions": "^7.23.3" ,
-    "@jest/globals": "^29.7.0",
     "@release-it/bumper": "^6.0.1",
-    "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
-    "babel-jest": "^29.7.0",
+    "@vitest/coverage-v8": "^1.1.0",
     "husky": "^8.0.3",
-    "jest": "^29.7.0",
-    "jest-junit": "^16.0.0",
     "release-it": "^17.0.1",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
   },
   "private": false
 }

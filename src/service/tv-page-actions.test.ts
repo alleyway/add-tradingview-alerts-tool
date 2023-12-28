@@ -2,7 +2,6 @@
 import {isEnvEnabled, styleOverride, waitForTimeout} from "./common-service.js";
 import {launchBrowser, login} from "./tv-page-actions.js";
 import log from "./log.js";
-import {jest} from '@jest/globals'
 
 
 describe('tv-page-actions tests', () => {
@@ -11,64 +10,64 @@ describe('tv-page-actions tests', () => {
 
     let page
 
-    beforeAll(async () => {
-        console.log("current working directory: " + process.cwd())
-        const headless = isEnvEnabled(process.env.HEADLESS)
+    // beforeAll(async () => {
+    //     console.log("current working directory: " + process.cwd())
+    //     const headless = isEnvEnabled(process.env.HEADLESS)
+    //
+    //     const chartUrl = process.env.TEST_TRADINGVIEW_CHART
+    //     const username = process.env.TEST_TRADINGVIEW_USERNAME
+    //     const password = process.env.TEST_TRADINGVIEW_PASSWORD
+    //
+    //     browser = await launchBrowser(false, `${chartUrl}#signin`)
+    //
+    //     let accessDenied;
+    //
+    //     if (headless) {
+    //         page = await browser.newPage();
+    //
+    //         log.debug(`Go to ${chartUrl} and wait until domcontentloaded`)
+    //         const pageResponse = await page.goto(chartUrl + "#signin", {
+    //             waitUntil: 'domcontentloaded'
+    //         });
+    //         await waitForTimeout(5, "let page load and see if access is denied")
+    //         /* istanbul ignore next */
+    //         await page.addStyleTag({content: styleOverride})
+    //
+    //         accessDenied = pageResponse.status() === 403
+    //
+    //     } else {
+    //         page = (await browser.pages())[0];
+    //         await waitForTimeout(5, "let page load and see if access is denied")
+    //         await page.addStyleTag({content: styleOverride})
+    //         /* istanbul ignore next */
+    //         accessDenied = await page.evaluate(() => {
+    //             return document.title.includes("Denied");
+    //         });
+    //     }
+    //
+    //     if (accessDenied) {
+    //         log.info("Access denied, logging in...")
+    //         if (username && password) {
+    //
+    //             await login(page, username, password, null)
+    //
+    //         }
+    //
+    //     }
+    //
+    //     await waitForTimeout(3, "wait a little longer for page to load")
+    // }, 120000);
+    //
+    //
+    // afterAll(async () => {
+    //     console.log("shutting down")
+    //     await browser.close()
+    // })
 
-        const chartUrl = process.env.TEST_TRADINGVIEW_CHART
-        const username = process.env.TEST_TRADINGVIEW_USERNAME
-        const password = process.env.TEST_TRADINGVIEW_PASSWORD
-
-        browser = await launchBrowser(false, `${chartUrl}#signin`)
-
-        let accessDenied;
-
-        if (headless) {
-            page = await browser.newPage();
-
-            log.debug(`Go to ${chartUrl} and wait until domcontentloaded`)
-            const pageResponse = await page.goto(chartUrl + "#signin", {
-                waitUntil: 'domcontentloaded'
-            });
-            await waitForTimeout(5, "let page load and see if access is denied")
-            /* istanbul ignore next */
-            await page.addStyleTag({content: styleOverride})
-
-            accessDenied = pageResponse.status() === 403
-
-        } else {
-            page = (await browser.pages())[0];
-            await waitForTimeout(5, "let page load and see if access is denied")
-            await page.addStyleTag({content: styleOverride})
-            /* istanbul ignore next */
-            accessDenied = await page.evaluate(() => {
-                return document.title.includes("Denied");
-            });
-        }
-
-        if (accessDenied) {
-            log.info("Access denied, logging in...")
-            if (username && password) {
-
-                await login(page, username, password, null)
-
-            }
-
-        }
-
-        await waitForTimeout(3, "wait a little longer for page to load")
-    }, 120000);
-
-
-    afterAll(async () => {
-        console.log("shutting down")
-        await browser.close()
-    })
-
-    test.skip('dummy tv-page-actions test', async () => {
-        expect("blah").toBeDefined()
-        await waitForTimeout(3, "just waiting")
-    })
+    // test.skip('dummy tv-page-actions test', async () => {
+    //     expect("blah").toBeDefined()
+    //     await waitForTimeout(3, "just waiting")
+    // })
 
 
 });

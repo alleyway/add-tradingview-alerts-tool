@@ -1,5 +1,5 @@
 import program from "./program.js"
-import {jest} from '@jest/globals'
+import { assert, describe, expect, it, beforeEach, beforeAll,} from 'vitest'
 
 describe('CLI Program Tests', () => {
 
@@ -7,7 +7,7 @@ describe('CLI Program Tests', () => {
 
     beforeEach(() => {
         // @ts-ignore
-        mockExit = jest.spyOn(process, 'exit').mockImplementation((code) => {
+        mockExit = vi.spyOn(process, 'exit').mockImplementation((code) => {
         });
     })
 

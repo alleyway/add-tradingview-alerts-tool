@@ -6,7 +6,7 @@ export default defineConfig({
         setupFiles: ['dotenv/config'],
         coverage: {
             provider: 'v8', // or 'istanbul'
-            reporter: ['text', 'json', 'html'],
+            reporter: "cobertura",
             reportsDirectory: "./coverage"
         },
     },

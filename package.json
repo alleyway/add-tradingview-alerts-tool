@@ -56,6 +56,7 @@
     "@release-it/bumper": "^6.0.1",
     "@types/node": "^20.10.5",
     "@vitest/coverage-v8": "^1.1.0",
+    "@vitest/ui": "^1.1.0",
     "husky": "^8.0.3",
     "release-it": "^17.0.1",
     "typescript": "^5.3.3",

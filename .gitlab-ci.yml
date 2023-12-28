@@ -2,7 +2,7 @@ variables:
   FORCE_COLOR: '3'
 
 #NOTE: to run locally and test an image try "gitlab-runner exec docker test"
-image: alleywayapps/atat-ci-image:v531
+image: alleywayapps/atat-ci-image:v546
 
 stages:
   - build

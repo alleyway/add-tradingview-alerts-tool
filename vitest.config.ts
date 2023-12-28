@@ -10,7 +10,7 @@ export default defineConfig({
         reporters: ["junit"],
         coverage: {
             provider: 'v8', // or 'istanbul'
-            reporter: ["cobertura"],
+            reporter: ["cobertura", ["html", {subdir: "./html"}]],
             reportsDirectory: "./coverage"
         },
     },

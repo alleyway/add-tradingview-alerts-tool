@@ -86,7 +86,7 @@ pages:
     - test
   script:
       - mkdir .public
-      - cp -r coverage/* .public
+      - cp -r coverage/html/* .public
       - mv .public public
   artifacts:
      paths:

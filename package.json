@@ -21,13 +21,13 @@
   ],
   "scripts": {
     "build": "npx tsc",
-    "atat": "node --experimental-specifier-resolution=node --no-warnings ./dist/cli.js",
+    "atat": "node --no-warnings ./dist/cli.js",
     "prepublishOnly": "npm run build",
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first! and DO NOT PUBLISH FROM HERE!' && npx release-it",
     "release-beta": "echo 'MAKE SURE to TAG your beta for github actions to deploy npm package!!' && npx release-it --preRelease=beta --config .release-it.beta-nopublish.json",
     "prepare": "husky install",
-    "test": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run",
-    "test:ci": "rm -Rf ./user_data && node --experimental-specifier-resolution=node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run --coverage.enabled",
+    "test": "rm -Rf ./user_data && node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run",
+    "test:ci": "rm -Rf ./user_data && node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run --coverage.enabled",
     "test:watch": "node_modules/.bin/vitest --watch"
   },
   "keywords": [
@@ -43,6 +43,7 @@
     "commander": "^11.1.0",
     "consola": "^3.2.3",
     "dotenv": "^16.3.1",
+    "extensionless": "^1.9.6",
     "fast-csv": "^4.3.6",
     "kleur": "^4.1.5",
     "lodash.get": "^4.4.2",

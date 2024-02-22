@@ -495,7 +495,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     if (!!option) {
         log.debug(`Looking for option: ${kleur.blue(option)}`)
 
-        const selector = "//fieldset[@aria-label='Trigger']//button/span/span[1]"
+        const selector = "//legend[text()='Trigger']/../..//button//span[contains(@class,'ellipsis-container')]"
 
         try {
             await page.waitForXPath(selector, {timeout: 8000})

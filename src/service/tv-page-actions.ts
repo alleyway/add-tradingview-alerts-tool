@@ -40,8 +40,6 @@ const doXpath = async (page, selector: string) => {
 
 export const isXpathVisible = async (page, selector: string, screenShotOnFail = false) => {
     log.debug(kleur.gray(`...isXpathVisible?: ${kleur.yellow(selector)}`))
-    // const elements = await page.$x(selector)
-    // const visible = elements.length > 0
     const visible = await doXpath(page, selector)
     log.debug(`..isXpathVisible: ${visible}`)
     return visible
@@ -50,12 +48,12 @@ export const isXpathVisible = async (page, selector: string, screenShotOnFail = 
 export const fetchFirstXPath = async (page, selector: string, timeout = 20000, screenshotOnFail = true) => {
     log.debug(kleur.gray(`...selector: ${kleur.yellow(selector)}`))
     try {
-        await page.waitForXPath(selector, {timeout})
+        await page.waitForSelector("xpath/." + selector, {timeout})
     } catch (e) {
-        if (screenshotOnFail) await takeScreenshot(page, "waitForXPathFailed")
+        if (screenshotOnFail) await takeScreenshot(page, "waitForSelectorFailed")
         throw (e)
     }
-    const elements = await page.$x(selector)
+    const elements = await page.$$("xpath/." + selector)
     return elements[0]
 }
 
@@ -187,7 +185,7 @@ export const launchBrowser = async (headless: boolean, url?: string): Promise<Br
 
     return puppeteer.launch({
         executablePath: executablePath(),
-        headless: headless ? "new" : false, userDataDir,
+        headless: headless, userDataDir,
         defaultViewport: {width: 1920, height: 1080, isMobile: false, hasTouch: false},
         args: ['--no-sandbox',
             '--enable-experimental-web-platform-features', // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105
@@ -198,7 +196,6 @@ export const launchBrowser = async (headless: boolean, url?: string): Promise<Br
             '--no-zygote',
             // '--single-process', // will cause it to die
             '--disable-gpu',
-            headless ? "--headless=new" : "",
             headless && !url ? "" : `--app=${url}`,
             '--window-size=1920,1080', // otherwise headless doesn't work
             // '--incognito'
@@ -248,22 +245,23 @@ export const login = async (page, username, pass, backupCode) => {
         } else {
             await twoFactorOrBackupCodeInput.type(`${backupCode}`)
             await waitForTimeout(3);
-
-            let possibleErrorElement = null
-
-            try {
-                possibleErrorElement = await fetchFirstXPath(page,
-                    "//div[@data-dialog-name='sign-in']//div[contains(@class, 'mainProblem')]//div[contains(@class,'text-wrap')]/span",
-                    5000)
-            } catch (e) {
-                log.warn("doesn't seem like there's an error..")
-            }
-            if (possibleErrorElement) {
-                const errorText = await page.evaluate(element => element.innerText, possibleErrorElement);
-                await takeScreenshot(page, "twoFactorError")
-                throw new ErrorWithScreenShot(errorText, "twoFactorError")
-            }
         }
+    }
+
+    let possibleErrorElement = null
+
+    try {
+        possibleErrorElement = await fetchFirstXPath(page,
+            "//div[@data-dialog-name='sign-in']//div[contains(@class, 'mainProblem')]//div[contains(@class,'text-wrap')]/span",
+            5000)
+    } catch (e) {
+        log.warn("doesn't seem like there's an error..")
+    }
+
+    if (possibleErrorElement) {
+        const errorText = await page.evaluate(element => element.innerText, possibleErrorElement);
+        await takeScreenshot(page, "loginError")
+        throw new ErrorWithScreenShot(errorText, "loginError")
     }
 
 }
@@ -335,8 +333,8 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     const selectFromDropDown = async (conditionToMatchArg, selector: string) => {
         log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`)
 
-        await page.waitForXPath(selector, {timeout: 8000})
-        const elements = await page.$x(selector)
+        await page.waitForSelector(selector, {timeout: 8000})
+        const elements = await page.$$("xpath/." + selector)
 
         if (elements.length == 0) {
             log.warn("zero dropdown options found with selector")
@@ -498,7 +496,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         const selector = "//legend[text()='Trigger']/../..//button//span[contains(@class,'ellipsis-container')]"
 
         try {
-            await page.waitForXPath(selector, {timeout: 8000})
+            await page.waitForSelector(selector, {timeout: 8000})
         } catch (e) {
             if (e.constructor.name === "TimeoutError") {
                 throw new Error(`No fire rate 'option' available, but one was specified in alert configuration: ${option}`)
@@ -507,7 +505,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             }
         }
 
-        const elements = await page.$x(selector)
+        const elements = await page.$$("xpath/." + selector)
 
         let found = false
         let foundOptions = []

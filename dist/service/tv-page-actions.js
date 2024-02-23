@@ -261,7 +261,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     await takeScreenshot(page, "alert_begin_configure");
     const selectFromDropDown = async (conditionToMatchArg, selector) => {
         log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`);
-        await page.waitForSelector(selector, { timeout: 8000 });
+        await page.waitForSelector("xpath/." + selector, { timeout: 8000 });
         const elements = await page.$$("xpath/." + selector);
         if (elements.length == 0) {
             log.warn("zero dropdown options found with selector");
@@ -409,7 +409,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         log.debug(`Looking for option: ${kleur.blue(option)}`);
         const selector = "//legend[text()='Trigger']/../..//button//span[contains(@class,'ellipsis-container')]";
         try {
-            await page.waitForSelector(selector, { timeout: 8000 });
+            await page.waitForSelector("xpath/." + selector, { timeout: 8000 });
         }
         catch (e) {
             if (e.constructor.name === "TimeoutError") {

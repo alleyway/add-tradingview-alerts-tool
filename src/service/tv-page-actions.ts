@@ -333,7 +333,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     const selectFromDropDown = async (conditionToMatchArg, selector: string) => {
         log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`)
 
-        await page.waitForSelector(selector, {timeout: 8000})
+        await page.waitForSelector("xpath/." + selector, {timeout: 8000})
         const elements = await page.$$("xpath/." + selector)
 
         if (elements.length == 0) {
@@ -496,7 +496,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
         const selector = "//legend[text()='Trigger']/../..//button//span[contains(@class,'ellipsis-container')]"
 
         try {
-            await page.waitForSelector(selector, {timeout: 8000})
+            await page.waitForSelector("xpath/." + selector, {timeout: 8000})
         } catch (e) {
             if (e.constructor.name === "TimeoutError") {
                 throw new Error(`No fire rate 'option' available, but one was specified in alert configuration: ${option}`)

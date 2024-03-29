@@ -104,10 +104,10 @@ const dropdownSoundXpathQueries = {
     durationListItems: "//div[@role='listbox']//span[contains(@class, 'label-')]",
 };
 const inputXpathQueries = {
-    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='start-band-range']",
-    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Upper Bound']/../..//input[@data-property-id='end-band-range']",
-    quaternaryLeft: "//legend[text()='Lower Bound']/../..//input[@data-property-id='start-band-range']",
-    quaternaryRight: "//legend[text()='Lower Bound']/../..//input[@data-property-id='end-band-range']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper bound']/../..//input[@data-property-id='start-band-range']",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Upper bound']/../..//input[@data-property-id='end-band-range']",
+    quaternaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Lower bound']/../..//input[@data-property-id='start-band-range']",
+    quaternaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Lower bound']/../..//input[@data-property-id='end-band-range']",
 };
 const readOnlyInputQueries = {
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[1]//input[@type='text']",

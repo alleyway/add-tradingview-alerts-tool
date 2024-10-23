@@ -92,10 +92,10 @@ const dropdownXpathQueries = {
     // "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select']"
     // Or get when there's an upper and lower bound
     // "//legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']"
-    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']",
-    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='end-band-select'] | //legend[text()='Upper Bound']/../..//span[@data-name='end-band-select']",
-    quaternaryLeft: "//legend[text()='Lower Bound']/../..//span[@data-name='start-band-select']",
-    quaternaryRight: "//legend[text()='Lower Bound']/../..//span[@data-name='end-band-select']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper bound']/../..//span[@data-name='start-band-select']",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='end-band-select'] | //legend[text()='Upper bound']/../..//span[@data-name='end-band-select']",
+    quaternaryLeft: "//legend[text()='Lower bound']/../..//span[@data-name='start-band-select']",
+    quaternaryRight: "//legend[text()='Lower bound']/../..//span[@data-name='end-band-select']",
 };
 const dropdownSoundXpathQueries = {
     nameTarget: "//button[@role='button' and @data-name='sound-title-select']",

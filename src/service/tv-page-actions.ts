@@ -130,10 +130,10 @@ const dropdownXpathQueries = {
 
 
 const dropdownSoundXpathQueries = {
-    nameTarget: "//span[@role='button' and @data-name='sound-title-select']",
-    nameListItems: "//div[contains(@class, 'soundSelectMenuItem-')]//div[contains(@class, 'title-')]",
-    durationTarget: "//span[@role='button' and @data-name='sound-duration-select']",
-    durationListItems: "//div[@role='listbox']//span[contains(@class, 'label-')]",
+    nameTarget: "//button[@role='button' and @data-name='sound-title-select']",
+    nameListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]//div[contains(@class, 'title-')]",
+    durationTarget: "//button[@data-name='sound-duration-select']",
+    durationListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]",
 }
 
 

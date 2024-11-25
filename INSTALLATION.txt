@@ -1,4 +1,4 @@
-1) Make sure you have node version 18.x installed
+1) Make sure you have node version 22.x installed
 
     node --version
 

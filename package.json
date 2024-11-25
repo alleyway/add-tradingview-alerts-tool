@@ -48,7 +48,7 @@
     "kleur": "^4.1.5",
     "lodash.get": "^4.4.2",
     "pacote": "^20.0.0",
-    "puppeteer": "^22.2.0",
+    "puppeteer": "^23.9.0",
     "regex-parser": "^2.3.0",
     "semver": "^7.6.3",
     "yaml": "^2.6.1"

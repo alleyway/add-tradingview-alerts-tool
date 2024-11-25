@@ -44,7 +44,7 @@
     "consola": "^3.2.3",
     "dotenv": "^16.4.5",
     "extensionless": "^1.9.9",
-    "fast-csv": "^4.3.6",
+    "fast-csv": "^5.0.2",
     "kleur": "^4.1.5",
     "lodash.get": "^4.4.2",
     "pacote": "^17.0.6",
@@ -56,12 +56,12 @@
   "devDependencies": {
     "@release-it/bumper": "^6.0.1",
     "@types/node": "^20.11.19",
-    "@vitest/coverage-v8": "^1.3.1",
-    "@vitest/ui": "^1.3.1",
+    "@vitest/coverage-v8": "^2.1.5",
+    "@vitest/ui": "^2.1.5",
     "husky": "^9.1.7",
     "release-it": "^17.10.0",
     "typescript": "^5.7.2",
-    "vitest": "^1.3.1"
+    "vitest": "^2.1.5"
   },
   "private": false
 }

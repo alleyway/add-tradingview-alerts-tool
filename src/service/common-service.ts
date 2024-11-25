@@ -8,8 +8,9 @@ import kleur from "kleur";
     that require import assertions starting from node 16.14
 
     so the solution is to have this file(only) transpiled by babel
+    UPDATE: v22 switch using "assert" for "with"
  */
-import manifest from "../manifest.json" assert {"type": "json"}
+import manifest from "../manifest.json" with {"type": "json"}
 // import manifest from "../manifest.json"
 
 // @ts-ignore

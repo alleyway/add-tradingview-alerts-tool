@@ -5,7 +5,7 @@ import prompts from "prompts";
 import kleur from "kleur";
 import {execSync} from "child_process"
 import os from "os"
-import manifest from "./manifest.json" assert {"type": "json"}
+import manifest from "./manifest.json" with {"type": "json"}
 
 // @ts-ignore
 // const manifest = JSON.parse(await readFile(new URL('./manifest.json', import.meta.url)));

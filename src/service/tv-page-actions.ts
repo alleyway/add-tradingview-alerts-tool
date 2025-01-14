@@ -131,6 +131,7 @@ const dropdownXpathQueries = {
 
 const dropdownSoundXpathQueries = {
     nameTarget: "//button[@role='button' and @data-name='sound-title-select']",
+    classicSection: "//button[@role='group' and @aria-expanded='false']//div[text()='Classic']",
     nameListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]//div[contains(@class, 'title-')]",
     durationTarget: "//button[@data-name='sound-duration-select']",
     durationListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]",
@@ -679,6 +680,17 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration) {
                     {
                         await waitForTimeout(.5)
+
+                        try {
+                            const classicSoundsSectionButton = await fetchFirstXPath(page, dropdownSoundXpathQueries["classicSection"], 3000, false)
+                            classicSoundsSectionButton.evaluate((b) => b.click())
+                            log.trace("Clicked to expand 'Classic' sounds")
+                        } catch (e) {
+                            log.trace("'Classic' sounds section already open")
+
+                        }
+
+                        await waitForTimeout(.1)
 
                         log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`)
                         const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["nameTarget"], 3000)

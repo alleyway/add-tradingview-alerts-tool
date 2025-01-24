@@ -332,6 +332,15 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     await takeScreenshot(page, "alert_begin_configure")
 
+    try {
+        const gotItButton = await fetchFirstXPath(page, "//button//span[contains(@data-overflow-tooltip-text, 'Got it')]", 1000, false)
+        log.warn("Clicking 'Got it' informational bubble...")
+        gotItButton.evaluate(e => e.click())
+    } catch (e) {
+        log.trace("Checked for 'Got it' button, but found nothing")
+    }
+
+
     const selectFromDropDown = async (conditionToMatchArg, selector: string) => {
         log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`)
 
@@ -616,6 +625,15 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
     if (!!name) {
         log.debug(`Setting Alert Name: ${kleur.blue(name)}`)
+
+        try {
+            const customAlertNameButton = await fetchFirstXPath(page, "//button[@id='alert-name']", 1000, false)
+            log.warn("Clicking custom alert name button")
+            customAlertNameButton.evaluate(e => e.click())
+        } catch (e) {
+            log.trace("Tried to click custom alert name button, but got nothing")
+        }
+
         const nameInput = await fetchFirstXPath(page, "//input[@id='alert-name']")
         await clickInputAndDelete(page, nameInput)
         await nameInput.type(name)

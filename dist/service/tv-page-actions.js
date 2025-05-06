@@ -85,17 +85,17 @@ export const configureInterval = async (interval, page) => {
 };
 // queries used on the alert conditions
 const dropdownXpathQueries = {
-    primaryLeft: "//span[@data-name='main-series-select']",
-    primaryRight: "//span[@data-name='main-series-plot-select']",
-    secondary: "//span[@data-name='operator-select']",
+    primaryLeft: "//span[contains(@data-qa-id, 'main-series-select')]",
+    primaryRight: "//span[contains(@data-qa-id, 'main-series-plot-select')]",
+    secondary: "//span[contains(@data-qa-id, 'operator-select')]",
     // Only get listbox when there's either just one value
     // "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select']"
     // Or get when there's an upper and lower bound
     // "//legend[text()='Upper Bound']/../..//span[@data-name='start-band-select']"
-    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select'] | //legend[text()='Upper bound']/../..//span[@data-name='start-band-select']",
-    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='end-band-select'] | //legend[text()='Upper bound']/../..//span[@data-name='end-band-select']",
-    quaternaryLeft: "//legend[text()='Lower bound']/../..//span[@data-name='start-band-select']",
-    quaternaryRight: "//legend[text()='Lower bound']/../..//span[@data-name='end-band-select']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//span[contains(@data-qa-id, 'start-band-select')] | //legend[text()='Upper bound']/../..//span[@data-name='start-band-select']",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//span[contains(@data-qa-id, 'end-band-select')] | //legend[text()='Upper bound']/../..//span[@data-name='end-band-select']",
+    quaternaryLeft: "//legend[text()='Lower bound']/../..//span[contains(@data-qa-id, 'start-band-select')]",
+    quaternaryRight: "//legend[text()='Lower bound']/../..//span[contains(@data-qa-id, 'end-band-select')]",
 };
 const dropdownSoundXpathQueries = {
     nameTarget: "//button[@role='button' and @data-name='sound-title-select']",
@@ -105,10 +105,10 @@ const dropdownSoundXpathQueries = {
     durationListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]",
 };
 const inputXpathQueries = {
-    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Upper bound']/../..//input[@data-property-id='start-band-range']",
-    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Upper bound']/../..//input[@data-property-id='end-band-range']",
-    quaternaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='start-band-range'] | //legend[text()='Lower bound']/../..//input[@data-property-id='start-band-range']",
-    quaternaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[@data-property-id='end-band-range'] | //legend[text()='Lower bound']/../..//input[@data-property-id='end-band-range']",
+    tertiaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[contains(@data-qa-id, 'start-band-range')] | //legend[text()='Upper bound']/../..//input[contains(@data-qa-id, 'start-band-range')]",
+    tertiaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[contains(@data-qa-id, 'end-band-range')] | //legend[text()='Upper bound']/../..//input[contains(@data-qa-id, 'end-band-range')]",
+    quaternaryLeft: "//*[contains(@class, 'operatorRow-')]/..//input[contains(@data-qa-id, 'start-band-range')] | //legend[text()='Lower bound']/../..//input[contains(@data-qa-id, 'start-band-range')]",
+    quaternaryRight: "//*[contains(@class, 'operatorRow-')]/..//input[contains(@data-qa-id, 'end-band-range')] | //legend[text()='Lower bound']/../..//input[contains(@data-qa-id, 'end-band-range')]",
 };
 const readOnlyInputQueries = {
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[1]//input[@type='text']",
@@ -517,6 +517,11 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         const expSubmitButton = await fetchFirstXPath(page, "//div[@data-name='popup-menu-container']//div[@data-name='menu-inner']/div/button");
         await expSubmitButton.click();
     }
+    await waitForTimeout(.2);
+    // Click message tab
+    const messageTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__message']");
+    await messageTab.click();
+    await waitForTimeout(.4);
     if (!!name) {
         log.debug(`Setting Alert Name: ${kleur.blue(name)}`);
         try {
@@ -549,6 +554,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         }
     }
     await waitForTimeout(.2);
+    // Click notifications tab
     const notificationsTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__notifications']");
     await notificationsTab.click();
     await waitForTimeout(.4);

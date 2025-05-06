@@ -38,7 +38,7 @@
   ],
   "author": "Michael Lake",
   "license": "MIT",
-  "version": "4.0.0",
+  "version": "4.0.1-beta.0",
   "dependencies": {
     "commander": "^12.1.0",
     "consola": "^3.2.3",
@@ -54,12 +54,12 @@
     "yaml": "^2.6.1"
   },
   "devDependencies": {
-    "@release-it/bumper": "^6.0.1",
+    "@release-it/bumper": "^7.0.5",
     "@types/node": "^22.9.3",
     "@vitest/coverage-v8": "^2.1.5",
     "@vitest/ui": "^2.1.5",
     "husky": "^9.1.7",
-    "release-it": "^17.10.0",
+    "release-it": "^19.0.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.5"
   },

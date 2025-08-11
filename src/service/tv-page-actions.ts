@@ -130,11 +130,11 @@ const dropdownXpathQueries = {
 
 
 const dropdownSoundXpathQueries = {
-    nameTarget: "//button[@role='button' and @data-name='sound-title-select']",
+    nameTarget: "//button[@role='button' and @data-qa-id='sound-title-select']",
     classicSection: "//button[@role='group' and @aria-expanded='false']//div[text()='Classic']",
-    nameListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]//div[contains(@class, 'title-')]",
-    durationTarget: "//button[@data-name='sound-duration-select']",
-    durationListItems: "//div[@data-name='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]",
+    nameListItems: "//div[@data-qa-id='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]//div[contains(@class, 'title-')]",
+    durationTarget: "//button[@data-qa-id='sound-duration-select']",
+    durationListItems: "//div[@data-qa-id='popup-menu-container']//div[@role='option']//div[contains(@class, 'title-')]",
 }
 
 
@@ -682,7 +682,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         if (!!actions && !!actions[configKey] !== undefined) {
             await waitForTimeout(.3)
-            const el = await fetchFirstXPath(page, `//input[@data-name='${elementInputName}']`)
+            const el = await fetchFirstXPath(page, `//input[@data-qa-id='${elementInputName}']`)
             /* istanbul ignore next */
             const isChecked = await page.evaluate(element => element.checked, el)
 
@@ -756,7 +756,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
 export const clickSubmit = async (page) => {
     log.debug("clickSubmit()")
-    const submitButton = await fetchFirstXPath(page, "//div[contains(@data-name, 'alerts-create-edit-dialog')]//button[@data-name='submit']")
+    const submitButton = await fetchFirstXPath(page, "//div[contains(@data-qa-id, 'alerts-create-edit-dialog')]//button[@data-qa-id='submit']")
     submitButton.evaluate((b) => b.click())
 }
 
@@ -796,7 +796,7 @@ export const addAlert = async (page, singleAlertSettings: ISingleAlertSettings) 
     await waitForTimeout(.7, "..make sure we're showing the alert dialog");
 
     const isNotShowingAlertDialog = async () => {
-        return !(await isXpathVisible(page, "//div[contains(@data-name, 'alerts-create-edit-dialog')]"))
+        return !(await isXpathVisible(page, "//div[contains(@data-qa-id, 'alerts-create-edit-dialog')]"))
     }
 
     if (await isNotShowingAlertDialog()) {

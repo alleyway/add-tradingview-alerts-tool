@@ -18,8 +18,6 @@ jobs:
       - run: npm install -g npm
       - run: npm ci
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
-      - run: echo "email=${{ secrets.NPM_PUBLISH_EMAIL }}" >> .npmrc
-      - run: echo always-auth=true >> .npmrc
       - run: echo provenance=true >> .npmrc
       - run: npx release-it --config .release-it.prod.json --ci --no-git --no-increment --verbose
         env:

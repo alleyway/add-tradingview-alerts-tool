@@ -25,4 +25,3 @@ jobs:
       - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_PUBLISH_EMAIL: ${{ secrets.NPM_PUBLISH_EMAIL }}

@@ -12,4 +12,3 @@
 Need further assistance?
 
     Check the latest at https://github.com/alleyway/add-tradingview-alerts-tool
-

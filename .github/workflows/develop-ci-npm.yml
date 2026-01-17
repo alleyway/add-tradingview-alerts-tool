@@ -16,17 +16,26 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: '24.x'
-      - name: Clear any legacy npm auth    # ← ADD THIS
+          registry-url: 'https://registry.npmjs.org'  # ← Add this back (critical for OIDC context)
+
+      - name: Upgrade npm & force clean auth
         run: |
           unset NODE_AUTH_TOKEN
-          rm -f ~/.npmrc ~/.npm/_config ~/.npmrc
-          npm config delete _authToken || true
-          npm config delete //registry.npmjs.org:_authToken || true
-      - run: npm install -g npm@latest
+          npm install -g npm@latest
+          rm -f ~/.npmrc .npmrc
+          npm config delete _authToken --location=global || true
+          npm config delete _authToken --location=project || true
+          npm config delete //registry.npmjs.org/:_authToken --location=project || true
+          npm config set registry https://registry.npmjs.org/ --location=project
+
       - run: npm ci
+
       - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

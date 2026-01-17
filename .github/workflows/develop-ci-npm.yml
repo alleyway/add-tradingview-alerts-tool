@@ -19,10 +19,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          registry-url: 'https://registry.npmjs.org'
       - name: Clear any legacy npm auth    # ← ADD THIS
         run: |
-          rm -f ~/.npmrc
+          unset NODE_AUTH_TOKEN
+          rm -f ~/.npmrc ~/.npm/_config ~/.npmrc
           npm config delete _authToken || true
           npm config delete //registry.npmjs.org:_authToken || true
       - run: npm install -g npm@latest

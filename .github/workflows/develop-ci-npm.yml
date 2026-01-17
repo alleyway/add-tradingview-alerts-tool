@@ -28,5 +28,5 @@ jobs:
       - run: echo provenance=true >> .npmrc
       - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_PUBLISH_EMAIL: ${{ secrets.NPM_PUBLISH_EMAIL }}

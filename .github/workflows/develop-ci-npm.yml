@@ -20,6 +20,11 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
+      - name: Clear any legacy npm auth    # ← ADD THIS
+        run: |
+          rm -f ~/.npmrc
+          npm config delete _authToken || true
+          npm config delete //registry.npmjs.org:_authToken || true
       - run: npm install -g npm@latest
       - run: npm ci
       - run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}

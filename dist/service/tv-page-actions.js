@@ -254,7 +254,7 @@ const isMatch = (needle, haystack) => {
         return !!regexp.exec(haystack);
     }
     else {
-        return haystack.indexOf(needle) > -1;
+        return haystack.toLowerCase().indexOf(needle.toLowerCase()) > -1;
     }
 };
 export const configureSingleAlertSettings = async (page, singleAlertSettings) => {
@@ -435,7 +435,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             /* istanbul ignore next */
             let optionText = await page.evaluate(element => element.innerText, el);
             foundOptions.push(optionText.trim());
-            if (optionText === option && !found) {
+            if (optionText.toLowerCase() === option.toLowerCase() && !found) {
                 log.debug(`Found! Clicking ${kleur.yellow(optionText)}`);
                 found = true;
                 await waitForTimeout(.4);
@@ -514,8 +514,8 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             await waitForTimeout(.2);
         }
         await waitForTimeout(.2);
-        const expSubmitButton = await fetchFirstXPath(page, "//div[@data-name='popup-menu-container']//div[@data-name='menu-inner']/div/button");
-        await expSubmitButton.click();
+        const submitTimeButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'expiration-set-button')]");
+        submitTimeButton.click();
     }
     await waitForTimeout(.2);
     // Click message tab

@@ -2,7 +2,7 @@
   "name": "@alleyway/add-tradingview-alerts-tool",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alleyway/add-tradingview-alerts-tool.git"
+    "url": "git+https://github.com/alleyway/add-tradingview-alerts-tool.git"
   },
   "bugs": {
     "url": "https://github.com/alleyway/add-tradingview-alerts-tool/issues"
@@ -40,28 +40,28 @@
   "license": "MIT",
   "version": "4.1.1-beta.0",
   "dependencies": {
-    "commander": "^12.1.0",
+    "commander": "^14.0.2",
     "consola": "^3.2.3",
     "dotenv": "^17.2.3",
-    "extensionless": "^1.9.9",
+    "extensionless": "^2.0.6",
     "fast-csv": "^5.0.5",
     "kleur": "^4.1.5",
     "lodash.get": "^4.4.2",
-    "pacote": "^20.0.0",
-    "puppeteer": "^23.9.0",
+    "pacote": "^21.0.4",
+    "puppeteer": "^24.35.0",
     "regex-parser": "^2.3.1",
     "semver": "^7.7.3",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@release-it/bumper": "^7.0.5",
-    "@types/node": "^22.9.3",
-    "@vitest/coverage-v8": "^2.1.5",
-    "@vitest/ui": "^2.1.5",
+    "@types/node": "^25.0.9",
+    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/ui": "^4.0.17",
     "husky": "^9.1.7",
-    "release-it": "^19.2.3",
+    "release-it": "^19.2.4",
     "typescript": "^5.9.3",
-    "vitest": "^2.1.5"
+    "vitest": "^4.0.17"
   },
   "private": false
 }

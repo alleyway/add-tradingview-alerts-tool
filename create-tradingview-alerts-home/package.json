@@ -13,12 +13,12 @@
     "release-beta": "npx release-it prerelease --no-git --verbose --preReleaseId='beta'"
   },
   "devDependencies": {
-    "@release-it/bumper": "^6.0.1",
-    "release-it": "^17.0.1",
-    "typescript": "^5.3.3"
+    "@release-it/bumper": "^7.0.5",
+    "release-it": "^19.2.4",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@types/node": "20.10.5",
+    "@types/node": "22.19.7",
     "kleur": "^4.1.5",
     "prompts": "^2.4.1"
   }

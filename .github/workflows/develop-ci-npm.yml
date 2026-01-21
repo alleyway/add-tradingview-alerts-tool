@@ -46,11 +46,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-
       # ────────────────────────────────────────────────
       #               CI release
       # ────────────────────────────────────────────────
-      - name: Publish production version (GitHub Release created)
+      - name: Publish CI Version (develop branch)
         if: github.ref == 'refs/heads/develop'
         run: |
           npx release-it --config .release-it.ci.json \

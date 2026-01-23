@@ -50,7 +50,7 @@ jobs:
       # ────────────────────────────────────────────────
       - name: Publish CI Version (develop branch)
         if: github.ref == 'refs/heads/develop'
-        run: npx release-it --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
+        run: npx release-it prerelease --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

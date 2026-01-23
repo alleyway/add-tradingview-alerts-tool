@@ -31,7 +31,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24.x'
-          registry-url: 'https://registry.npmjs.org'  # ← Add this back (critical for OIDC context)
 
       - name: Upgrade npm & clean any old auth
         run: |

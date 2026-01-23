@@ -48,20 +48,20 @@
     "kleur": "^4.1.5",
     "lodash.get": "^4.4.2",
     "pacote": "^21.0.4",
-    "puppeteer": "^24.35.0",
+    "puppeteer": "^24.36.0",
     "regex-parser": "^2.3.1",
     "semver": "^7.7.3",
     "yaml": "^2.8.2"
   },
   "devDependencies": {
     "@release-it/bumper": "^7.0.5",
-    "@types/node": "^25.0.9",
-    "@vitest/coverage-v8": "^4.0.17",
-    "@vitest/ui": "^4.0.17",
+    "@types/node": "^22.19.7",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
     "husky": "^9.1.7",
     "release-it": "^19.2.4",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.18"
   },
   "private": false
 }

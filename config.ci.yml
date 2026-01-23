@@ -12,7 +12,7 @@ alert:
     tertiaryRight: 14
     quaternaryLeft: null
     quaternaryRight: null
-  option: Once Per Bar Close
+  trigger: Once per bar close
   actions:
     notifyOnApp: false
     showPopup: false

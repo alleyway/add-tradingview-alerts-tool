@@ -258,7 +258,7 @@ const isMatch = (needle, haystack) => {
     }
 };
 export const configureSingleAlertSettings = async (page, singleAlertSettings) => {
-    const { condition, name, expireOpenEnded, expireInterval, option, message, actions } = singleAlertSettings;
+    const { condition, name, expireOpenEnded, expireInterval, trigger, message, actions } = singleAlertSettings;
     await takeScreenshot(page, "alert_begin_configure");
     try {
         const gotItButton = await fetchFirstXPath(page, "//button//span[contains(@data-overflow-tooltip-text, 'Got it')]", 1000, false);
@@ -395,7 +395,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     await performActualEntry("quaternaryRight");
     await waitForTimeout(.4);
     // if (!!option) {
-    //     log.debug(`Looking for option: ${kleur.blue(option)}`)
+    //     log.debug(`Looking for trigger: ${kleur.blue(option)}`)
     //
     //     try {
     //
@@ -414,16 +414,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     //     }
     //
     // }
-    if (!!option) {
+    if (!!trigger) {
         try {
             const triggerDropdownButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'trigger-dropdown-button')]");
             triggerDropdownButton.click();
             await waitForTimeout(.3);
-            await selectFromDropDown(option, "//div[@data-qa-id='trigger-dropdown-button-container']//div[@role='option']//div[contains(@class, 'title-')]");
+            await selectFromDropDown(trigger, "//div[@data-qa-id='trigger-dropdown-button-container']//div[@role='option']//div[contains(@class, 'title-')]");
         }
         catch (e) {
             if (e.constructor.name === "TimeoutError") {
-                throw new Error(`Trigger/Option available, but one was specified in alert configuration: ${option}`);
+                throw new Error(`Trigger option available, but one was specified in alert configuration: ${trigger}`);
             }
             else {
                 throw e;
@@ -431,7 +431,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         }
     }
     // if (!!option) {
-    //     log.debug(`Looking for option: ${kleur.blue(option)}`)
+    //     log.debug(`Looking for trigger: ${kleur.blue(option)}`)
     //
     //     const selector = "//legend[text()='Trigger']/../..//button//span[contains(@class,'ellipsisContainer')]"
     //

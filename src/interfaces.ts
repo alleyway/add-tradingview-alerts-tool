@@ -22,7 +22,7 @@ export interface ISingleAlertSettings {
         quaternaryRight?: string | number,
     }
     // option
-    option?: string,
+    trigger?: string,
 
     expireOpenEnded?: boolean,
     expireInterval?: number,

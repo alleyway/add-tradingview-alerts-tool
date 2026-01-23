@@ -82,7 +82,7 @@ alert:
     tertiaryRight:
     quaternaryLeft: 
     quaternaryRight:
-  option: Once Per Bar Close
+  trigger: Once per bar close
   actions:
     notifyOnApp: false
     showPopup: false

@@ -50,10 +50,7 @@ jobs:
       # ────────────────────────────────────────────────
       - name: Publish CI Version (develop branch)
         if: github.ref == 'refs/heads/develop'
-        run: |
-          npx release-it --config .release-it.ci.json \
-            --ci --no-git --no-increment --verbose \
-            --preReleaseId=ci.${{ github.run_number }}
+        run: npx release-it --config .release-it.ci.json --ci --no-git --verbose --preReleaseId=ci.${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -62,10 +59,7 @@ jobs:
       # ────────────────────────────────────────────────
       - name: Publish beta version (tag contains -beta*)
         if: startsWith(github.ref, 'refs/tags/') && contains(github.ref_name, '-beta')
-        run: |
-          npx release-it --preRelease=beta \
-            --config .release-it.beta.json \
-            --ci --no-git --verbose
+        run: npx release-it --preRelease=beta --config .release-it.beta.json --ci --no-git --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # ────────────────────────────────────────────────
@@ -73,8 +67,6 @@ jobs:
       # ────────────────────────────────────────────────
       - name: Publish production version (GitHub Release created)
         if: github.event_name == 'release'
-        run: |
-          npx release-it --config .release-it.prod.json \
-            --ci --no-git --no-increment --verbose
+        run: npx release-it --config .release-it.prod.json --ci --no-git --no-increment --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

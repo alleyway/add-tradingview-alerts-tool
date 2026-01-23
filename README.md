@@ -128,13 +128,6 @@ This command downloads all trading pairs for BinanceUS:
     ./atat fetch-symbols coinbase -q usd
 ```
 
-
-#### Download Trading Pairs From Bittrex
-
-```bash
-    ./atat fetch-symbols bittrex -q btc
-```
-
 #### Download Trading Pairs From Kraken
 
 ```bash

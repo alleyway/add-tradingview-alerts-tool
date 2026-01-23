@@ -10,7 +10,6 @@ export const BINANCE = "binance";
 export const BINANCE_FUTURES_USDM = "binance_futures_usdm";
 export const BINANCE_FUTURES_COINM = "binance_futures_coinm";
 export const BINANCEUS = "binanceus";
-export const BITTREX = "bittrex";
 export const COINBASE = "coinbase";
 // export const FTX = "ftx"
 export const KRAKEN = "kraken";
@@ -29,7 +28,6 @@ export const SOURCES_AVAILABLE = [
     BINANCE_FUTURES_USDM,
     BINANCE_FUTURES_COINM,
     BINANCEUS,
-    BITTREX,
     COINBASE,
     BYBIT_INVERSE,
     BYBIT_LINEAR,
@@ -208,19 +206,6 @@ export const fetchKrakenFutures = async () => {
     };
     return fetchAndTransform("https://futures.kraken.com/derivatives/api/v3/tickers", "tickers", transformer);
 };
-export const fetchBittrex = async () => {
-    const transformer = (obj) => {
-        if (obj.status === "ONLINE") {
-            const classification = (obj.baseCurrencySymbol.match(/X\s(?:BULL|BEAR)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT;
-            return new MasterSymbol(obj, BITTREX, obj.baseCurrencySymbol, obj.quoteCurrencySymbol, null, classification);
-        }
-        else {
-            //logJson(obj, "Bittrex Discarded:")
-            return null;
-        }
-    };
-    return fetchAndTransform("https://api.bittrex.com/v3/markets", null, transformer);
-};
 export const fetchCoinbase = async () => {
     const transformer = (obj) => {
         if (!obj.trading_disabled && obj.status == "online") {
@@ -365,9 +350,6 @@ export const fetchSymbolsForSource = async (source) => {
         //     break;
         case COINBASE:
             symbolArray = await fetchCoinbase();
-            break;
-        case BITTREX:
-            symbolArray = await fetchBittrex();
             break;
         case KRAKEN:
             symbolArray = await fetchKraken();

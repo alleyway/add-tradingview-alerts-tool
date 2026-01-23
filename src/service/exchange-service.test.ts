@@ -2,7 +2,6 @@ import {
     fetchByBitInverse,
     fetchKucoin,
     fetchKraken,
-    fetchBittrex,
     fetchCoinbase,
     fetchBinanceFuturesUsdM,
     fetchBinance,
@@ -63,11 +62,6 @@ describe('Integrated Test of Exchanges', () => {
     it('fetchKrakenFutures()', async () => {
         const results = await fetchKrakenFutures()
         checkResults(results, 4)
-    });
-
-    it('fetchBittrex()', async () => {
-        const results = await fetchBittrex()
-        checkResults(results, 100)
     });
 
     it('fetchCoinbase()', async () => {

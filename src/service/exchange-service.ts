@@ -11,7 +11,6 @@ export const BINANCE = "binance"
 export const BINANCE_FUTURES_USDM = "binance_futures_usdm"
 export const BINANCE_FUTURES_COINM = "binance_futures_coinm"
 export const BINANCEUS = "binanceus"
-export const BITTREX = "bittrex"
 export const COINBASE = "coinbase"
 // export const FTX = "ftx"
 export const KRAKEN = "kraken"
@@ -32,7 +31,6 @@ export const SOURCES_AVAILABLE = [
     BINANCE_FUTURES_USDM,
     BINANCE_FUTURES_COINM,
     BINANCEUS,
-    BITTREX,
     COINBASE,
     BYBIT_INVERSE,
     BYBIT_LINEAR,
@@ -252,21 +250,6 @@ export const fetchKrakenFutures = async (): Promise<MasterSymbol[]> => {
 
 }
 
-export const fetchBittrex = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-        if (obj.status === "ONLINE") {
-            const classification: ClassificationType = (obj.baseCurrencySymbol.match(/X\s(?:BULL|BEAR)\s/)) ? Classification.LEVERAGED_TOKEN : Classification.SPOT
-            return new MasterSymbol(obj, BITTREX, obj.baseCurrencySymbol, obj.quoteCurrencySymbol, null, classification)
-        } else {
-            //logJson(obj, "Bittrex Discarded:")
-
-            return null
-        }
-    }
-    return fetchAndTransform("https://api.bittrex.com/v3/markets", null, transformer)
-}
-
 export const fetchCoinbase = async (): Promise<MasterSymbol[]> => {
 
     const transformer = (obj) => {
@@ -428,9 +411,6 @@ export const fetchSymbolsForSource = async (source: string): Promise<MasterSymbo
         //     break;
         case COINBASE:
             symbolArray = await fetchCoinbase()
-            break;
-        case BITTREX:
-            symbolArray = await fetchBittrex()
             break;
         case KRAKEN:
             symbolArray = await fetchKraken()

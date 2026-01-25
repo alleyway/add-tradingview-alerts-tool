@@ -241,6 +241,10 @@ export const addAlertsMain = async (configFileName) => {
 
                 await checkForInvalidSymbol(page, row.symbol)
 
+                if (alertConfig.option){
+                    log.warn("DEPRECATION: Use 'trigger' in your config instead of 'option'!!")
+                }
+
 
                 const singleAlertSettings: ISingleAlertSettings = {
                     name: makeReplacements(row.alert_name || row.name || alertConfig.name), // TODO: deprecate "name" one day
@@ -254,7 +258,7 @@ export const addAlertsMain = async (configFileName) => {
                         quaternaryLeft: makeReplacements(alertConfig.condition.quaternaryLeft),
                         quaternaryRight: makeReplacements(alertConfig.condition.quaternaryRight),
                     },
-                    trigger: makeReplacements(alertConfig.option),
+                    trigger: makeReplacements(alertConfig.trigger || alertConfig.option),
                     expireInterval: alertConfig.expireInterval,
                     expireOpenEnded: alertConfig.expireOpenEnded
                 }

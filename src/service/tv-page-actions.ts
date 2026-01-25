@@ -501,6 +501,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
     // }
 
     if (!!trigger) {
+        log.debug(`Looking for trigger: ${kleur.blue(trigger)}`)
         try {
             const triggerDropdownButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'trigger-dropdown-button')]");
             triggerDropdownButton.click();

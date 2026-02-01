@@ -114,7 +114,7 @@ export const configureInterval = async (interval: string, page) => {
 const dropdownXpathQueries = {
     primaryLeft: "//span[contains(@data-qa-id, 'main-series-select')]",
     primaryRight: "//span[contains(@data-qa-id, 'main-series-plot-select')]",
-    secondary: "//span[contains(@data-qa-id, 'operator-select')]",
+    secondary: "//button[contains(@data-qa-id, 'operator-dropdown')]",
 
     // Only get listbox when there's either just one value
     // "//*[contains(@class, 'operatorRow-')]/..//span[@data-name='start-band-select']"
@@ -126,6 +126,12 @@ const dropdownXpathQueries = {
 
     quaternaryLeft: "//legend[text()='Lower bound']/../..//span[contains(@data-qa-id, 'start-band-select')]",
     quaternaryRight: "//legend[text()='Lower bound']/../..//span[contains(@data-qa-id, 'end-band-select')]",
+}
+
+const dropdownOptionsXpathQueries = {
+    primaryLeft: "//div[@role='option']//div[@data-qa-id='main-series-select-title']/span",
+    primaryRight: "//div[@role='option']//div[@data-qa-id='main-series-select-plot-title']/span",
+    secondary: "//div[@role='option']//div[contains(@class, 'title-')]",
 }
 
 
@@ -405,8 +411,17 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 // must be a dropdown...
                 log.debug(`Found dropdown! Clicking element of ${kleur.yellow(key)}`)
                 targetElement.click()
+
+                try {
+                    const showMoreElement = await fetchFirstXPath(page, "//button[@data-qa-id='ui-lib-title-popover-item']", 600, false)
+                    log.warn("Clicking 'Show More' button...")
+                    showMoreElement.evaluate(e => e.click())
+                } catch (e) {
+                    log.trace("Checked for 'Show More' button, but found nothing")
+                }
+
                 await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue, "//div[@data-name='popup-menu-container']//div[@role='option']/span/span/div/div/span")
+                await selectFromDropDown(conditionOrInputValue, dropdownOptionsXpathQueries[key])
                 await waitForTimeout(.4, "after selecting from dropdown");
 
             } catch (e) {

@@ -8,6 +8,7 @@ on:
       - main
     tags:
       - '*-beta*'
+      - "*-release"
   release:
     types: [created]
 
@@ -66,7 +67,7 @@ jobs:
       #               Production release
       # ────────────────────────────────────────────────
       - name: Publish production version (GitHub Release created)
-        if: github.event_name == 'release'
+        if: startsWith(github.ref, 'refs/tags/') && contains(github.ref_name, '-release')
         run: npx release-it --config .release-it.prod.json --ci --no-git --no-increment --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,7 +1,6 @@
 {
   "git": {
     "requireCleanWorkingDir": true,
-    "tagName": "v${version}-beta"
   },
   "npm": {
     "publish": false,

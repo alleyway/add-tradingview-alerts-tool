@@ -1,6 +1,6 @@
 {
   "git": {
-    "requireCleanWorkingDir": true,
+    "requireCleanWorkingDir": true
   },
   "npm": {
     "publish": false,

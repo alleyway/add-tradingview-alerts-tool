@@ -651,8 +651,13 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
 
         await waitForTimeout(0.3)
 
+        const expirationDropdownSelector = "//div[@data-qa-id='expiration-time-dropdown-container']//div[contains(@data-qa-id, 'expiration-time-dropdown-item')]//div[contains(@class, 'title-')]"
+
         if (!expireOpenEnded && expireInterval) {
+            log.info(`Set custom expiration date`)
+            await selectFromDropDown("Custom date", expirationDropdownSelector)
             log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`)
+
             const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'pickerInput-')]//input")
             const timeInput = await fetchFirstXPath(page, "//div[contains(@class, 'time-')]//input")
 
@@ -674,13 +679,19 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
             log.debug(`exp_time: ${expTime}`)
 
             await dateInput.click()
-            await waitForTimeout(50)
-            await page.keyboard.press("End")
+
+            await waitForTimeout(500)
+
+            for (let i = 0; i < 11; i++) {
+                await page.keyboard.press('ArrowRight');
+                // Optional: tiny delay if the site is very laggy / virtualized
+                await waitForTimeout(20)
+            }
             for (const l of "yyyy-mm-dd".split("")) {
                 await waitForTimeout(50)
                 await page.keyboard.press("Backspace")
             }
-            await dateInput.type(String(expDate))
+            await dateInput.type(String(expDate), {delay: 40})
             await waitForTimeout(50)
             await timeInput.click()
             await waitForTimeout(50)
@@ -689,13 +700,15 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings: IS
                 await waitForTimeout(50)
                 await page.keyboard.press("Backspace")
             }
-            await timeInput.type(String(expTime))
-            await waitForTimeout(0.2)
-        }
+            await timeInput.type(String(expTime), {delay: 40})
 
-        await waitForTimeout(0.2)
-        const submitTimeButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'expiration-set-button')]")
-        submitTimeButton.click()
+            await waitForTimeout(1000)
+            const submitTimeButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'expiration-set-button')]")
+            submitTimeButton.click()
+
+        } else if (expireOpenEnded) {
+            await selectFromDropDown("Open-ended", expirationDropdownSelector)
+        }
     }
 
     await waitForTimeout(0.2)

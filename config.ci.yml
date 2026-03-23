@@ -16,6 +16,8 @@ alert:
     quaternaryLeft: null
     quaternaryRight: null
   trigger: Once only
+  expireOpenEnded: false
+  expireInterval: 24
   actions:
     notifyOnApp: true
     showPopup: true

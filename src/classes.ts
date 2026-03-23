@@ -1,87 +1,85 @@
-import {IBaseSymbol, ClassificationType} from "./interfaces.js";
+import { ClassificationType, IBaseSymbol } from "./interfaces.js"
 
 export class MasterSymbol implements IBaseSymbol {
+  source: string
+  id: string
+  prefix: string
+  ticker: string
+  instrument: string
+  quoteAsset: string
+  classification: ClassificationType
+  raw: object
 
-    source: string;
-    id: string;
-    prefix: string;
-    ticker: string;
-    instrument: string;
-    quoteAsset: string;
-    classification: ClassificationType
-    raw: object;
-
-    constructor(
-        raw: object,
-        source: string,
-        instrument: string,
-        quoteAsset: string,
-        id?: string,
-        classification?: ClassificationType) {
-        this.raw = raw
-        this.id = id || `${source.toUpperCase()}:${instrument}${quoteAsset}`
-        const [prefix, ticker] = this.id.split(":")
-        this.prefix = prefix
-        this.ticker = ticker
-        this.source = source.toUpperCase();
-        this.quoteAsset = quoteAsset;
-        this.instrument = instrument;
-        this.classification = classification || "SPOT"
-    }
+  constructor(
+    raw: object,
+    source: string,
+    instrument: string,
+    quoteAsset: string,
+    id?: string,
+    classification?: ClassificationType
+  ) {
+    this.raw = raw
+    this.id = id || `${source.toUpperCase()}:${instrument}${quoteAsset}`
+    const [prefix, ticker] = this.id.split(":")
+    this.prefix = prefix
+    this.ticker = ticker
+    this.source = source.toUpperCase()
+    this.quoteAsset = quoteAsset
+    this.instrument = instrument
+    this.classification = classification || "SPOT"
+  }
 }
 
 export class NoInputFoundError extends Error {
-
-    constructor(message: string) {
-        super(message);
-    }
+  constructor(message: string) {
+    super(message)
+  }
 }
 
 export class SelectionError extends Error {
-    public _configName: string;
-    public _pageUrl: string;
-    _needle: string;
-    _haystack: string[];
+  public _configName: string
+  public _pageUrl: string
+  _needle: string
+  _haystack: string[]
 
-    constructor(needle: string, haystack: string[]) {
-        super(`Unable to partial match '${needle}' from the following options:\n${haystack.join("\n")}`)
-        Object.setPrototypeOf(this, SelectionError.prototype);
-        this._needle = needle;
-        this._haystack = haystack;
-    }
+  constructor(needle: string, haystack: string[]) {
+    super(`Unable to partial match '${needle}' from the following options:\n${haystack.join("\n")}`)
+    Object.setPrototypeOf(this, SelectionError.prototype)
+    this._needle = needle
+    this._haystack = haystack
+  }
 
+  set configName(value: string) {
+    this._configName = value
+  }
 
-    set configName(value: string) {
-        this._configName = value;
-    }
-
-    set pageUrl(value: string) {
-        this._pageUrl = value;
-    }
+  set pageUrl(value: string) {
+    this._pageUrl = value
+  }
 }
 
 export class InvalidSymbolError extends Error {
-    public symbol: string;
-    constructor() {
-        super(`Invalid Symbol`)
-        Object.setPrototypeOf(this, InvalidSymbolError.prototype);
-    }
+  public symbol: string
+  constructor() {
+    super(`Invalid Symbol`)
+    Object.setPrototypeOf(this, InvalidSymbolError.prototype)
+  }
 }
 
 export class AddAlertInvocationError extends Error {
-    constructor() {
-        super("Unable to bring up alert dialog (system error)")
-        Object.setPrototypeOf(this, AddAlertInvocationError.prototype);
-    }
+  constructor() {
+    super("Unable to bring up alert dialog (system error)")
+    Object.setPrototypeOf(this, AddAlertInvocationError.prototype)
+  }
 }
 
 export class ErrorWithScreenShot extends Error {
-    public filenameSearch: RegExp | string;
-    public title: string;
-    constructor(message, filenameSearch, title?) {
-        super(message);
-        this.filenameSearch = filenameSearch
-        this.title = title
-        Object.setPrototypeOf(this, ErrorWithScreenShot.prototype);
-    }
+  public filenameSearch: RegExp | string
+  public title: string
+  constructor(message, filenameSearch, title?) {
+    super(message)
+    this.filenameSearch = filenameSearch
+    this.title = title
+    Object.setPrototypeOf(this, ErrorWithScreenShot.prototype)
+  }
 }

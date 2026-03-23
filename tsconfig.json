@@ -16,17 +16,9 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "types": ["node", "vitest/globals"],
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "compileOnSave": true,
-  "include": [
-    "src/**/*.ts",
-    "src/manifest.json"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/node_modules/*",
-    "coverage",
-    "doc"
-  ]
+  "include": ["src/**/*.ts", "src/manifest.json"],
+  "exclude": ["node_modules", "**/node_modules/*", "coverage", "doc"]
 }

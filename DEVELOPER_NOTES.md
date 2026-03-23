@@ -1,5 +1,11 @@
 ## Developer Notes
 
+To stop opening old pages:
+
+    chrome://settings/onStartup
+
+
+
 ### Publishing
 
 #### Beta Testing

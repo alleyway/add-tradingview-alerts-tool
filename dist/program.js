@@ -1,20 +1,17 @@
-import { Command, Argument, Option } from 'commander';
-import { fetchSymbolsMain } from "./fetch-symbols.js";
-import log from "./service/log.js";
-import { addAlertsMain } from "./add-alerts.js";
-import { initBaseDelay, atatVersion } from "./service/common-service.js";
+import { Argument, Command, Option } from "commander";
 import kleur from "kleur";
-import { updateNotifier } from "./update-notifier.js";
-import { SOURCES_AVAILABLE } from "./service/exchange-service.js";
+import { addAlertsMain } from "./add-alerts.js";
+import { fetchSymbolsMain } from "./fetch-symbols.js";
 import { Classification } from "./interfaces.js";
+import { atatVersion, initBaseDelay } from "./service/common-service.js";
+import { SOURCES_AVAILABLE } from "./service/exchange-service.js";
+import log from "./service/log.js";
+import { updateNotifier } from "./update-notifier.js";
 const program = new Command();
 program.configureOutput({
-    outputError: (str, write) => write(kleur.red(str))
+    outputError: (str, write) => write(kleur.red(str)),
 });
-program
-    .name("atat")
-    .version(atatVersion)
-    .option('-l, --loglevel <level>', 'log level (1-5), default 3');
+program.name("atat").version(atatVersion).option("-l, --loglevel <level>", "log level (1-5), default 3");
 const checkForUpdate = async (verbose) => {
     if (verbose) {
         log.info(kleur.gray("Checking for ATAT update..."));
@@ -46,7 +43,8 @@ const wrapper = async (workFunction) => {
         await checkForUpdate(false);
     }
 };
-program.command('fetch-pairs [exchange] [quote]', { hidden: true })
+program
+    .command("fetch-pairs [exchange] [quote]", { hidden: true })
     .description('DEPRECATED! use "fetch-symbols" instead')
     .action((exchange, quote) => {
     log.error(`fetch-pairs is now ${kleur.red("DEPRECATED")}. Use 'fetch-symbols' instead`);
@@ -61,12 +59,14 @@ Where ${kleur.yellow("<source>")} is one of the following:
     example: ${kleur.dim("atat fetch-symbols coinbase -q eth")}
 
     `;
-program.command('fetch-symbols')
-    .addArgument(new Argument('<source>', 'exchange').choices(SOURCES_AVAILABLE))
+program
+    .command("fetch-symbols")
+    .addArgument(new Argument("<source>", "exchange").choices(SOURCES_AVAILABLE))
     .addOption(new Option("-q, --quote-asset <quote-asset>", "only symbols matching quote asset (eg. 'usdt' or 'btc')"))
     .addOption(new Option("-c, --classification <classification>", "only symbols matching classification").choices(Object.keys(Classification).map((s) => s.toLowerCase())))
     // .showHelpAfterError(extendedHelp)
-    .description('fetch trading symbols from an exchange').addHelpText("after", extendedHelp)
+    .description("fetch trading symbols from an exchange")
+    .addHelpText("after", extendedHelp)
     .action(async (source, options) => {
     return wrapper(async () => {
         await fetchSymbolsMain(source, options.quoteAsset, options.classification);
@@ -75,9 +75,10 @@ program.command('fetch-symbols')
         }
     });
 });
-program.command('add-alerts [config]')
-    .description('add alerts')
-    .addOption(new Option('-d, --delay <ms>', 'base delay(in ms) for how fast it runs, default 1000'))
+program
+    .command("add-alerts [config]")
+    .description("add alerts")
+    .addOption(new Option("-d, --delay <ms>", "base delay(in ms) for how fast it runs, default 1000"))
     .action((config, options) => {
     return wrapper(async () => {
         if (options.delay) {

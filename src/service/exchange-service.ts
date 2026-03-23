@@ -1,11 +1,11 @@
-import {MasterSymbol} from "../classes.js";
-import log from "./log.js";
-import kleur from "kleur";
-import fs from "fs";
-import path from "path";
-import {ClassificationType, Classification} from "../interfaces.js";
-import {isEnvEnabled} from "./common-service.js";
+import fs from "fs"
+import kleur from "kleur"
 import get from "lodash.get"
+import path from "path"
+import { MasterSymbol } from "../classes.js"
+import { Classification, ClassificationType } from "../interfaces.js"
+import { isEnvEnabled } from "./common-service.js"
+import log from "./log.js"
 
 export const BINANCE = "binance"
 export const BINANCE_FUTURES_USDM = "binance_futures_usdm"
@@ -27,187 +27,189 @@ export const BYBIT_SPOT = "bybit_spot"
 export const BITMEX = "bitmex" // unable to do multiple pairs in 3commas
 
 export const SOURCES_AVAILABLE = [
-    BINANCE,
-    BINANCE_FUTURES_USDM,
-    BINANCE_FUTURES_COINM,
-    BINANCEUS,
-    COINBASE,
-    BYBIT_INVERSE,
-    BYBIT_LINEAR,
-    // BYBIT_SPOT, // spot is STILL not on tradingview
-    // FTX,
-    KRAKEN,
-    KUCOIN,
-    OKX_SPOT,
-    OKX_SWAP
+  BINANCE,
+  BINANCE_FUTURES_USDM,
+  BINANCE_FUTURES_COINM,
+  BINANCEUS,
+  COINBASE,
+  BYBIT_INVERSE,
+  BYBIT_LINEAR,
+  // BYBIT_SPOT, // spot is STILL not on tradingview
+  // FTX,
+  KRAKEN,
+  KUCOIN,
+  OKX_SPOT,
+  OKX_SWAP,
 ]
 
-
 const logJson = (obj, name: string = "") => {
-    log.debug(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`)
+  log.debug(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`)
 }
 
-
 export const proxyMaybe = (url: string) => {
+  if (process.env.PROXY_BASE) {
+    // parse the url to get the host, path, and query segments
 
-    if (process.env.PROXY_BASE) {
-
-        // parse the url to get the host, path, and query segments
-
-        const realUrl = new URL(url)
-        return `${process.env.PROXY_BASE}/api/proxy${realUrl.search || "?"}&host=${realUrl.host}&path=${realUrl.pathname}`
-
-    } else {
-        return url
-    }
-
+    const realUrl = new URL(url)
+    return `${process.env.PROXY_BASE}/api/proxy${realUrl.search || "?"}&host=${realUrl.host}&path=${realUrl.pathname}`
+  } else {
+    return url
+  }
 }
 
 const fetchAndTransform = async (url, responsePath, transformer: (any) => MasterSymbol) => {
+  const responseObject = await (await fetch(url)).json()
 
-    const responseObject = await (await fetch(url)).json()
+  const resultsArray = responsePath ? get(responseObject, responsePath) : responseObject
 
-    const resultsArray = responsePath ? get(responseObject, responsePath) : responseObject
+  const masterSymbols: MasterSymbol[] = []
 
-    const masterSymbols: MasterSymbol[] = []
-
-    log.info(`${resultsArray.length} results returned from API`)
-    let count = 0
-    for (const obj of resultsArray) {
-        const masterSymbol: MasterSymbol = transformer(obj)
-        if (masterSymbol) {
-            if (count == 0 && isEnvEnabled(process.env.TEST_SAVE_RESPONSE)) {
-                fs.writeFileSync(path.join(process.cwd(), "output", masterSymbol.source + "_in.json"), JSON.stringify(resultsArray, null, 2), {encoding: "utf-8"})
-            }
-            masterSymbols.push(masterSymbol)
-            count += 1
-        }
+  log.info(`${resultsArray.length} results returned from API`)
+  let count = 0
+  for (const obj of resultsArray) {
+    const masterSymbol: MasterSymbol = transformer(obj)
+    if (masterSymbol) {
+      if (count === 0 && isEnvEnabled(process.env.TEST_SAVE_RESPONSE)) {
+        fs.writeFileSync(
+          path.join(process.cwd(), "output", masterSymbol.source + "_in.json"),
+          JSON.stringify(resultsArray, null, 2),
+          { encoding: "utf-8" }
+        )
+      }
+      masterSymbols.push(masterSymbol)
+      count += 1
     }
+  }
 
-    log.info(`${masterSymbols.length} symbols parsed from results`)
+  log.info(`${masterSymbols.length} symbols parsed from results`)
 
-    return masterSymbols
+  return masterSymbols
 }
 
-
 export const fetchBitMex = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-
-        if (obj.expiry === null) {
-            return new MasterSymbol(obj, BITMEX, obj.symbol, obj.quoteCurrency, `BITMEX:${obj.symbol}.P`, Classification.FUTURES_PERPETUAL)
-        } else {
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.expiry === null) {
+      return new MasterSymbol(
+        obj,
+        BITMEX,
+        obj.symbol,
+        obj.quoteCurrency,
+        `BITMEX:${obj.symbol}.P`,
+        Classification.FUTURES_PERPETUAL
+      )
+    } else {
+      return null
     }
-    return fetchAndTransform("https://www.bitmex.com/api/v1/instrument/active", null, transformer)
+  }
+  return fetchAndTransform("https://www.bitmex.com/api/v1/instrument/active", null, transformer)
 }
 
 export const fetchByBitInverse = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-
-        if (obj.status === "Trading") {
-            let classification: ClassificationType
-            let symbol = obj.symbol
-            let tvSuffix = ""
-            if (obj.contractType == "InversePerpetual") {
-                classification = Classification.FUTURES_PERPETUAL
-                tvSuffix = ".P"
-            } else if (obj.contractType == "InverseFutures") {
-                classification = Classification.FUTURES_DATED
-                const match = obj.symbol.match(/(.*?)(\d\d)$/)
-                symbol = `${match[1]}20${match[2]}`
-            } else {
-                log.error(`Found unknown contract type: ${obj.contractType}`)
-            }
-            return new MasterSymbol(obj, BYBIT_INVERSE, symbol, obj.quoteCoin, `BYBIT:${symbol}${tvSuffix}`, classification)
-
-        } else {
-            //logJson(obj, "ByBit Discarded:")
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.status === "Trading") {
+      let classification: ClassificationType
+      let symbol = obj.symbol
+      let tvSuffix = ""
+      if (obj.contractType === "InversePerpetual") {
+        classification = Classification.FUTURES_PERPETUAL
+        tvSuffix = ".P"
+      } else if (obj.contractType === "InverseFutures") {
+        classification = Classification.FUTURES_DATED
+        const match = obj.symbol.match(/(.*?)(\d\d)$/)
+        symbol = `${match[1]}20${match[2]}`
+      } else {
+        log.error(`Found unknown contract type: ${obj.contractType}`)
+      }
+      return new MasterSymbol(obj, BYBIT_INVERSE, symbol, obj.quoteCoin, `BYBIT:${symbol}${tvSuffix}`, classification)
+    } else {
+      //logJson(obj, "ByBit Discarded:")
+      return null
     }
+  }
 
-    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=inverse"), "result.list", transformer)
+  return fetchAndTransform(
+    proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=inverse"),
+    "result.list",
+    transformer
+  )
 }
 
 export const fetchByBitLinear = async (): Promise<MasterSymbol[]> => {
-    const transformer = (obj) => {
-
-        if (obj.status === "Trading") {
-            let classification: ClassificationType
-            let symbol = obj.symbol
-            if (obj.contractType == "LinearPerpetual") {
-                classification = Classification.FUTURES_PERPETUAL
-            }  else {
-                log.error(`Found unknown contract type: ${obj.contractType}`)
-            }
-            return new MasterSymbol(obj, BYBIT_LINEAR, symbol, obj.quoteCoin, `BYBIT:${symbol}.P`, classification)
-
-        } else {
-            //logJson(obj, "ByBit Discarded:")
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.status === "Trading") {
+      let classification: ClassificationType
+      const symbol = obj.symbol
+      if (obj.contractType === "LinearPerpetual") {
+        classification = Classification.FUTURES_PERPETUAL
+      } else {
+        log.error(`Found unknown contract type: ${obj.contractType}`)
+      }
+      return new MasterSymbol(obj, BYBIT_LINEAR, symbol, obj.quoteCoin, `BYBIT:${symbol}.P`, classification)
+    } else {
+      //logJson(obj, "ByBit Discarded:")
+      return null
     }
+  }
 
-    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=linear"), "result.list", transformer)
+  return fetchAndTransform(
+    proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=linear"),
+    "result.list",
+    transformer
+  )
 }
 
 export const fetchByBitSpot = async (): Promise<MasterSymbol[]> => {
-// actually these aren't on tradingview yet, even in march of 2023
-    const transformer = (obj) => {
-        return new MasterSymbol(obj, BYBIT_SPOT, obj.baseCoin, obj.quoteCoin, `BYBIT:${obj.symbol}`)
-    }
+  // actually these aren't on tradingview yet, even in march of 2023
+  const transformer = (obj) => {
+    return new MasterSymbol(obj, BYBIT_SPOT, obj.baseCoin, obj.quoteCoin, `BYBIT:${obj.symbol}`)
+  }
 
-    return fetchAndTransform(proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000"), "result.list", transformer)
+  return fetchAndTransform(
+    proxyMaybe("https://api.bybit.com/v5/market/instruments-info?category=spot&limit=1000"),
+    "result.list",
+    transformer
+  )
 }
 
 export const fetchKucoin = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-        if (obj.enableTrading) {
-            const symbol = obj.name.replace("-", "")
-            return new MasterSymbol(obj, KUCOIN, obj.baseCurrency, obj.quoteCurrency, `KUCOIN:${symbol}`)
-        } else {
-            //logJson(obj, "Kucoin Discarded:")
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.enableTrading) {
+      const symbol = obj.name.replace("-", "")
+      return new MasterSymbol(obj, KUCOIN, obj.baseCurrency, obj.quoteCurrency, `KUCOIN:${symbol}`)
+    } else {
+      //logJson(obj, "Kucoin Discarded:")
+      return null
     }
-    return fetchAndTransform("https://api.kucoin.com/api/v2/symbols", "data", transformer)
+  }
+  return fetchAndTransform("https://api.kucoin.com/api/v2/symbols", "data", transformer)
 }
 
 export const fetchKraken = async (): Promise<MasterSymbol[]> => {
+  const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
 
-    const resp = await fetch("https://api.kraken.com/0/public/AssetPairs")
+  const responseObject = await resp.json()
 
-    const responseObject = await resp.json()
+  const symbolsObject = responseObject.result
 
-    // @ts-ignore
-    const symbolsObject = responseObject.result
+  const masterSymbols: MasterSymbol[] = []
 
-    const masterSymbols: MasterSymbol[] = []
+  const keys = Object.keys(symbolsObject)
+  log.info(`found ${keys.length} results from the API`)
 
-    const keys = Object.keys(symbolsObject);
-    log.info(`found ${keys.length} results from the API`)
+  for (const key of keys) {
+    // key = "AAVEAUD"
+    const obj = symbolsObject[key]
+    const [instrument, quoteAsset] = obj.wsname.split("/") // "AAVE\/AUD"
+    masterSymbols.push(new MasterSymbol(obj, KRAKEN, instrument, quoteAsset))
+  }
 
-    for (const key of keys) { // key = "AAVEAUD"
-        const obj = symbolsObject[key]
-        const [instrument, quoteAsset] = obj.wsname.split("\/") // "AAVE\/AUD"
-        masterSymbols.push(
-            new MasterSymbol(obj, KRAKEN, instrument, quoteAsset)
-        )
-    }
+  log.info(`returning ${masterSymbols.length} results symbols parsed`)
 
-    log.info(`returning ${masterSymbols.length} results symbols parsed`)
-
-    return masterSymbols
+  return masterSymbols
 }
 
-
 export const fetchKrakenFutures = async (): Promise<MasterSymbol[]> => {
-
-    /*
+  /*
           {
             "tag": "perpetual",
             "pair": "XBT:USD",
@@ -229,40 +231,42 @@ export const fetchKrakenFutures = async (): Promise<MasterSymbol[]> => {
           },
      */
 
-    const transformer = (obj) => {
-        if (obj.suspended === false) {
-            const [baseCurrency, quoteCurrency] = obj.pair.split(":")
-            let classification: ClassificationType = null
-            if (obj.tag === "perpetual") {
-                classification = Classification.FUTURES_PERPETUAL
-                return new MasterSymbol(obj, KRAKEN_FUTURES, obj.symbol, quoteCurrency, `KRAKEN:${baseCurrency}${quoteCurrency}.PM`, classification)
-            } else {
-                // TODO: dated futures
-                return null
-            }
-
-        } else {
-            logJson(obj, `${KRAKEN_FUTURES} Discarded:"`)
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.suspended === false) {
+      const [baseCurrency, quoteCurrency] = obj.pair.split(":")
+      let classification: ClassificationType = null
+      if (obj.tag === "perpetual") {
+        classification = Classification.FUTURES_PERPETUAL
+        return new MasterSymbol(
+          obj,
+          KRAKEN_FUTURES,
+          obj.symbol,
+          quoteCurrency,
+          `KRAKEN:${baseCurrency}${quoteCurrency}.PM`,
+          classification
+        )
+      } else {
+        // TODO: dated futures
+        return null
+      }
+    } else {
+      logJson(obj, `${KRAKEN_FUTURES} Discarded:"`)
+      return null
     }
-    return fetchAndTransform("https://futures.kraken.com/derivatives/api/v3/tickers", "tickers", transformer)
-
+  }
+  return fetchAndTransform("https://futures.kraken.com/derivatives/api/v3/tickers", "tickers", transformer)
 }
 
 export const fetchCoinbase = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-        if (!obj.trading_disabled && obj.status == "online") {
-            return new MasterSymbol(obj, COINBASE, obj.base_currency, obj.quote_currency)
-
-        } else {
-            //logJson(obj, "Coinbase Discarded:")
-            return null
-        }
+  const transformer = (obj) => {
+    if (!obj.trading_disabled && obj.status === "online") {
+      return new MasterSymbol(obj, COINBASE, obj.base_currency, obj.quote_currency)
+    } else {
+      //logJson(obj, "Coinbase Discarded:")
+      return null
     }
-    return fetchAndTransform("https://api.exchange.coinbase.com/products", null, transformer)
-
+  }
+  return fetchAndTransform("https://api.exchange.coinbase.com/products", null, transformer)
 }
 
 // export const fetchFtx = async (): Promise<MasterSymbol[]> => {
@@ -306,79 +310,93 @@ export const fetchCoinbase = async (): Promise<MasterSymbol[]> => {
 // }
 
 export const fetchBinanceFuturesUsdM = async (): Promise<MasterSymbol[]> => {
-    const transformer = (obj) => {
-        if (obj.status === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_USDM, obj.symbol, obj.quoteAsset,
-                `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`, Classification.FUTURES_PERPETUAL)
-        } else {
-            // logJson(obj, "Binance Futures Discarded:")
+  const transformer = (obj) => {
+    if (obj.status === "TRADING" && obj.contractType === "PERPETUAL") {
+      return new MasterSymbol(
+        obj,
+        BINANCE_FUTURES_USDM,
+        obj.symbol,
+        obj.quoteAsset,
+        `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`,
+        Classification.FUTURES_PERPETUAL
+      )
+    } else {
+      // logJson(obj, "Binance Futures Discarded:")
 
-            //TODO: add expiring, contractType: NEXT_QUARTER/CURRENT_QUARTER, etc.
-            return null
-        }
+      //TODO: add expiring, contractType: NEXT_QUARTER/CURRENT_QUARTER, etc.
+      return null
     }
-    return fetchAndTransform(proxyMaybe("https://fapi.binance.com/fapi/v1/exchangeInfo"), "symbols", transformer)
+  }
+  return fetchAndTransform(proxyMaybe("https://fapi.binance.com/fapi/v1/exchangeInfo"), "symbols", transformer)
 }
 
 export const fetchBinanceFuturesCoinM = async (): Promise<MasterSymbol[]> => {
-    const transformer = (obj) => {
-        if (obj.contractStatus === "TRADING" && obj.contractType === "PERPETUAL") {
-            return new MasterSymbol(obj, BINANCE_FUTURES_COINM, obj.symbol, obj.quoteAsset,
-                `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`, Classification.FUTURES_PERPETUAL)
-        } else {
-            // logJson(obj, "Binance Futures Discarded:")
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.contractStatus === "TRADING" && obj.contractType === "PERPETUAL") {
+      return new MasterSymbol(
+        obj,
+        BINANCE_FUTURES_COINM,
+        obj.symbol,
+        obj.quoteAsset,
+        `BINANCE:${obj.baseAsset}${obj.quoteAsset}.P`,
+        Classification.FUTURES_PERPETUAL
+      )
+    } else {
+      // logJson(obj, "Binance Futures Discarded:")
+      return null
     }
-    return fetchAndTransform(proxyMaybe("https://dapi.binance.com/dapi/v1/exchangeInfo"), "symbols", transformer)
+  }
+  return fetchAndTransform(proxyMaybe("https://dapi.binance.com/dapi/v1/exchangeInfo"), "symbols", transformer)
 }
 
 export const fetchBinance = async (isUs: boolean): Promise<MasterSymbol[]> => {
+  const exchange = isUs ? BINANCEUS : BINANCE
 
-    const exchange = isUs ? BINANCEUS : BINANCE
+  const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo"
 
-    const url = isUs ? "https://api.binance.us/api/v3/exchangeInfo" : "https://api.binance.com/api/v3/exchangeInfo";
-
-    const transformer = (obj) => {
-        if (obj.status === "TRADING") {
-            if (obj.isSpotTradingAllowed === true) {
-                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset)
-            } else {
-                return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset, null, Classification.LEVERAGED_TOKEN)
-            }
-
-        } else {
-            // logJson(obj, `${exchange} Discarded`)
-            return null
-        }
+  const transformer = (obj) => {
+    if (obj.status === "TRADING") {
+      if (obj.isSpotTradingAllowed === true) {
+        return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset)
+      } else {
+        return new MasterSymbol(obj, exchange, obj.baseAsset, obj.quoteAsset, null, Classification.LEVERAGED_TOKEN)
+      }
+    } else {
+      // logJson(obj, `${exchange} Discarded`)
+      return null
     }
-    return fetchAndTransform(proxyMaybe(url), "symbols", transformer)
+  }
+  return fetchAndTransform(proxyMaybe(url), "symbols", transformer)
 }
 
-
 export const fetchOkxSpot = async (): Promise<MasterSymbol[]> => {
-
-    const transformer = (obj) => {
-        return new MasterSymbol(obj, OKX_SPOT, obj.baseCcy, obj.quoteCcy, `OKEX:${obj.baseCcy}${obj.quoteCcy}`)
-    }
-    //NOTE: unable to get all instruments in same api call, that's why we separate
-    return fetchAndTransform("https://www.okx.com/api/v5/public/instruments?instType=SPOT", "data", transformer)
+  const transformer = (obj) => {
+    return new MasterSymbol(obj, OKX_SPOT, obj.baseCcy, obj.quoteCcy, `OKEX:${obj.baseCcy}${obj.quoteCcy}`)
+  }
+  //NOTE: unable to get all instruments in same api call, that's why we separate
+  return fetchAndTransform("https://www.okx.com/api/v5/public/instruments?instType=SPOT", "data", transformer)
 }
 
 export const fetchOkxSwap = async (): Promise<MasterSymbol[]> => {
-    const transformer = (obj) => {
-        const symbol = obj.instFamily.replace("-", "")
-        if (obj.ctType === "inverse") {
-            return new MasterSymbol(obj, OKX_SWAP, symbol, obj.ctValCcy, `OKX:${symbol}.P`, Classification.FUTURES_PERPETUAL)
-        } else if (obj.ctType === "linear") {
-            return new MasterSymbol(obj, OKX_SWAP, symbol, obj.ctValCcy, `OKX:${obj.ctValCcy}${obj.settleCcy}.P`, Classification.FUTURES_PERPETUAL)
-        } else {
-            log.warn(`unable to parse ctType: ${obj.ctType}`)
-            return null
-        }
-
+  const transformer = (obj) => {
+    const symbol = obj.instFamily.replace("-", "")
+    if (obj.ctType === "inverse") {
+      return new MasterSymbol(obj, OKX_SWAP, symbol, obj.ctValCcy, `OKX:${symbol}.P`, Classification.FUTURES_PERPETUAL)
+    } else if (obj.ctType === "linear") {
+      return new MasterSymbol(
+        obj,
+        OKX_SWAP,
+        symbol,
+        obj.ctValCcy,
+        `OKX:${obj.ctValCcy}${obj.settleCcy}.P`,
+        Classification.FUTURES_PERPETUAL
+      )
+    } else {
+      log.warn(`unable to parse ctType: ${obj.ctType}`)
+      return null
     }
-    return fetchAndTransform("https://www.okx.com/api/v5/public/instruments?instType=SWAP", "data", transformer)
+  }
+  return fetchAndTransform("https://www.okx.com/api/v5/public/instruments?instType=SWAP", "data", transformer)
 }
 
 // export const fetchOkxFutures = async (): Promise<MasterSymbol[]> => {
@@ -388,58 +406,58 @@ export const fetchOkxSwap = async (): Promise<MasterSymbol[]> => {
 //     return fetchAndTransform("https://www.okx.com/api/v5/public/instruments?instType=FUTURES", "data", transformer)
 // }
 
-
 export const fetchSymbolsForSource = async (source: string): Promise<MasterSymbol[]> => {
+  let symbolArray: MasterSymbol[]
 
-    let symbolArray: MasterSymbol[];
-
-    switch (source) {
-        case BINANCE_FUTURES_USDM:
-            symbolArray = await fetchBinanceFuturesUsdM()
-            break;
-        case BINANCE_FUTURES_COINM:
-            symbolArray = await fetchBinanceFuturesCoinM()
-            break;
-        case BINANCE:
-            symbolArray = await fetchBinance(false)
-            break;
-        case BINANCEUS:
-            symbolArray = await fetchBinance(true)
-            break;
-        // case FTX:
-        //     symbolArray = await fetchFtx()
-        //     break;
-        case COINBASE:
-            symbolArray = await fetchCoinbase()
-            break;
-        case KRAKEN:
-            symbolArray = await fetchKraken()
-            break;
-        case KRAKEN_FUTURES:
-            symbolArray = await fetchKrakenFutures()
-            break;
-        case KUCOIN:
-            symbolArray = await fetchKucoin()
-            break;
-        case OKX_SPOT:
-            symbolArray = await fetchOkxSpot()
-            break;
-        case OKX_SWAP:
-            symbolArray = await fetchOkxSwap()
-            break;
-        case BYBIT_SPOT:
-            symbolArray = await fetchByBitSpot()
-            break;
-        case BYBIT_LINEAR:
-            symbolArray = await fetchByBitLinear()
-            break;
-        case BYBIT_INVERSE:
-            symbolArray = await fetchByBitInverse()
-            break;
-        default:
-            log.error(`Invalid source specified: ${kleur.yellow(source)} \n\n Choose one of the following:\n\n ${kleur.green(SOURCES_AVAILABLE.join(", "))}`)
-            process.exit(1)
-            return []
-    }
-    return symbolArray
+  switch (source) {
+    case BINANCE_FUTURES_USDM:
+      symbolArray = await fetchBinanceFuturesUsdM()
+      break
+    case BINANCE_FUTURES_COINM:
+      symbolArray = await fetchBinanceFuturesCoinM()
+      break
+    case BINANCE:
+      symbolArray = await fetchBinance(false)
+      break
+    case BINANCEUS:
+      symbolArray = await fetchBinance(true)
+      break
+    // case FTX:
+    //     symbolArray = await fetchFtx()
+    //     break;
+    case COINBASE:
+      symbolArray = await fetchCoinbase()
+      break
+    case KRAKEN:
+      symbolArray = await fetchKraken()
+      break
+    case KRAKEN_FUTURES:
+      symbolArray = await fetchKrakenFutures()
+      break
+    case KUCOIN:
+      symbolArray = await fetchKucoin()
+      break
+    case OKX_SPOT:
+      symbolArray = await fetchOkxSpot()
+      break
+    case OKX_SWAP:
+      symbolArray = await fetchOkxSwap()
+      break
+    case BYBIT_SPOT:
+      symbolArray = await fetchByBitSpot()
+      break
+    case BYBIT_LINEAR:
+      symbolArray = await fetchByBitLinear()
+      break
+    case BYBIT_INVERSE:
+      symbolArray = await fetchByBitInverse()
+      break
+    default:
+      log.error(
+        `Invalid source specified: ${kleur.yellow(source)} \n\n Choose one of the following:\n\n ${kleur.green(SOURCES_AVAILABLE.join(", "))}`
+      )
+      process.exit(1)
+      return []
+  }
+  return symbolArray
 }

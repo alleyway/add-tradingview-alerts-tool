@@ -1,5 +1,5 @@
-import log from "./log.js";
 import kleur from "kleur";
+import log from "./log.js";
 // import {readFile} from "fs/promises";
 /*
     There's an annoying thing here where the experimental module flag has some breaking changes
@@ -8,9 +8,8 @@ import kleur from "kleur";
     so the solution is to have this file(only) transpiled by babel
     UPDATE: v22 switch using "assert" for "with"
  */
-import manifest from "../manifest.json" with { "type": "json" };
+import manifest from "../manifest.json" with { type: "json" };
 // import manifest from "../manifest.json"
-// @ts-ignore
 // const manifest = JSON.parse(await readFile(new URL('../manifest.json', import.meta.url)));
 let BASE_DELAY = Number(process.env.BASE_DELAY) || 1000;
 export const initBaseDelay = (ms = 1000) => {
@@ -36,7 +35,7 @@ export const waitForTimeout = (millsOrMultplier, message = "") => {
     });
 };
 export const isEnvEnabled = (envVariable) => {
-    return (!!envVariable && (envVariable === "true" || Boolean(Number(envVariable))));
+    return !!envVariable && (envVariable === "true" || Boolean(Number(envVariable)));
 };
 export const isDebug = () => {
     return isEnvEnabled(process.env.DEBUG);

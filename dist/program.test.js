@@ -1,38 +1,37 @@
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import program from "./program.js";
-import { describe, expect, it, beforeEach, beforeAll, } from 'vitest';
-describe('CLI Program Tests', () => {
+describe("CLI Program Tests", () => {
     let mockExit = null;
     beforeEach(() => {
-        // @ts-ignore
-        mockExit = vi.spyOn(process, 'exit').mockImplementation((code) => {
-        });
+        // @ts-expect-error
+        mockExit = vi.spyOn(process, "exit").mockImplementation((code) => { });
     });
     beforeAll(() => {
-        console.log("current working directory: " + process.cwd());
+        console.log(`current working directory: ${process.cwd()}`);
     });
     const runCLIWithArgs = async (argumentString) => {
         const args = argumentString?.split(" ");
         await program.parseAsync(args, { from: "user" });
     };
-    it('test regular expression', async () => {
-        const options = ["first", "second", "xSQ", "xSQ", "fifth"];
+    it("test regular expression", async () => {
+        //const options = ["first", "second", "xSQ", "xSQ", "fifth"]
         const conditionToMatch = "xSQ[2]";
         const match = conditionToMatch.match(/(.*?)\[(\d+)\]$/);
         // if match is not null, then the number to look for should be match[2]
         expect(match).toBeDefined();
     });
-    it('no command', async () => {
+    it("no command", async () => {
         await runCLIWithArgs(null);
         expect(mockExit).toHaveBeenCalledWith(1);
     });
-    it('--version', async () => {
+    it("--version", async () => {
         await runCLIWithArgs("--version");
         expect(mockExit).toHaveBeenCalledWith(0);
     });
-    it('fetch-symbols binance', async () => {
+    it("fetch-symbols binance", async () => {
         await runCLIWithArgs("fetch-symbols binance");
     });
-    it('fetch-symbols binance -q eth', async () => {
+    it("fetch-symbols binance -q eth", async () => {
         await runCLIWithArgs("fetch-symbols binance -q eth");
     });
     // it('fetch-symbols ftx -l 4 -q usd --classification futures_dated', async () => {

@@ -1,10 +1,10 @@
-import YAML from "yaml";
+import { copyFileSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
+import YAML from "yaml";
 import { addAlertsMain } from "./add-alerts.js";
-import { readFileSync, writeFileSync, copyFileSync } from "fs";
 import { InvalidSymbolError } from "./classes.js";
-describe('Add Alerts Test', () => {
-    it('addAlerts(configFile)', async () => {
+describe("Add Alerts Test", () => {
+    it("addAlerts(configFile)", async () => {
         // create a symbols csv file as example
         const ciSymbolsCsvPath = path.join(process.cwd(), `ci_symbols.csv`);
         const csvContent = `symbol,instrument,quote_asset,alert_name

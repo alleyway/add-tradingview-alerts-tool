@@ -1,14 +1,14 @@
-import fs from "fs";
-import { fetchSymbolsForSource } from "./service/exchange-service.js";
 import { writeToStream } from "fast-csv";
-import log from "./service/log.js";
-import { Classification } from "./interfaces.js";
+import fs from "fs";
 import kleur from "kleur";
+import { Classification } from "./interfaces.js";
+import { fetchSymbolsForSource } from "./service/exchange-service.js";
+import log from "./service/log.js";
 const write = (stream, rows, options) => {
     return new Promise((res, rej) => {
         writeToStream(stream, rows, options)
-            .on('error', (err) => rej(err))
-            .on('finish', () => res());
+            .on("error", (err) => rej(err))
+            .on("finish", () => res());
     });
 };
 export const fetchSymbolsMain = async (source, quoteAssetFilter, classificationFilter) => {
@@ -33,7 +33,7 @@ export const fetchSymbolsMain = async (source, quoteAssetFilter, classificationF
     if (classificationFilter) {
         baseSymbols = baseSymbols.filter((sym) => sym.classification.toLowerCase() === classificationFilter.toLowerCase());
     }
-    if (!baseSymbols || baseSymbols.length == 0) {
+    if (!baseSymbols || baseSymbols.length === 0) {
         throw new Error("No symbols fetched or match filters!");
     }
     const rows = baseSymbols.map((baseSymbol) => {
@@ -41,7 +41,7 @@ export const fetchSymbolsMain = async (source, quoteAssetFilter, classificationF
             symbol: baseSymbol.id,
             instrument: baseSymbol.instrument,
             quote_asset: baseSymbol.quoteAsset,
-            alert_name: ""
+            alert_name: "",
         };
     });
     const outputPath = `${formattedExchange}${classificationFilter ? "_" + classificationFilter.toLowerCase() : ""}${quoteAssetFilter ? "_" + quoteAssetFilter.toLowerCase() : ""}_symbols.csv`;

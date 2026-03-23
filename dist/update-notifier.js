@@ -1,11 +1,11 @@
 // shamelessly copied from npm's cli source code
+import kleur from "kleur";
 // print a banner telling the user to upgrade npm to latest
 // but not in CI, and not if we're doing that already.
 // Check daily for betas, and weekly otherwise.
 import pacote from "pacote";
 import semver from "semver";
-import kleur from "kleur";
-export const updateNotifier = async (version, spec = 'latest') => {
+export const updateNotifier = async (version, spec = "latest") => {
     // never check for updates in CI, when updating npm already, or opted out
     // if (!npm.config.get('update-notifier') || isGlobalNpmUpdate(npm))
     //     return null
@@ -24,10 +24,12 @@ export const updateNotifier = async (version, spec = 'latest') => {
     // if they're currently using a prerelease, nudge to the next prerelease
     // otherwise, nudge to latest.
     const useColor = true;
-    const mani = await pacote.manifest(`@alleyway/add-tradingview-alerts-tool@${spec}`, {
+    const mani = await pacote
+        .manifest(`@alleyway/add-tradingview-alerts-tool@${spec}`, {
         // always prefer latest, even if doing --tag=whatever on the cmd
-        defaultTag: 'latest',
-    }).catch(() => null);
+        defaultTag: "latest",
+    })
+        .catch(() => null);
     // if pacote failed, give up
     if (!mani)
         return null;
@@ -45,13 +47,19 @@ export const updateNotifier = async (version, spec = 'latest') => {
     // The message is saved for printing at process exit so it will not get
     // lost in any other messages being printed as part of the command.
     const update = semver.parse(mani.version);
-    const type = update.major !== current.major ? 'major'
-        : update.minor !== current.minor ? 'minor'
-            : update.patch !== current.patch ? 'patch'
-                : 'prerelease';
-    const typec = !useColor ? type
-        : type === 'major' ? kleur.red(type)
-            : type === 'minor' ? kleur.yellow(type)
+    const type = update.major !== current.major
+        ? "major"
+        : update.minor !== current.minor
+            ? "minor"
+            : update.patch !== current.patch
+                ? "patch"
+                : "prerelease";
+    const typec = !useColor
+        ? type
+        : type === "major"
+            ? kleur.red(type)
+            : type === "minor"
+                ? kleur.yellow(type)
                 : kleur.green(type);
     const oldc = !useColor ? current : kleur.red(current);
     const latestc = !useColor ? latest : kleur.green(latest);

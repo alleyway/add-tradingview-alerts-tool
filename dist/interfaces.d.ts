@@ -1,8 +1,8 @@
 export declare const soundNames: readonly ["Thin", "3 Notes Reverb", "Alarm Clock", "Beep-beep", "Calling", "Chirpy", "Fault", "Hand Bell"];
-export type SoundName = typeof soundNames[number];
+export type SoundName = (typeof soundNames)[number];
 export declare const isSoundName: (string: unknown) => string is SoundName;
 export declare const soundDurations: readonly ["Once", "5 seconds", "10 seconds", "30 seconds", "Minute"];
-export type SoundDuration = typeof soundDurations[number];
+export type SoundDuration = (typeof soundDurations)[number];
 export declare const isSoundDuration: (string: unknown) => string is SoundDuration;
 export interface ISingleAlertSettings {
     condition: {

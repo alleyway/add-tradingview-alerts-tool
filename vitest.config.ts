@@ -1,17 +1,17 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from "vitest/config"
 
 export default defineConfig({
-    test: {
-        globals: true,
-        setupFiles: ['dotenv/config'],
-        outputFile: {
-            junit: "junit.xml"
-        },
-        reporters: ["junit"],
-        coverage: {
-            provider: 'v8', // or 'istanbul'
-            reporter: ["cobertura", ["html", {subdir: "./html"}]],
-            reportsDirectory: "./coverage"
-        },
+  test: {
+    globals: true,
+    setupFiles: ["dotenv/config"],
+    outputFile: {
+      junit: "junit.xml",
     },
+    reporters: ["junit"],
+    coverage: {
+      provider: "v8", // or 'istanbul'
+      reporter: ["cobertura", ["html", { subdir: "./html" }]],
+      reportsDirectory: "./coverage",
+    },
+  },
 })

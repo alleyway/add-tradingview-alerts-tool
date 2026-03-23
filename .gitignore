@@ -16,3 +16,4 @@ coverage
 junit.xml
 protected_docs
 .DS_Store
+/chrome/*

@@ -15,15 +15,10 @@
     "esModuleInterop": true,
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "types": ["node"],
     "skipLibCheck": true
   },
   "compileOnSave": true,
-  "include": [
-    "src",
-    "src/manifest.json"
-  ]
+  "include": ["src", "src/manifest.json"]
 }

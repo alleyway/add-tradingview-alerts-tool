@@ -2,23 +2,26 @@ files:
   input: /Users/mlake/alleyway/add-tradingview-alerts-tool/ci_symbols.csv
   exclude: blacklist.csv
 tradingview:
+  chartUrl: https://www.tradingview.com/chart/EDlI2Ip1/
   interval: 4h
+  username: absurdistcamus
+  password:
 alert:
   condition:
-    primaryLeft: RSI
+    primaryLeft: Price
     primaryRight: null
-    secondary: Moving Up
-    tertiaryLeft: 3.4
-    tertiaryRight: 14
+    secondary: Crossing Up
+    tertiaryLeft: Value
+    tertiaryRight: 1000000
     quaternaryLeft: null
     quaternaryRight: null
-  trigger: Once per bar close
+  trigger: Once only
   actions:
-    notifyOnApp: false
-    showPopup: false
-    sendEmail: false
+    notifyOnApp: true
+    showPopup: true
+    sendEmail: true
     webhook:
-      enabled: false
+      enabled: true
       url: https://3commas.io/trade_signal/trading_view
     playSound:
       enabled: true

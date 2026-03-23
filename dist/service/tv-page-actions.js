@@ -1,18 +1,20 @@
-import { waitForTimeout, isEnvEnabled } from "./common-service.js";
-import log from "./log.js";
-import kleur from "kleur";
-import { AddAlertInvocationError, InvalidSymbolError, NoInputFoundError, SelectionError, ErrorWithScreenShot } from "../classes.js";
-import RegexParser from "regex-parser";
+import { Browser as ChromeBrowser, computeExecutablePath, detectBrowserPlatform, resolveBuildId, } from "@puppeteer/browsers";
 import { accessSync, constants, writeFileSync } from "fs";
-import puppeteer, { executablePath } from "puppeteer";
-import path from "path";
 import { mkdir } from "fs/promises";
+import kleur from "kleur";
+import path from "path";
+import puppeteer from "puppeteer-core";
+import RegexParser from "regex-parser";
+import { AddAlertInvocationError, ErrorWithScreenShot, InvalidSymbolError, NoInputFoundError, SelectionError, } from "../classes.js";
+import { isEnvEnabled, waitForTimeout } from "./common-service.js";
+import log from "./log.js";
 // data-dialog-name="gopro"
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);
 const doXpath = async (page, selector) => {
     /* istanbul ignore next */
     const response = await page.evaluate((sel) => {
-        const el = document.evaluate(sel, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        const el = document.evaluate(sel, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null)
+            .singleNodeValue;
         return !!el;
     }, selector);
     return response;
@@ -31,7 +33,7 @@ export const fetchFirstXPath = async (page, selector, timeout = 20000, screensho
     catch (e) {
         if (screenshotOnFail)
             await takeScreenshot(page, "waitForSelectorFailed");
-        throw (e);
+        throw e;
     }
     const elements = await page.$$("xpath/." + selector);
     return elements[0];
@@ -39,7 +41,7 @@ export const fetchFirstXPath = async (page, selector, timeout = 20000, screensho
 export const takeScreenshot = async (page, name = "unnamed") => {
     if (screenshot) {
         const username = await page.evaluate(() => {
-            // @ts-ignore
+            // @ts-expect-error
             const user = window.user;
             if (user) {
                 return "_" + user.username;
@@ -62,26 +64,31 @@ export const minimizeFooterChartPanel = async (page) => {
     try {
         const footerPanelMinimizeButton = await fetchFirstXPath(page, `//div[@id='footer-chart-panel']//button[@data-name='toggle-visibility-button' and @data-active='false']`, 5000);
         footerPanelMinimizeButton.click();
-        await waitForTimeout(.4);
+        await waitForTimeout(0.4);
     }
     catch (e) {
         log.debug("no minimize button found, footer chart panel must be hidden already");
     }
 };
 export const convertIntervalForTradingView = (interval) => {
-    return interval.split("").filter((val) => val !== "m").join("");
+    return interval
+        .split("")
+        .filter((val) => val !== "m")
+        .join("");
 };
 export const configureInterval = async (interval, page) => {
     log.debug(`set ${kleur.blue("interval")}: ${kleur.yellow(interval)}`);
     await page.keyboard.press(",");
-    await waitForTimeout(.5, "after pressing interval shortcut key");
+    await waitForTimeout(0.5, "after pressing interval shortcut key");
     try {
-        convertIntervalForTradingView(interval).split("").map((char) => page.keyboard.press(char));
+        convertIntervalForTradingView(interval)
+            .split("")
+            .map((char) => page.keyboard.press(char));
     }
     catch (e) {
         throw Error("configuration: interval specified incorrectly, should be something like '5m' or '1h' - see documentation");
     }
-    await page.keyboard.press('Enter');
+    await page.keyboard.press("Enter");
 };
 // queries used on the alert conditions
 const dropdownXpathQueries = {
@@ -101,6 +108,7 @@ const dropdownOptionsXpathQueries = {
     primaryLeft: "//div[@role='option']//div[@data-qa-id='main-series-select-title']/span",
     primaryRight: "//div[@role='option']//div[@data-qa-id='main-series-select-plot-title']/span",
     secondary: "//div[@role='option']//div[contains(@class, 'title-')]",
+    tertiaryLeft: "//div[contains(@data-qa-id, 'start-band-select')]//div[@data-qa-id='start-band-select-title']/span",
 };
 const dropdownSoundXpathQueries = {
     nameTarget: "//button[@role='button' and @data-qa-id='sound-title-select']",
@@ -117,23 +125,23 @@ const inputXpathQueries = {
 };
 const readOnlyInputQueries = {
     tertiaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[1]//input[@type='text']",
-    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[2]//input[@type='text']"
+    quaternaryLeft: "(//div[contains(@class, 'tv-alert-dialog__group-item--left ') and contains(@class, 'js-second-operand-')])[2]//input[@type='text']",
 };
 const alertActionCorresponding = {
     notifyOnApp: "notify-on-app",
     showPopup: "show-popup",
     sendEmail: "send-email",
     webhook: "webhook",
-    playSound: "play-sound"
+    playSound: "play-sound",
 };
 const clickInputAndDelete = async (page, inputElement) => {
     await inputElement.click();
-    await waitForTimeout(.5);
+    await waitForTimeout(0.5);
     /* istanbul ignore next */
     await page.evaluate((el) => {
         el.value = "";
     }, inputElement);
-    await waitForTimeout(.3);
+    await waitForTimeout(0.3);
 };
 export const launchBrowser = async (headless, url) => {
     const userDataDir = path.join(process.cwd(), "user_data"); // where chrome will store it's stuff
@@ -144,23 +152,34 @@ export const launchBrowser = async (headless, url) => {
         log.info(`Attempting to create directory for Chrome user data\n ${kleur.yellow(userDataDir)}`);
         await mkdir(userDataDir);
     }
+    const chromeBuildId = await resolveBuildId(ChromeBrowser.CHROME, detectBrowserPlatform(), "stable");
+    const chromeExecutable = computeExecutablePath({
+        browser: ChromeBrowser.CHROME,
+        buildId: chromeBuildId,
+        cacheDir: process.cwd(),
+        platform: detectBrowserPlatform(),
+    });
+    const args = [
+        "--no-sandbox",
+        "--enable-experimental-web-platform-features", // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-accelerated-2d-canvas",
+        "--no-first-run",
+        "--no-zygote",
+        "--disable-gpu",
+        "--disable-session-crashed-bubble",
+        "--disable-infobars",
+        "--disable-restore-session-state",
+        "--window-size=1920,1080", // otherwise headless doesn't work
+        !url ? "" : `${url}`,
+    ];
     return puppeteer.launch({
-        executablePath: executablePath(),
-        headless: headless, userDataDir,
+        executablePath: chromeExecutable,
+        headless: headless,
+        userDataDir,
         defaultViewport: { width: 1920, height: 1080, isMobile: false, hasTouch: false },
-        args: ['--no-sandbox',
-            '--enable-experimental-web-platform-features', // adds support for :has selector in styleOverrides. In theory its not experimental in chrome 105
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            // '--single-process', // will cause it to die
-            '--disable-gpu',
-            headless && !url ? "" : `--app=${url}`,
-            '--window-size=1920,1080', // otherwise headless doesn't work
-            // '--incognito'
-        ]
+        args,
     });
 };
 export const login = async (page, username, pass, backupCode) => {
@@ -172,14 +191,14 @@ export const login = async (page, username, pass, backupCode) => {
     catch (e) {
         log.warn("no email toggle button showing!");
     }
-    const usernameInput = await fetchFirstXPath(page, '//input[@name=\'id_username\']');
+    const usernameInput = await fetchFirstXPath(page, "//input[@name='id_username']");
     await usernameInput.type(`${username}`);
-    await waitForTimeout(.5);
+    await waitForTimeout(0.5);
     await takeScreenshot(page, "shouldbe_before_password_entry");
-    const passwordInput = await fetchFirstXPath(page, '//input[@name=\'id_password\']');
+    const passwordInput = await fetchFirstXPath(page, "//input[@name='id_password']");
     log.debug("typing password");
     await passwordInput.type(pass);
-    await waitForTimeout(.5);
+    await waitForTimeout(0.5);
     const submitButton = await fetchFirstXPath(page, "//div[@data-dialog-name='sign-in']//button[contains(@class, 'submitButton')]");
     log.debug("clicking submit button");
     submitButton.click();
@@ -209,7 +228,7 @@ export const login = async (page, username, pass, backupCode) => {
         log.warn("doesn't seem like there's an error..");
     }
     if (possibleErrorElement) {
-        const errorText = await page.evaluate(element => element.innerText, possibleErrorElement);
+        const errorText = await page.evaluate((element) => element.innerText, possibleErrorElement);
         await takeScreenshot(page, "loginError");
         throw new ErrorWithScreenShot(errorText, "loginError");
     }
@@ -220,13 +239,13 @@ export const logout = async (page) => {
         fetch("/accounts/logout/", {
             method: "POST",
             headers: { accept: "html" },
-            credentials: "same-origin"
-        }).then(res => {
+            credentials: "same-origin",
+        }).then((res) => {
             log.info(`Logged out of TradingView`);
         });
     });
     await page.reload({
-        waitUntil: 'networkidle2'
+        waitUntil: "networkidle2",
     });
 };
 export const checkForInvalidSymbol = async (page, symbol) => {
@@ -240,16 +259,16 @@ export const checkForInvalidSymbol = async (page, symbol) => {
     }
 };
 export const navigateToSymbol = async (page, symbol) => {
-    await page.keyboard.press('Escape');
-    await waitForTimeout(.5);
-    await page.keyboard.press('Escape');
-    await waitForTimeout(.5);
+    await page.keyboard.press("Escape");
+    await waitForTimeout(0.5);
+    await page.keyboard.press("Escape");
+    await waitForTimeout(0.5);
     await page.keyboard.type(`A`, { delay: 0.3 }); // just type a letter <- allows formulas to work, eg. 1/USD...
-    await page.keyboard.press('Backspace');
-    await waitForTimeout(.3);
+    await page.keyboard.press("Backspace");
+    await waitForTimeout(0.3);
     await page.keyboard.type(`${symbol}`, { delay: 0.3 });
-    await waitForTimeout(.3);
-    await page.keyboard.press('Enter');
+    await waitForTimeout(0.3);
+    await page.keyboard.press("Enter");
     await waitForTimeout(1.5);
 };
 const isMatch = (needle, haystack) => {
@@ -268,16 +287,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     try {
         const gotItButton = await fetchFirstXPath(page, "//button//span[contains(@data-overflow-tooltip-text, 'Got it')]", 1000, false);
         log.warn("Clicking 'Got it' informational bubble...");
-        gotItButton.evaluate(e => e.click());
+        gotItButton.evaluate((e) => e.click());
     }
     catch (e) {
         log.trace("Checked for 'Got it' button, but found nothing");
     }
     const selectFromDropDown = async (conditionToMatchArg, selector) => {
         log.debug(`..selectFromDropDown() using selector: ${kleur.yellow(selector)}`);
-        await page.waitForSelector("xpath/." + selector, { timeout: 8000 });
+        await page.waitForSelector(`xpath/.${selector}`, { timeout: 8000 });
         const elements = await page.$$("xpath/." + selector);
-        if (elements.length == 0) {
+        if (elements.length === 0) {
             log.warn("zero dropdown options found with selector");
             await takeScreenshot(page, "zero_dropdown_options");
         }
@@ -292,16 +311,16 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         }
         log.debug(`searching menu for ${kleur.yellow(conditionToMatch)}`);
         let found = false;
-        let foundOptions = [];
+        const foundOptions = [];
         let occurrenceCount = 0;
         for (const el of elements) {
             /* istanbul ignore next */
-            let optionText = await page.evaluate(element => element.innerText, el);
-            optionText = optionText.replace(/[\u200B]/g, ''); // this is to remove invisible "zero width" characters like for the following:
+            let optionText = await page.evaluate((element) => element.innerText, el);
+            optionText = optionText.replace(/[\u200B]/g, ""); // this is to remove invisible "zero width" characters like for the following:
             // Loner S​/​R (modified, 28, 5, Standard, -20, modified, 21, 3, 40, 10, 20, 5, 64, 1.5, both)
             foundOptions.push(optionText);
             if (isMatch(conditionToMatch, optionText)) {
-                if (occurrenceCount == targetOccurrence) {
+                if (occurrenceCount === targetOccurrence) {
                     log.debug(`Found! Clicking ${kleur.yellow(optionText)}`);
                     found = true;
                     el.click();
@@ -319,7 +338,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     const performActualEntry = async (key) => {
         const conditionOrInputValue = String(condition[key]);
         log.debug(`Processing ${kleur.blue(key)}: ${kleur.yellow(conditionOrInputValue)}`);
-        await waitForTimeout(.8);
+        await waitForTimeout(0.8);
         if (conditionOrInputValue !== "null" && String(conditionOrInputValue).length > 0) {
             try {
                 log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow(key)}`);
@@ -330,19 +349,23 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 try {
                     const showMoreElement = await fetchFirstXPath(page, "//button[@data-qa-id='ui-lib-title-popover-item']", 600, false);
                     log.warn("Clicking 'Show More' button...");
-                    showMoreElement.evaluate(e => e.click());
+                    showMoreElement.evaluate((e) => e.click());
                 }
                 catch (e) {
                     log.trace("Checked for 'Show More' button, but found nothing");
                 }
-                await waitForTimeout(.9, "let dropdown populate");
-                await selectFromDropDown(conditionOrInputValue, dropdownOptionsXpathQueries[key]);
-                await waitForTimeout(.4, "after selecting from dropdown");
+                await waitForTimeout(0.9, "let dropdown populate");
+                let selector = dropdownOptionsXpathQueries[key];
+                if (selector === undefined || selector == null) {
+                    console.error(`Oops, no selector found for key: ${key}`);
+                }
+                await selectFromDropDown(conditionOrInputValue, selector);
+                await waitForTimeout(0.4, "after selecting from dropdown");
             }
             catch (e) {
                 if (e.constructor.name === "TimeoutError") {
                     if (!inputXpathQueries[key])
-                        throw (new NoInputFoundError(`Unable to find dropdown xpath target for primaryLeft/secondary. Make sure chart layout is SAVED with an indicator that contains/matches this: ${conditionOrInputValue}`));
+                        throw new NoInputFoundError(`Unable to find dropdown xpath target for primaryLeft/secondary. Make sure chart layout is SAVED with an indicator that contains/matches this: ${conditionOrInputValue}`);
                     log.debug(`Timed out looking for dropdown. Looking for INPUT xpath of ${kleur.yellow(key)}`);
                     try {
                         const valueInput = await fetchFirstXPath(page, inputXpathQueries[key], 1000);
@@ -353,7 +376,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                     catch (inputError) {
                         if (inputError.constructor.name === "TimeoutError") {
                             if (!readOnlyInputQueries[key])
-                                throw (new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`));
+                                throw new NoInputFoundError(`Unable to find 'readonlyInput' xpath target for ${key} which doesn't have inputs, so won't even try`);
                             log.debug(`Timed out looking for input. Looking for READ-ONLY INPUT xpath of ${kleur.yellow(key)}`);
                             try {
                                 const valueReadonlyInput = await fetchFirstXPath(page, readOnlyInputQueries[key], 1000);
@@ -406,7 +429,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     await performActualEntry("tertiaryRight");
     await performActualEntry("quaternaryLeft");
     await performActualEntry("quaternaryRight");
-    await waitForTimeout(.4);
+    await waitForTimeout(0.4);
     // if (!!option) {
     //     log.debug(`Looking for trigger: ${kleur.blue(option)}`)
     //
@@ -427,12 +450,12 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     //     }
     //
     // }
-    if (!!trigger) {
+    if (trigger) {
         log.debug(`Looking for trigger: ${kleur.blue(trigger)}`);
         try {
             const triggerDropdownButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'trigger-dropdown-button')]");
             triggerDropdownButton.click();
-            await waitForTimeout(.3);
+            await waitForTimeout(0.3);
             await selectFromDropDown(trigger, "//div[@data-qa-id='trigger-dropdown-button-container']//div[@role='option']//div[contains(@class, 'title-')]");
         }
         catch (e) {
@@ -500,16 +523,10 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
     // }
     if (expireOpenEnded !== undefined) {
         log.debug("set whether to expire open ended");
-        await waitForTimeout(.1);
+        await waitForTimeout(0.1);
         const expDropdownTarget = await fetchFirstXPath(page, "//legend[text()='Expiration']/../..//button");
         await expDropdownTarget.click();
-        await waitForTimeout(.4);
-        const openEndedCheckbox = await fetchFirstXPath(page, `//input[@id='unexpired-date']`);
-        const isOpenEnded = await page.evaluate(element => element.checked, openEndedCheckbox);
-        if (expireOpenEnded != isOpenEnded) {
-            openEndedCheckbox.click();
-        }
-        await waitForTimeout(.3);
+        await waitForTimeout(0.3);
         if (!expireOpenEnded && expireInterval) {
             log.info(`Set Expiration ${kleur.blue(expireInterval)} hours in the future`);
             const dateInput = await fetchFirstXPath(page, "//div[contains(@class, 'pickerInput-')]//input");
@@ -517,7 +534,7 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             const dateISO = await page.evaluate((expireInterval) => {
                 console.log("expireInterval: " + expireInterval);
                 const currentDate = new Date();
-                currentDate.setTime(currentDate.getTime() - (currentDate.getTimezoneOffset() * 60000) + expireInterval * 60 * 60 * 1000);
+                currentDate.setTime(currentDate.getTime() - currentDate.getTimezoneOffset() * 60000 + expireInterval * 60 * 60 * 1000);
                 return currentDate.toISOString();
             }, expireInterval);
             const [splitDate, timeFull] = dateISO.split("T");
@@ -528,38 +545,38 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             log.debug(`exp_time: ${expTime}`);
             await dateInput.click();
             await waitForTimeout(50);
-            await page.keyboard.press('End');
+            await page.keyboard.press("End");
             for (const l of "yyyy-mm-dd".split("")) {
                 await waitForTimeout(50);
-                await page.keyboard.press('Backspace');
+                await page.keyboard.press("Backspace");
             }
             await dateInput.type(String(expDate));
             await waitForTimeout(50);
             await timeInput.click();
             await waitForTimeout(50);
-            await page.keyboard.press('End');
+            await page.keyboard.press("End");
             for (const l of "hh:mm".split("")) {
                 await waitForTimeout(50);
-                await page.keyboard.press('Backspace');
+                await page.keyboard.press("Backspace");
             }
             await timeInput.type(String(expTime));
-            await waitForTimeout(.2);
+            await waitForTimeout(0.2);
         }
-        await waitForTimeout(.2);
+        await waitForTimeout(0.2);
         const submitTimeButton = await fetchFirstXPath(page, "//button[contains(@data-qa-id, 'expiration-set-button')]");
         submitTimeButton.click();
     }
-    await waitForTimeout(.2);
+    await waitForTimeout(0.2);
     // Click message tab
-    const messageTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__message']");
+    const messageTab = await fetchFirstXPath(page, "//button[@data-qa-id='alert-message-button']");
     await messageTab.click();
-    await waitForTimeout(.4);
-    if (!!name) {
+    await waitForTimeout(0.4);
+    if (name) {
         log.debug(`Setting Alert Name: ${kleur.blue(name)}`);
         try {
             const customAlertNameButton = await fetchFirstXPath(page, "//button[@id='alert-name']", 1000, false);
             log.warn("Clicking custom alert name button");
-            customAlertNameButton.evaluate(e => e.click());
+            customAlertNameButton.evaluate((e) => e.click());
         }
         catch (e) {
             log.trace("Tried to click custom alert name button, but got nothing");
@@ -567,9 +584,9 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
         const nameInput = await fetchFirstXPath(page, "//input[@id='alert-name']");
         await clickInputAndDelete(page, nameInput);
         await nameInput.type(name);
-        await waitForTimeout(.5);
+        await waitForTimeout(0.5);
     }
-    if (!!message) {
+    if (message) {
         log.debug(`Setting message: ${kleur.blue(message)}`);
         try {
             const messageTextarea = await fetchFirstXPath(page, "//textarea[@id='alert-message']", 1000, false);
@@ -585,26 +602,29 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
             }
         }
     }
-    await waitForTimeout(.2);
+    await waitForTimeout(0.2);
+    const submitMessageForm = await fetchFirstXPath(page, "//button[@data-qa-id='submit']");
+    await submitMessageForm.click();
+    await waitForTimeout(0.7);
     // Click notifications tab
-    const notificationsTab = await fetchFirstXPath(page, "//button[@id='alert-dialog-tabs__notifications']");
+    const notificationsTab = await fetchFirstXPath(page, "//button[@data-qa-id='alert-notifications-button']");
     await notificationsTab.click();
-    await waitForTimeout(.4);
+    await waitForTimeout(0.4);
     // alert actions
     for (const [configKey, elementInputName] of Object.entries(alertActionCorresponding)) {
         if (!!actions && !!actions[configKey] !== undefined) {
-            await waitForTimeout(.3);
-            const el = await fetchFirstXPath(page, `//input[@data-qa-id='${elementInputName}']`);
+            await waitForTimeout(0.3);
+            const el = await fetchFirstXPath(page, `//label[@data-qa-id='${elementInputName}']//input`);
             /* istanbul ignore next */
-            const isChecked = await page.evaluate(element => element.checked, el);
+            const isChecked = await page.evaluate((element) => element.checked, el);
             if (configKey === "webhook") {
-                if (isChecked != actions.webhook.enabled) {
+                if (isChecked !== actions.webhook.enabled) {
                     log.debug(`setting ${kleur.blue("webhook")} as checked`);
                     el.click();
-                    await waitForTimeout(.3);
+                    await waitForTimeout(0.3);
                 }
                 if (actions.webhook.enabled && actions.webhook.url) {
-                    await waitForTimeout(.3);
+                    await waitForTimeout(0.3);
                     log.debug(`typing webhook url: ${kleur.blue(actions.webhook.url)}`);
                     const webhookUrlEl = await fetchFirstXPath(page, `//input[contains(@placeholder, 'alert-hook')]`, 1000);
                     await clickInputAndDelete(page, webhookUrlEl);
@@ -612,14 +632,14 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                 }
             }
             else if (configKey === "playSound") {
-                if (actions.playSound?.enabled !== undefined && isChecked != actions.playSound?.enabled) {
+                if (actions.playSound?.enabled !== undefined && isChecked !== actions.playSound?.enabled) {
                     log.debug(`setting ${kleur.blue("play-sound")} input as checked`);
                     el.click();
-                    await waitForTimeout(.3);
+                    await waitForTimeout(0.3);
                 }
                 if (actions.playSound?.enabled && actions.playSound?.name && actions.playSound?.duration) {
                     {
-                        await waitForTimeout(.5);
+                        await waitForTimeout(0.5);
                         try {
                             const classicSoundsSectionButton = await fetchFirstXPath(page, dropdownSoundXpathQueries["classicSection"], 3000, false);
                             classicSoundsSectionButton.evaluate((b) => b.click());
@@ -628,34 +648,38 @@ export const configureSingleAlertSettings = async (page, singleAlertSettings) =>
                         catch (e) {
                             log.trace("'Classic' sounds section already open");
                         }
-                        await waitForTimeout(.1);
+                        await waitForTimeout(0.1);
                         log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.name")}`);
                         const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["nameTarget"], 3000);
                         log.debug(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.name)}`);
                         targetElement.evaluate((b) => b.click());
-                        await waitForTimeout(.3);
+                        await waitForTimeout(0.3);
                         await selectFromDropDown(actions.playSound.name, dropdownSoundXpathQueries["nameListItems"]);
                     }
                     {
-                        await waitForTimeout(.5);
+                        await waitForTimeout(0.5);
                         log.debug(`Looking for DROPDOWN xpath of ${kleur.yellow("playSound.duration")}`);
                         const targetElement = await fetchFirstXPath(page, dropdownSoundXpathQueries["durationTarget"], 3000);
                         log.debug(`Found dropdown! Clicking element of ${kleur.yellow(actions.playSound.duration)}`);
                         targetElement.evaluate((b) => b.click());
-                        await waitForTimeout(.3);
+                        await waitForTimeout(0.3);
                         await selectFromDropDown(actions.playSound.duration, dropdownSoundXpathQueries["durationListItems"]);
                     }
-                    await waitForTimeout(.5);
+                    await waitForTimeout(0.5);
                 }
             }
             else {
-                if (isChecked != actions[configKey]) {
+                if (isChecked !== actions[configKey]) {
                     log.debug(`setting ${kleur.blue(configKey)} as checked`);
                     el.click();
                 }
             }
         }
     }
+    await waitForTimeout(0.2);
+    const submitAlertsForm = await fetchFirstXPath(page, "//button[@data-qa-id='submit']");
+    await submitAlertsForm.click();
+    await waitForTimeout(0.5);
 };
 export const clickSubmit = async (page) => {
     log.debug("clickSubmit()");
@@ -678,30 +702,30 @@ export const addAlert = async (page, singleAlertSettings) => {
     log.debug("addAlert()");
     const typeShortcutForAlertDialog = async () => {
         log.debug("addAlert()...pressing shortcut key");
-        await page.keyboard.press('Escape');
-        await waitForTimeout(.5);
-        await page.keyboard.press('Escape');
-        await waitForTimeout(.5);
-        await page.keyboard.down('AltLeft');
+        await page.keyboard.press("Escape");
+        await waitForTimeout(0.5);
+        await page.keyboard.press("Escape");
+        await waitForTimeout(0.5);
+        await page.keyboard.down("AltLeft");
         await page.keyboard.press("a");
-        await page.keyboard.up('AltLeft');
-        await waitForTimeout(.5, "after keyboard shortcut for new alert dialog");
+        await page.keyboard.up("AltLeft");
+        await waitForTimeout(0.5, "after keyboard shortcut for new alert dialog");
     };
     await typeShortcutForAlertDialog();
-    await waitForTimeout(.7, "..make sure we're showing the alert dialog");
+    await waitForTimeout(0.7, "..make sure we're showing the alert dialog");
     const isNotShowingAlertDialog = async () => {
         return !(await isXpathVisible(page, "//div[contains(@data-qa-id, 'alerts-create-edit-dialog')]"));
     };
     if (await isNotShowingAlertDialog()) {
         log.warn("NOT showing alert dialog! maybe invalid symbol?");
-        if (await isXpathVisible(page, "//*[text()=\"Can't create alert on invalid symbol\"]")) {
+        if (await isXpathVisible(page, '//*[text()="Can\'t create alert on invalid symbol"]')) {
             log.error("Looks like we tried to create alert on invalid symbol, throwing error");
             throw new InvalidSymbolError();
         }
         const MAX_TRIES = 3;
         let retryCount = 1;
         while ((await isNotShowingAlertDialog()) && retryCount <= MAX_TRIES + 1) {
-            if (retryCount == MAX_TRIES) {
+            if (retryCount === MAX_TRIES) {
                 await takeScreenshot(page, "unable_to_bring_up_alert_dialog");
                 throw new AddAlertInvocationError();
             }
@@ -712,7 +736,7 @@ export const addAlert = async (page, singleAlertSettings) => {
         }
     }
     await configureSingleAlertSettings(page, singleAlertSettings);
-    await waitForTimeout(.5);
+    await waitForTimeout(0.5);
     await takeScreenshot(page, "before_submitting_alert");
     await clickSubmit(page);
     await waitForTimeout(2);

@@ -1,13 +1,13 @@
-import * as csv from 'fast-csv';
+import * as csv from "fast-csv";
 import { createReadStream, existsSync, readFileSync } from "fs";
-import YAML from "yaml";
-import { addAlert, configureInterval, isEnvEnabled, waitForTimeout, isXpathVisible } from "./index.js";
-import { checkForInvalidSymbol, launchBrowser, login, minimizeFooterChartPanel, navigateToSymbol } from "./service/tv-page-actions.js";
-import { soundNames, isSoundName, isSoundDuration, soundDurations } from "./interfaces.js";
-import log, { logLogInfo } from "./service/log.js";
 import kleur from "kleur";
-import { logBaseDelay, styleOverride } from "./service/common-service.js";
+import YAML from "yaml";
 import { InvalidSymbolError } from "./classes.js";
+import { addAlert, configureInterval, isEnvEnabled, isXpathVisible, waitForTimeout } from "./index.js";
+import { isSoundDuration, isSoundName, soundDurations, soundNames, } from "./interfaces.js";
+import { logBaseDelay, styleOverride } from "./service/common-service.js";
+import log, { logLogInfo } from "./service/log.js";
+import { checkForInvalidSymbol, launchBrowser, login, minimizeFooterChartPanel, navigateToSymbol, } from "./service/tv-page-actions.js";
 const readFilePromise = (filename) => {
     return new Promise((resolve, reject) => {
         const rows = [];
@@ -18,13 +18,14 @@ const readFilePromise = (filename) => {
             readStream
                 // .pipe(stripBomStream()) // was an error using this package something about module resolution
                 .pipe(csv.parse({
-                headers: (headerArray) => headerArray.map((header) => header.trim())
+                headers: (headerArray) => headerArray.map((header) => header.trim()),
             }))
-                .on('data', (row) => rows.push(row))
-                .on('end', (rowCount) => {
+                .on("data", (row) => rows.push(row))
+                .on("end", (rowCount) => {
                 log.info(`Parsed ${rowCount} rows`);
                 resolve(rows);
-            }).on('error', (e) => {
+            })
+                .on("error", (e) => {
                 reject(`Unable to read csv: ${e.message}`);
             });
         }
@@ -98,7 +99,7 @@ export const addAlertsMain = async (configFileName) => {
         page = await browser.newPage();
         log.debug(`Go to ${config.tradingview.chartUrl} and wait until domloaded`);
         const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
-            waitUntil: 'domcontentloaded'
+            waitUntil: "domcontentloaded",
         });
         await waitForTimeout(8, "let page load and see if access is denied");
         /* istanbul ignore next */
@@ -189,7 +190,7 @@ export const addAlertsMain = async (configFileName) => {
                     },
                     trigger: makeReplacements(alertConfig.trigger || alertConfig.option),
                     expireInterval: alertConfig.expireInterval,
-                    expireOpenEnded: alertConfig.expireOpenEnded
+                    expireOpenEnded: alertConfig.expireOpenEnded,
                 };
                 if (alertConfig.actions) {
                     singleAlertSettings.actions = {
@@ -200,14 +201,14 @@ export const addAlertsMain = async (configFileName) => {
                     if (alertConfig.actions.webhook) {
                         singleAlertSettings.actions.webhook = {
                             enabled: alertConfig.actions.webhook.enabled,
-                            url: makeReplacements(alertConfig.actions.webhook.url)
+                            url: makeReplacements(alertConfig.actions.webhook.url),
                         };
                     }
                     if (alertConfig.actions.playSound) {
                         singleAlertSettings.actions.playSound = {
                             enabled: alertConfig.actions.playSound.enabled,
                             name: alertConfig.actions.playSound.name,
-                            duration: alertConfig.actions.playSound.duration
+                            duration: alertConfig.actions.playSound.duration,
                         };
                     }
                 }

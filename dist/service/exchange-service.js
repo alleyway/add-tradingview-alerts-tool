@@ -1,11 +1,11 @@
-import { MasterSymbol } from "../classes.js";
-import log from "./log.js";
-import kleur from "kleur";
 import fs from "fs";
+import kleur from "kleur";
+import get from "lodash.get";
 import path from "path";
+import { MasterSymbol } from "../classes.js";
 import { Classification } from "../interfaces.js";
 import { isEnvEnabled } from "./common-service.js";
-import get from "lodash.get";
+import log from "./log.js";
 export const BINANCE = "binance";
 export const BINANCE_FUTURES_USDM = "binance_futures_usdm";
 export const BINANCE_FUTURES_COINM = "binance_futures_coinm";
@@ -36,7 +36,7 @@ export const SOURCES_AVAILABLE = [
     KRAKEN,
     KUCOIN,
     OKX_SPOT,
-    OKX_SWAP
+    OKX_SWAP,
 ];
 const logJson = (obj, name = "") => {
     log.debug(`${name} \n ${kleur.yellow(JSON.stringify(obj, null, 4))}`);
@@ -60,7 +60,7 @@ const fetchAndTransform = async (url, responsePath, transformer) => {
     for (const obj of resultsArray) {
         const masterSymbol = transformer(obj);
         if (masterSymbol) {
-            if (count == 0 && isEnvEnabled(process.env.TEST_SAVE_RESPONSE)) {
+            if (count === 0 && isEnvEnabled(process.env.TEST_SAVE_RESPONSE)) {
                 fs.writeFileSync(path.join(process.cwd(), "output", masterSymbol.source + "_in.json"), JSON.stringify(resultsArray, null, 2), { encoding: "utf-8" });
             }
             masterSymbols.push(masterSymbol);
@@ -87,11 +87,11 @@ export const fetchByBitInverse = async () => {
             let classification;
             let symbol = obj.symbol;
             let tvSuffix = "";
-            if (obj.contractType == "InversePerpetual") {
+            if (obj.contractType === "InversePerpetual") {
                 classification = Classification.FUTURES_PERPETUAL;
                 tvSuffix = ".P";
             }
-            else if (obj.contractType == "InverseFutures") {
+            else if (obj.contractType === "InverseFutures") {
                 classification = Classification.FUTURES_DATED;
                 const match = obj.symbol.match(/(.*?)(\d\d)$/);
                 symbol = `${match[1]}20${match[2]}`;
@@ -112,8 +112,8 @@ export const fetchByBitLinear = async () => {
     const transformer = (obj) => {
         if (obj.status === "Trading") {
             let classification;
-            let symbol = obj.symbol;
-            if (obj.contractType == "LinearPerpetual") {
+            const symbol = obj.symbol;
+            if (obj.contractType === "LinearPerpetual") {
                 classification = Classification.FUTURES_PERPETUAL;
             }
             else {
@@ -151,14 +151,14 @@ export const fetchKucoin = async () => {
 export const fetchKraken = async () => {
     const resp = await fetch("https://api.kraken.com/0/public/AssetPairs");
     const responseObject = await resp.json();
-    // @ts-ignore
     const symbolsObject = responseObject.result;
     const masterSymbols = [];
     const keys = Object.keys(symbolsObject);
     log.info(`found ${keys.length} results from the API`);
-    for (const key of keys) { // key = "AAVEAUD"
+    for (const key of keys) {
+        // key = "AAVEAUD"
         const obj = symbolsObject[key];
-        const [instrument, quoteAsset] = obj.wsname.split("\/"); // "AAVE\/AUD"
+        const [instrument, quoteAsset] = obj.wsname.split("/"); // "AAVE\/AUD"
         masterSymbols.push(new MasterSymbol(obj, KRAKEN, instrument, quoteAsset));
     }
     log.info(`returning ${masterSymbols.length} results symbols parsed`);
@@ -166,26 +166,26 @@ export const fetchKraken = async () => {
 };
 export const fetchKrakenFutures = async () => {
     /*
-          {
-            "tag": "perpetual",
-            "pair": "XBT:USD",
-            "symbol": "pi_xbtusd",
-            "markPrice": 36339.5,
-            "bid": 36332.5,
-            "bidSize": 1091,
-            "ask": 36355.5,
-            "askSize": 4080,
-            "vol24h": 341903278,
-            "openInterest": 89423744,
-            "open24h": 34915,
-            "last": 36374.5,
-            "lastTime": "2022-01-24T18:50:06.030Z",
-            "lastSize": 58,
-            "suspended": false,
-            "fundingRate": 3.55444348e-10,
-            "fundingRatePrediction": -9.1005881e-10
-          },
-     */
+            {
+              "tag": "perpetual",
+              "pair": "XBT:USD",
+              "symbol": "pi_xbtusd",
+              "markPrice": 36339.5,
+              "bid": 36332.5,
+              "bidSize": 1091,
+              "ask": 36355.5,
+              "askSize": 4080,
+              "vol24h": 341903278,
+              "openInterest": 89423744,
+              "open24h": 34915,
+              "last": 36374.5,
+              "lastTime": "2022-01-24T18:50:06.030Z",
+              "lastSize": 58,
+              "suspended": false,
+              "fundingRate": 3.55444348e-10,
+              "fundingRatePrediction": -9.1005881e-10
+            },
+       */
     const transformer = (obj) => {
         if (obj.suspended === false) {
             const [baseCurrency, quoteCurrency] = obj.pair.split(":");
@@ -208,7 +208,7 @@ export const fetchKrakenFutures = async () => {
 };
 export const fetchCoinbase = async () => {
     const transformer = (obj) => {
-        if (!obj.trading_disabled && obj.status == "online") {
+        if (!obj.trading_disabled && obj.status === "online") {
             return new MasterSymbol(obj, COINBASE, obj.base_currency, obj.quote_currency);
         }
         else {

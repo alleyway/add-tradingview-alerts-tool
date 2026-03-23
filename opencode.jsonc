@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "read": {
+      // Keep default wildcard allow
+      "*": "allow",
+      // Or use glob patterns for more flexibility
+      ".env": "deny",
+      "**/.env": "deny",
+      "**/.env*": "deny",
+      "**/config.*.yml": "deny",
+      "**/config.ci.yml": "allow"
+    }
+  }
+}

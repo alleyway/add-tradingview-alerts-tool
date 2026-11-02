@@ -1,5 +1,5 @@
-import { copyFileSync, readFileSync, writeFileSync } from "fs"
-import path from "path"
+import { copyFileSync, readFileSync, writeFileSync } from "node:fs"
+import path from "node:path"
 import YAML from "yaml"
 import { addAlertsMain } from "./add-alerts.js"
 import { InvalidSymbolError } from "./classes.js"

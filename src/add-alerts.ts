@@ -1,19 +1,11 @@
+import { createReadStream, existsSync, readFileSync } from "node:fs"
 import * as csv from "fast-csv"
-import { createReadStream, existsSync, readFileSync } from "fs"
 import kleur from "kleur"
 import type { Browser, Page } from "puppeteer-core"
 import YAML from "yaml"
 import { InvalidSymbolError } from "./classes.js"
 import { addAlert, configureInterval, isEnvEnabled, isXpathVisible, waitForTimeout } from "./index.js"
-import {
-  ISingleAlertSettings,
-  isSoundDuration,
-  isSoundName,
-  SoundDuration,
-  SoundName,
-  soundDurations,
-  soundNames,
-} from "./interfaces.js"
+import { ISingleAlertSettings, isSoundDuration, isSoundName, soundDurations, soundNames } from "./interfaces.js"
 import { logBaseDelay, styleOverride } from "./service/common-service.js"
 import log, { logLogInfo } from "./service/log.js"
 import {
@@ -92,7 +84,7 @@ export const addAlertsMain = async (configFileName) => {
           process.exit(1)
         }
       }
-    } catch (e) {
+    } catch (_e) {
       log.fatal(`Unable to open file specified in config: ${config.files.exclude}`)
       process.exit(1)
     }
@@ -103,7 +95,7 @@ export const addAlertsMain = async (configFileName) => {
   try {
     log.info(`${kleur.gray("Reading input file: ")}${kleur.cyan(config.files.input)}`)
     symbolRows = await readFilePromise(config.files.input)
-  } catch (e) {
+  } catch (_e) {
     log.fatal(`Unable to open file specified in config: ${kleur.yellow(config.files.input)}`)
     process.exit(1)
   }
@@ -119,7 +111,7 @@ export const addAlertsMain = async (configFileName) => {
 
   const { alert: alertConfig } = config
 
-  if (alertConfig.actions.playSound && alertConfig.actions.playSound.enabled) {
+  if (alertConfig.actions.playSound?.enabled) {
     if (!isSoundName(alertConfig.actions.playSound.name)) {
       log.error(`Configuration error. Invalid sound name: ${kleur.yellow(alertConfig.actions.playSound.name)}`)
       throw new Error(`Sound must be one of: ${soundNames.join(" , ")}`)
@@ -139,7 +131,7 @@ export const addAlertsMain = async (configFileName) => {
     page = await browser.newPage()
 
     log.debug(`Go to ${config.tradingview.chartUrl} and wait until domloaded`)
-    const pageResponse = await page.goto(config.tradingview.chartUrl + "#signin", {
+    const pageResponse = await page.goto(`${config.tradingview.chartUrl}#signin`, {
       waitUntil: "domcontentloaded",
     })
     await waitForTimeout(8, "let page load and see if access is denied")

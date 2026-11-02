@@ -46,7 +46,7 @@ const wrapper = async (workFunction) => {
 program
     .command("fetch-pairs [exchange] [quote]", { hidden: true })
     .description('DEPRECATED! use "fetch-symbols" instead')
-    .action((exchange, quote) => {
+    .action((_exchange, _quote) => {
     log.error(`fetch-pairs is now ${kleur.red("DEPRECATED")}. Use 'fetch-symbols' instead`);
 });
 const extendedHelp = `

@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { isEnvEnabled } from "./common-service.js";
 import { fetchBinance, fetchBinanceFuturesCoinM, fetchBinanceFuturesUsdM, fetchBitMex, fetchByBitInverse, fetchByBitLinear, fetchByBitSpot, fetchCoinbase, fetchKraken, fetchKrakenFutures, fetchKucoin, fetchOkxSpot, fetchOkxSwap, } from "./exchange-service.js";
 describe("Integrated Test of Exchanges", () => {
@@ -9,7 +9,7 @@ describe("Integrated Test of Exchanges", () => {
                 delete val.raw;
                 return val;
             });
-            fs.writeFileSync(path.join(process.cwd(), "output", results[0].source + "_out.json"), JSON.stringify(resWithoutRaw, null, 2), { encoding: "utf-8" });
+            fs.writeFileSync(path.join(process.cwd(), "output", `${results[0].source}_out.json`), JSON.stringify(resWithoutRaw, null, 2), { encoding: "utf-8" });
         }
         expect(results.length).toBeGreaterThan(minNumberExpecting);
     };

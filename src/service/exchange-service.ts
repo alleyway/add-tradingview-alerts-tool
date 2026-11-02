@@ -1,7 +1,7 @@
-import fs from "fs"
+import fs from "node:fs"
+import path from "node:path"
 import kleur from "kleur"
 import get from "lodash.get"
-import path from "path"
 import { MasterSymbol } from "../classes.js"
 import { Classification, ClassificationType } from "../interfaces.js"
 import { isEnvEnabled } from "./common-service.js"
@@ -71,7 +71,7 @@ const fetchAndTransform = async (url, responsePath, transformer: (any) => Master
     if (masterSymbol) {
       if (count === 0 && isEnvEnabled(process.env.TEST_SAVE_RESPONSE)) {
         fs.writeFileSync(
-          path.join(process.cwd(), "output", masterSymbol.source + "_in.json"),
+          path.join(process.cwd(), "output", `${masterSymbol.source}_in.json`),
           JSON.stringify(resultsArray, null, 2),
           { encoding: "utf-8" }
         )

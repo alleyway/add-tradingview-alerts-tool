@@ -1,5 +1,5 @@
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 import { MasterSymbol } from "../classes.js"
 import { isEnvEnabled } from "./common-service.js"
 import {
@@ -26,7 +26,7 @@ describe("Integrated Test of Exchanges", () => {
         return val
       })
       fs.writeFileSync(
-        path.join(process.cwd(), "output", results[0].source + "_out.json"),
+        path.join(process.cwd(), "output", `${results[0].source}_out.json`),
         JSON.stringify(resWithoutRaw, null, 2),
         { encoding: "utf-8" }
       )

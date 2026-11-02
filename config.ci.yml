@@ -2,28 +2,27 @@ files:
   input: /Users/mlake/alleyway/add-tradingview-alerts-tool/ci_symbols.csv
   exclude: blacklist.csv
 tradingview:
-  chartUrl: https://www.tradingview.com/chart/EDlI2Ip1/
+  chartUrl: https://www.tradingview.com/chart/PJ1iAIOJ/
   interval: 4h
-  username: absurdistcamus
-  password:
+  username: AbsurdistCamus
+  password: REDACTED
+  backupCode: ""
 alert:
   condition:
-    primaryLeft: Price
+    primaryLeft: RSI
     primaryRight: null
-    secondary: Crossing Up
-    tertiaryLeft: Value
-    tertiaryRight: 1000000
+    secondary: Moving Up
+    tertiaryLeft: 3.4
+    tertiaryRight: 14
     quaternaryLeft: null
     quaternaryRight: null
-  trigger: Once only
-  expireOpenEnded: false
-  expireInterval: 24
+  trigger: Once per bar close
   actions:
-    notifyOnApp: true
-    showPopup: true
-    sendEmail: true
+    notifyOnApp: false
+    showPopup: false
+    sendEmail: false
     webhook:
-      enabled: true
+      enabled: false
       url: https://3commas.io/trade_signal/trading_view
     playSound:
       enabled: true

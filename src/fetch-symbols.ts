@@ -1,5 +1,5 @@
+import fs from "node:fs"
 import { FormatterOptionsArgs, FormatterRow, writeToStream } from "fast-csv"
-import fs from "fs"
 import kleur from "kleur"
 import { Classification } from "./interfaces.js"
 import { fetchSymbolsForSource } from "./service/exchange-service.js"
@@ -58,7 +58,7 @@ export const fetchSymbolsMain = async (source: string, quoteAssetFilter?: string
     }
   })
 
-  const outputPath = `${formattedExchange}${classificationFilter ? "_" + classificationFilter.toLowerCase() : ""}${quoteAssetFilter ? "_" + quoteAssetFilter.toLowerCase() : ""}_symbols.csv`
+  const outputPath = `${formattedExchange}${classificationFilter ? `_${classificationFilter.toLowerCase()}` : ""}${quoteAssetFilter ? `_${quoteAssetFilter.toLowerCase()}` : ""}_symbols.csv`
   const outStream = fs.createWriteStream(outputPath)
 
   await write(outStream, rows, { headers: true })

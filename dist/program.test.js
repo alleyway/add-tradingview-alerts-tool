@@ -4,7 +4,7 @@ describe("CLI Program Tests", () => {
     let mockExit = null;
     beforeEach(() => {
         // @ts-expect-error
-        mockExit = vi.spyOn(process, "exit").mockImplementation((code) => { });
+        mockExit = vi.spyOn(process, "exit").mockImplementation((_code) => { });
     });
     beforeAll(() => {
         console.log(`current working directory: ${process.cwd()}`);

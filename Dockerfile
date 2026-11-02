@@ -63,7 +63,7 @@ RUN  npm install npm@11.10.0 -g \
 #     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
 # Install Puppeteer under /node_modules so it's available system-wide
-     && npm install -g puppeteer@24.37.4 --unsafe-perm=true \
-     && npx puppeteer@24.37.4 browsers install chrome
+     && npm install -g puppeteer@25.16.0 --unsafe-perm=true \
+     && npx puppeteer@25.16.0 browsers install chrome
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

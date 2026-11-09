@@ -2,6 +2,9 @@
   "name": "@alleyway/create-tradingview-alerts-home",
   "version": "1.12.0",
   "license": "MIT",
+  "engines": {
+    "node": "26.13"
+  },
   "type": "module",
   "bin": {
     "create-tradingview-alerts-home": "/dist/index.js"
@@ -18,7 +21,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@types/node": "22.19.7",
+    "@types/node": "^26.6.6",
     "kleur": "^4.1.5",
     "prompts": "^2.4.1"
   }

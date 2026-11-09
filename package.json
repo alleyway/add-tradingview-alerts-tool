@@ -26,7 +26,7 @@
     "release": "echo 'MAKE SURE YOU RUN ./deploy_master.sh first! and DO NOT PUBLISH FROM HERE!' && pnpm exec release-it",
     "release-beta": "echo 'MAKE SURE to TAG your beta for github actions to deploy npm package!!' && pnpm exec release-it --preRelease=beta --config .release-it.beta-nopublish.json",
     "prepare": "husky",
-    "postinstall": "pnpm exec @puppeteer/browsers install chrome@stable",
+    "postinstall": "browsers install chrome@stable",
     "test": "rm -Rf ./user_data && node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run",
     "test:ci": "rm -Rf ./user_data && node --experimental-vm-modules --trace-warnings node_modules/.bin/vitest run --coverage.enabled",
     "test:watch": "vitest --watch",

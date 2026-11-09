@@ -8,6 +8,9 @@
 # can't use bullseye because it doesn't have libappindicator (unless installed manually)
 FROM node:26.13-bookworm-slim
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+
 WORKDIR /usr/app
 
 RUN apt-get update && apt-get install -y \
@@ -46,7 +49,8 @@ RUN apt-get update && apt-get install -y \
     fonts-wqy-zenhei \
     fonts-noto-color-emoji
 
-RUN  npm install npm@11.10.0 -g \
+RUN  corepack enable && corepack prepare pnpm@12.16.1 --activate \
+     && pnpm config set global-bin-dir /usr/local/bin \
      && apt-get install -y wget gnupg ca-certificates procps dumb-init \
      # We install Chrome to get all the OS level dependencies, but Chrome itself
      # is not actually used as it's packaged in the node puppeteer library.
@@ -63,7 +67,7 @@ RUN  npm install npm@11.10.0 -g \
 #     && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
 # Install Puppeteer under /node_modules so it's available system-wide
-     && npm install -g puppeteer@25.16.0 --unsafe-perm=true \
-     && npx puppeteer@25.16.0 browsers install chrome
+     && pnpm add -g puppeteer@25.16.0 \
+     && puppeteer browsers install chrome
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

@@ -46,9 +46,10 @@ build:
       - dist/
   script:
     - node -v
-    - npm --version
-    - npm ci
-    - npm run build
+    - corepack enable && corepack prepare pnpm@12.16.1 --activate
+    - pnpm --version
+    - pnpm install --frozen-lockfile
+    - pnpm run build
 
 test:
   stage: test
@@ -76,9 +77,9 @@ test:
     - echo "${ENV_FILE_CONTENTS}" >> .env
     - chmod 755 ./dist/cli.js
     - node -v
-    - npm --version
+    - pnpm --version
     - export NODE_OPTIONS="--import=extensionless/register --experimental-vm-modules"
-    - npm run test:ci
+    - pnpm run test:ci
 
 pages:
   stage: deploy

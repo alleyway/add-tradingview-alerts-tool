@@ -71,7 +71,7 @@
     "@vitest/ui": "^4.1.12",
     "husky": "^9.1.7",
     "release-it": "^19.2.4",
-    "typescript": "^5.9.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.12"
   },
   "private": false

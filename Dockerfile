@@ -49,7 +49,7 @@ RUN apt-get update && apt-get install -y \
     fonts-wqy-zenhei \
     fonts-noto-color-emoji
 
-RUN  corepack enable && corepack prepare pnpm@12.16.1 --activate \
+RUN  corepack enable && corepack prepare pnpm@12.18.0 --activate \
      && pnpm config set global-bin-dir /usr/local/bin \
      && apt-get install -y wget gnupg ca-certificates procps dumb-init \
      # We install Chrome to get all the OS level dependencies, but Chrome itself

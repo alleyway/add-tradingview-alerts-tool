@@ -46,7 +46,7 @@ build:
       - dist/
   script:
     - node -v
-    - corepack enable && corepack prepare pnpm@12.16.1 --activate
+    - corepack enable && corepack prepare pnpm@12.18.0 --activate
     - pnpm --version
     - pnpm install --frozen-lockfile
     - pnpm run build

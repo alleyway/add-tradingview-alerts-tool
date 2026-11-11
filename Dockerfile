@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y \
     fonts-noto-color-emoji
 
 RUN  pnpm config set global-bin-dir /usr/local/bin \
-     && apt-get install -y wget gnupg ca-certificates procps dumb-init \
+     && apt-get install -y wget gnupg ca-certificates procps dumb-init unzip \
      # We install Chrome to get all the OS level dependencies, but Chrome itself
      # is not actually used as it's packaged in the node puppeteer library.
      # Alternatively, we could could include the entire dep list ourselves
@@ -73,7 +73,7 @@ RUN  pnpm config set global-bin-dir /usr/local/bin \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
 # Install Puppeteer under /node_modules so it's available system-wide
      && pnpm add -g puppeteer@25.16.0 \
-     && puppeteer browsers install chrome \
+     && puppeteer browsers install chrome@stable \
      && pnpm
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

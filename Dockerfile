@@ -73,7 +73,6 @@ RUN  pnpm config set global-bin-dir /usr/local/bin \
 #     && chmod +x /usr/sbin/wait-for-it.sh \
 # Install Puppeteer under /node_modules so it's available system-wide
      && pnpm add -g puppeteer@25.16.0 \
-     && puppeteer browsers install chrome@stable \
-     && pnpm
+     && puppeteer browsers install chrome@stable
 # be sure that the version of puppeteer matches the version of google-chrome-stable, otherwise possible high CPU
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

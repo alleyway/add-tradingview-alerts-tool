@@ -64,7 +64,7 @@
     "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.4",
+    "@biomejs/biome": "2.6.6",
     "@release-it/bumper": "^8.0.1",
     "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^4.1.12",
